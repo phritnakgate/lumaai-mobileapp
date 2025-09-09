@@ -1,3 +1,8 @@
 <resources>
-    <string name="app_name">LumaAI-App</string>
+    <string name="app_name" translatable="false">LumaAI-Mobile</string>
+
+    <!--Landing Page-->
+    <string name="landing_heading">Meet LUMA !</string>
+    <string name="landing_subheading">Your own AI Task Manager</string>
+    <string name="landing_btn">Get Started</string>
 </resources>

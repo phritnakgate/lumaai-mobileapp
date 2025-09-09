@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="landing_heading">พบกับ LUMA !</string>
+    <string name="landing_subheading">AI ผู้ช่วยจัดการงานของคุณ</string>
+    <string name="landing_btn">เริ่มใช้งาน</string>
+</resources>
