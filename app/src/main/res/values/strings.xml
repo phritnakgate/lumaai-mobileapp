@@ -5,4 +5,16 @@
     <string name="landing_heading">Meet LUMA !</string>
     <string name="landing_subheading">Your own AI Task Manager</string>
     <string name="landing_btn">Get Started</string>
+
+    <!--Login Page-->
+    <string name="login_welcome">Welcome Back !</string>
+    <string name="login_email_label">Email*</string>
+    <string name="login_email_hint" translatable="false">example@gmail.com</string>
+    <string name="login_password_label">Password*</string>
+    <string name="login_password_hint" translatable="false">********</string>
+    <string name="login_btn">Sign In</string>
+    <string name="login_or">OR</string>
+    <string name="login_google_btn">Continue with Google</string>
+    <string name="login_no_account_sentence">Don’t have an account?</string>
+    <string name="login_no_account_btn">Sign Up</string>
 </resources>
