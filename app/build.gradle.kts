@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId = "org.bkkz.lumaapp"
-        minSdk = 26
+        minSdk = 28
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"

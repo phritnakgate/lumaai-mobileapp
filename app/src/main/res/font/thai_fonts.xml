@@ -1,0 +1,6 @@
+<font-family
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <font android:fontStyle="normal" android:fontWeight="300" android:font="@font/notosansthai_light"/>
+    <font android:fontStyle="normal" android:fontWeight="400" android:font="@font/notosansthai_regular"/>
+    <font android:fontStyle="normal" android:fontWeight="700" android:font="@font/notosansthai_bold"/>
+</font-family>
