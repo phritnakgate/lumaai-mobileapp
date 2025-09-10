@@ -12,7 +12,9 @@
         android:id="@+id/constraintlayout_login_logo"
         android:layout_width="223dp"
         android:layout_height="90dp"
+        android:elevation="4dp"
         android:background="@drawable/auth_page_logo_border"
+        app:layout_constraintTop_toTopOf="@id/constraintlayout_login_form_area"
         app:layout_constraintBottom_toTopOf="@id/constraintlayout_login_form_area"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -45,7 +47,7 @@
             android:layout_height="wrap_content"
             android:text="@string/login_welcome"
             android:textAppearance="@style/LumaAI.TextAppearance.Heading1"
-            android:paddingTop="45dp"
+            android:paddingTop="60dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -98,11 +100,115 @@
             />
 
         <androidx.appcompat.widget.AppCompatButton
-            android:layout_width="wrap_content"
+            android:id="@+id/compatbtn_login_login"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/login_btn"
             android:background="@drawable/landing_btn"
+            android:textColor="@color/white"
+            android:textAppearance="@style/LumaAI.TextAppearance.Heading3"
+            android:layout_marginTop="50dp"
+            android:layout_marginHorizontal="80dp"
+            app:layout_constraintTop_toBottomOf="@id/edttxt_login_password"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             />
+
+        <LinearLayout
+            android:id="@+id/linearlayout_login_or"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:paddingTop="24dp"
+            android:gravity="center_vertical"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/compatbtn_login_login"
+            >
+            <View
+                android:layout_width="0dp"
+                android:layout_height="2dp"
+                android:layout_weight="2"
+                android:background="@color/disabled"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="10dp"
+                android:text="@string/login_or"
+                android:textColor="@color/disabled"
+                android:textAppearance="@style/LumaAI.TextAppearance.BodyLarge"
+                />
+            <View
+                android:layout_width="0dp"
+                android:layout_height="2dp"
+                android:layout_weight="2"
+                android:background="@color/disabled"
+                />
+        </LinearLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintlayout_login_google_button"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginHorizontal="50dp"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintTop_toBottomOf="@id/linearlayout_login_or"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            >
+            <ImageView
+                android:id="@+id/imgview_login_google"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_google"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/txtview_login_google"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                />
+
+            <TextView
+                android:id="@+id/txtview_login_google"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/login_google_btn"
+                app:layout_constraintStart_toEndOf="@+id/imgview_login_google"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <LinearLayout
+            android:id="@+id/linearlayout_login_register"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="36dp"
+            android:paddingBottom="20dp"
+            android:gravity="center_horizontal"
+            app:layout_constraintTop_toBottomOf="@id/constraintlayout_login_google_button"
+            app:layout_constraintBottom_toBottomOf="parent"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/login_no_account_sentence"
+                android:textAppearance="@style/LumaAI.TextAppearance.BodyMedium"
+                />
+            <TextView
+                android:id="@+id/txtview_login_register"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingStart="5dp"
+                android:text="@string/login_no_account_btn"
+                android:fontFamily="@font/inter_semibold"
+                android:textColor="@color/danger"
+
+                />
+        </LinearLayout>
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -12,6 +12,12 @@
         <item name="android:textSize">20sp</item>
         <item name="android:textFontWeight">600</item>
     </style>
+    <!-- Heading 3 -->
+    <style name="LumaAI.TextAppearance.Heading3" parent="TextAppearance.AppCompat">\
+        <item name="fontFamily">@font/english_fonts</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textFontWeight">600</item>
+    </style>
     <!-- Body Large -->
     <style name="LumaAI.TextAppearance.BodyLarge" parent="TextAppearance.AppCompat">
         <item name="fontFamily">@font/english_fonts</item>
