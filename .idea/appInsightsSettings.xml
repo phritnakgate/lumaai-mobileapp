@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="org.bkkz.lumaapp" />
+                  <option name="mobileSdkAppId" value="1:672244117841:android:41cc9227c6371c13f56370" />
+                  <option name="projectId" value="lumaai-12b32" />
+                  <option name="projectNumber" value="672244117841" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

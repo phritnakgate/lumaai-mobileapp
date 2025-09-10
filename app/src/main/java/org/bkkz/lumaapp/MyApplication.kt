@@ -1,14 +1,19 @@
 package org.bkkz.lumaapp
 
 import android.app.Application
+import com.google.firebase.FirebaseApp
 import org.bkkz.lumaapp.data.di.remoteDataModules
 import org.bkkz.lumaapp.presentation.di.presentationModules
 import org.koin.android.ext.koin.androidContext
 
 class MyApplication : Application() {
+
+
+
     override fun onCreate() {
         super.onCreate()
         startKoin()
+        FirebaseApp.initializeApp(this@MyApplication)
     }
 
     private fun startKoin(){

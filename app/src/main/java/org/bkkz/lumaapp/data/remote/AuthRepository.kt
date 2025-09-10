@@ -111,7 +111,7 @@ class AuthRepository(private val tokenManager: TokenManager) {
         )
         val requestBody = gson.toJson(requestBodyMap).toRequestBody(mediaType)
         val request = Request.Builder()
-            .url("$apiBaseUrl/auth/logout")
+            .url("$apiBaseUrl/logout")
             .post(requestBody)
             .build()
         tokenManager.clearTokens()
