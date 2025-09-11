@@ -7,9 +7,9 @@
     <string name="landing_btn">Get Started</string>
 
     <!-- AUTHENTICATION PAGES -->
-    <string name="auth_email_label">Email<font color="#E07373">*</font></string>
+    <string name="auth_email_label">Email</string>
     <string name="auth_email_hint" translatable="false">example@gmail.com</string>
-    <string name="auth_password_label">Password<font color="#E07373">*</font></string>
+    <string name="auth_password_label">Password</string>
     <string name="auth_password_hint" translatable="false">********</string>
 
     <!--Login Page-->
@@ -22,8 +22,8 @@
 
     <!-- Register Page -->
     <string name="register_title">Create Your Account</string>
-    <string name="register_confirm_password_label">Confirm Password<font color="#E07373">*</font></string>
-    <string name="register_name_label">Alias Name<font color="#E07373">*</font></string>
+    <string name="register_confirm_password_label">Confirm Password</string>
+    <string name="register_name_label">Alias Name</string>
     <string name="register_name_hint" translatable="false">Name</string>
     <string name="register_btn">Sign Up</string>
     <string name="register_have_account_btn"><u>I Already Have an Account</u></string>

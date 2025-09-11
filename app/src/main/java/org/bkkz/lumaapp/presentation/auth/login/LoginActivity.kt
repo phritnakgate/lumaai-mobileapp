@@ -34,6 +34,7 @@ import org.bkkz.lumaapp.R
 import org.bkkz.lumaapp.presentation.auth.login.state.LoginState
 import org.bkkz.lumaapp.presentation.auth.register.RegisterActivity
 import org.bkkz.lumaapp.presentation.main.HomeActivity
+import org.bkkz.lumaapp.util.LabelEditText
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class LoginActivity : AppCompatActivity() {
@@ -42,8 +43,8 @@ class LoginActivity : AppCompatActivity() {
     private val viewModel: LoginViewModel by viewModel()
 
     //UI
-    private lateinit var edtEmail : EditText
-    private lateinit var edtPassword : EditText
+    private lateinit var edtEmail : LabelEditText
+    private lateinit var edtPassword : LabelEditText
     private lateinit var emailSignInBtn: AppCompatButton
     private lateinit var googleSignInBtn : ConstraintLayout
     private lateinit var txtSignUp : TextView
@@ -63,8 +64,8 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun findViews(){
-        edtEmail = findViewById(R.id.edttxt_login_email)
-        edtPassword = findViewById(R.id.edttxt_login_password)
+        edtEmail = findViewById(R.id.lbledt_login_email)
+        edtPassword = findViewById(R.id.lbledt_login_password)
         emailSignInBtn = findViewById(R.id.compatbtn_login_login)
         googleSignInBtn = findViewById(R.id.constraintlayout_login_google_button)
         txtSignUp = findViewById(R.id.txtview_login_register)
@@ -112,14 +113,18 @@ class LoginActivity : AppCompatActivity() {
 
     private fun setupEmailSignInBtn(){
         emailSignInBtn.setOnClickListener {
-            val email = edtEmail.text.toString()
-            val password = edtPassword.text.toString()
+            val email = edtEmail.text
+            val password = edtPassword.text
+
+            edtEmail.setError(false)
+            edtPassword.setError(false)
+
             if(email.isBlank() || email.isEmpty()){
-                edtEmail.setTextColor(ContextCompat.getColor(this@LoginActivity, R.color.danger))
+                edtEmail.setError(true)
                 return@setOnClickListener
             }
             if(password.isBlank() || password.isEmpty()){
-                edtPassword.setTextColor(ContextCompat.getColor(this@LoginActivity, R.color.danger))
+                edtPassword.setError(true)
                 return@setOnClickListener
             }
             viewModel.loginWithEmail(email, password)
