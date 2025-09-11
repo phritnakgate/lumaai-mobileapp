@@ -20,7 +20,7 @@ sealed class Result<out T> {
     data class Error(val exception: Exception) : Result<Nothing>()
 }
 
-class AuthRepository(private val tokenManager: TokenManager) {
+class Repository(private val tokenManager: TokenManager) {
     private val client = OkHttpClient()
     private val gson = Gson()
     private val mediaType = "application/json; charset=utf-8".toMediaType()
