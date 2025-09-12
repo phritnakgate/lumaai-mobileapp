@@ -27,4 +27,12 @@
     <string name="register_name_hint" translatable="false">Name</string>
     <string name="register_btn">Sign Up</string>
     <string name="register_have_account_btn"><u>I Already Have an Account</u></string>
+
+    <!-- Home Page -->
+    <string name="home_talk_with_luma">Talk\nwith LUMA</string>
+    <string name="home_task">Your Task</string>
+    <string name="home_fill_form">Form</string>
+    <string name="home_history_title">History</string>
+    <string name="home_history_see_all">See All</string>
+    <string name="home_history_recent">Recent</string>
 </resources>

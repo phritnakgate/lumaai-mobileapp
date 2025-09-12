@@ -10,4 +10,6 @@
     <color name="background_primary">#FFF6F3F0</color>
     <color name="background_secondary">#FFEEEAE6</color>
     <color name="border_color">#FFD9D9D9</color>
+    <color name="llm_response_color">#FFEFE634</color>
+    <color name="llm_request_color">#FFFFA6CB</color>
 </resources>
