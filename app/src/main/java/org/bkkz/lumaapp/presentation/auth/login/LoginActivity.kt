@@ -33,7 +33,7 @@ import org.bkkz.lumaapp.BuildConfig
 import org.bkkz.lumaapp.R
 import org.bkkz.lumaapp.presentation.auth.login.state.LoginState
 import org.bkkz.lumaapp.presentation.auth.register.RegisterActivity
-import org.bkkz.lumaapp.presentation.main.HomeActivity
+import org.bkkz.lumaapp.presentation.main.home.HomeActivity
 import org.bkkz.lumaapp.util.LabelEditText
 import org.koin.androidx.viewmodel.ext.android.viewModel
 

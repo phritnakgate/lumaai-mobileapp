@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background_primary"
-    tools:context=".presentation.main.HomeActivity">
+    tools:context=".presentation.main.home.HomeActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintlayout_home_buttons"
@@ -72,7 +72,7 @@
                 android:text="@string/home_talk_with_luma"
                 android:textColor="@color/white"
                 app:layout_constraintHorizontal_chainStyle="spread_inside"
-                android:textAppearance="@style/LumaAI.TextAppearance.Heading1"
+                android:textAppearance="@style/LumaAI.TextAppearance.Heading1.Eng"
                 android:paddingBottom="8dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/imgview_home_talk_with_luma"
@@ -125,7 +125,7 @@
                     android:text="@string/home_task"
                     android:textColor="@color/white"
                     app:layout_constraintHorizontal_chainStyle="spread_inside"
-                    android:textAppearance="@style/LumaAI.TextAppearance.Heading1"
+                    android:textAppearance="@style/LumaAI.TextAppearance.Heading1.Eng"
                     android:paddingBottom="8dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -161,7 +161,7 @@
                     android:text="@string/home_fill_form"
                     android:textColor="@color/white"
                     app:layout_constraintHorizontal_chainStyle="spread_inside"
-                    android:textAppearance="@style/LumaAI.TextAppearance.Heading1"
+                    android:textAppearance="@style/LumaAI.TextAppearance.Heading1.Eng"
                     android:paddingBottom="8dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -204,7 +204,7 @@
             android:layout_height="wrap_content"
             android:text="@string/home_history_see_all"
             android:textColor="@color/white"
-            android:textAppearance="@style/LumaAI.TextAppearance.BodyLarge"
+            android:textAppearance="@style/LumaAI.TextAppearance.BodyLarge.Eng"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             />
@@ -214,7 +214,7 @@
             android:layout_height="wrap_content"
             android:text="@string/home_history_recent"
             android:textColor="@color/white"
-            android:textAppearance="@style/LumaAI.TextAppearance.Heading3"
+            android:textAppearance="@style/LumaAI.TextAppearance.Heading3.Eng"
             android:paddingTop="21dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/txtview_home_history_title"

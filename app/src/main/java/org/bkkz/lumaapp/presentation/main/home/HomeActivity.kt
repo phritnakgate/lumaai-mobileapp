@@ -1,4 +1,4 @@
-package org.bkkz.lumaapp.presentation.main
+package org.bkkz.lumaapp.presentation.main.home
 
 import android.content.Intent
 import android.os.Bundle
@@ -15,6 +15,7 @@ import org.bkkz.lumaapp.R
 import org.bkkz.lumaapp.data.local.TokenManager
 import org.bkkz.lumaapp.data.remote.Repository
 import org.bkkz.lumaapp.presentation.auth.LandingActivity
+import org.bkkz.lumaapp.presentation.main.task.view_task.ViewTaskActivity
 import org.bkkz.lumaapp.util.ChatHistoryAdapter
 import org.bkkz.lumaapp.util.ChatHistoryDecoration
 
@@ -60,12 +61,16 @@ class HomeActivity : AppCompatActivity() {
         recyclerViewRecentChats = findViewById(R.id.recyclerview_home_history_recent)
     }
     private fun setupViews(){
-        recyclerViewRecentChats.layoutManager = LinearLayoutManager(this@HomeActivity, RecyclerView.VERTICAL, false)
+        recyclerViewRecentChats.layoutManager =
+            LinearLayoutManager(this@HomeActivity, RecyclerView.VERTICAL, false)
         recyclerViewRecentChats.adapter = ChatHistoryAdapter(chatData)
         recyclerViewRecentChats.addItemDecoration(ChatHistoryDecoration(this@HomeActivity))
     }
     private fun setupEvents(){
         setupLogoutBtn()
+        taskBtn.setOnClickListener {
+            startActivity(Intent(this@HomeActivity, ViewTaskActivity::class.java))
+        }
     }
 
     private fun setupLogoutBtn(){

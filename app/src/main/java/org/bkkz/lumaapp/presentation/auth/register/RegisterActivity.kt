@@ -9,7 +9,7 @@ import androidx.appcompat.widget.AppCompatButton
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import org.bkkz.lumaapp.R
-import org.bkkz.lumaapp.presentation.main.HomeActivity
+import org.bkkz.lumaapp.presentation.main.home.HomeActivity
 
 class RegisterActivity : AppCompatActivity() {
 

@@ -1,12 +1,13 @@
 <resources>
-    <string name="app_name" translatable="false">LumaAI-Mobile</string>
+    <!--========== STRING UTILS ==========-->
+    <string name="app_name" translatable="false">LumaAI</string>
 
-    <!--Landing Page-->
+    <!--========== LANDING PAGE ==========-->
     <string name="landing_heading">Meet LUMA !</string>
     <string name="landing_subheading">Your own AI Task Manager</string>
     <string name="landing_btn">Get Started</string>
 
-    <!-- AUTHENTICATION PAGES -->
+    <!--========== AUTHENTICATION PAGES ==========-->
     <string name="auth_email_label">Email</string>
     <string name="auth_email_hint" translatable="false">example@gmail.com</string>
     <string name="auth_password_label">Password</string>
@@ -28,11 +29,20 @@
     <string name="register_btn">Sign Up</string>
     <string name="register_have_account_btn"><u>I Already Have an Account</u></string>
 
-    <!-- Home Page -->
+    <!--========== HOME PAGE ==========-->
     <string name="home_talk_with_luma">Talk\nwith LUMA</string>
     <string name="home_task">Your Task</string>
     <string name="home_fill_form">Form</string>
     <string name="home_history_title">History</string>
     <string name="home_history_see_all">See All</string>
     <string name="home_history_recent">Recent</string>
+
+    <!--========== TASK PAGES ==========-->
+    <!-- View Task Page -->
+    <string name="view_task_title">Task</string>
+    <string name="view_task_menu_daily">Daily</string>
+    <string name="view_task_menu_monthly">Monthly</string>
+    <string name="view_task_events">Events</string>
+    <string name="view_task_add">Add Task</string>
+    <string name="view_task_add_to_calendar">Add To Google Calendar</string>
 </resources>
