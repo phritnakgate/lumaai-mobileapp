@@ -45,4 +45,6 @@
     <string name="view_task_events">Events</string>
     <string name="view_task_add">Add Task</string>
     <string name="view_task_add_to_calendar">Add To Google Calendar</string>
+    <string name="view_task_no_task_today">No Task Today</string>
+
 </resources>

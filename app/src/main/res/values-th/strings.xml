@@ -28,4 +28,5 @@
     <string name="view_task_events">งานทั้งหมด</string>
     <string name="view_task_add">เพิ่มงาน</string>
     <string name="view_task_add_to_calendar">เพิ่มไปยัง Google Calendar</string>
+    <string name="view_task_no_task_today">ไม่มีงานในวันนี้</string>
 </resources>

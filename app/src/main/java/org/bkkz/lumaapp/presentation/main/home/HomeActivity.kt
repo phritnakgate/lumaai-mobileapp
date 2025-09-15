@@ -16,7 +16,7 @@ import org.bkkz.lumaapp.data.local.TokenManager
 import org.bkkz.lumaapp.data.remote.Repository
 import org.bkkz.lumaapp.presentation.auth.LandingActivity
 import org.bkkz.lumaapp.presentation.main.task.view_task.ViewTaskActivity
-import org.bkkz.lumaapp.util.ChatHistoryAdapter
+import org.bkkz.lumaapp.presentation.main.home.adapter.ChatHistoryAdapter
 import org.bkkz.lumaapp.util.ChatHistoryDecoration
 
 class HomeActivity : AppCompatActivity() {

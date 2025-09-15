@@ -5,56 +5,73 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import org.bkkz.lumaapp.R
+import org.bkkz.lumaapp.data.entity.task.Task
+import org.bkkz.lumaapp.presentation.main.task.view_task.adapter.TaskListAdapter
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [ViewTaskDailyFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class ViewTaskDailyFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    //TEMPORARY DATA FOR TESTING CHANGE TO ENTITY INSTEAD\\
+    private val mockData: List<Task> = listOf(
+        Task(
+            id = "-OY9HJ4mDW-BGyoqbWdj",
+            name = "ทดสอบ 1",
+            description = "ทดสอบบบบบบบบบบบบบบบบบบบบบบบบบบบบบบบบบ",
+            dateTime = "2025-09-01T17:00:00+07:00",
+            isFinished = true,
+            userId = "532QI5E8sJdgzMo4ao0k4ucqyi03"
+        ),
+        Task(
+            id = "-OY9HgBvvgtwgvOV4sEK",
+            name = "Task with only Date",
+            description = "",
+            dateTime = "2025-09-01T08:41:40.0615169+07:00",
+            isFinished = false,
+            userId = "532QI5E8sJdgzMo4ao0k4ucqyi03"
+        )
+    )
+    private val mockEmptyData: List<Task> = listOf()
+
+    private lateinit var recyclerTaskLists : RecyclerView
+    private lateinit var imgViewNoTask : ImageView
+    private lateinit var txtViewNoTask : TextView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
+
         return inflater.inflate(R.layout.fragment_view_task_daily, container, false)
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment ViewTaskDailyFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            ViewTaskDailyFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        findView()
+        setupView()
+        setupEvents()
     }
+
+    private fun findView(){
+        recyclerTaskLists = requireView().findViewById(R.id.recyclerview_daily_task)
+        imgViewNoTask = requireView().findViewById(R.id.imgview_daily_task_no_task)
+        txtViewNoTask = requireView().findViewById(R.id.txtview_daily_task_no_task)
+    }
+    private fun setupView(){
+        recyclerTaskLists.layoutManager =
+            LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+        recyclerTaskLists.adapter = TaskListAdapter(mockData)
+        if(recyclerTaskLists.adapter?.itemCount == 0){
+            recyclerTaskLists.visibility = View.GONE
+            imgViewNoTask.visibility = View.VISIBLE
+            txtViewNoTask.visibility = View.VISIBLE
+        }
+    }
+    private fun setupEvents(){
+
+    }
+
 }

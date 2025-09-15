@@ -1,4 +1,4 @@
-package org.bkkz.lumaapp.util
+package org.bkkz.lumaapp.presentation.main.home.adapter
 
 import android.view.LayoutInflater
 import android.view.View
