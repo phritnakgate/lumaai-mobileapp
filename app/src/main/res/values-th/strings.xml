@@ -1,5 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="month_1_full">มกราคม</string>
+    <string name="month_1_cut">ม.ค.</string>
+    <string name="month_2_full">กุมภาพันธ์</string>
+    <string name="month_2_cut">ก.พ.</string>
+    <string name="month_3_full">มีนาคม</string>
+    <string name="month_3_cut">มี.ค.</string>
+    <string name="month_4_full">เมษายน</string>
+    <string name="month_4_cut">เม.ย.</string>
+    <string name="month_5_full">พฤษภาคม</string>
+    <string name="month_5_cut">พ.ค.</string>
+    <string name="month_6_full">มิถุนายน</string>
+    <string name="month_6_cut">มิ.ย.</string>
+    <string name="month_7_full">กรกฎาคม</string>
+    <string name="month_7_cut">ก.ค.</string>
+    <string name="month_8_full">สิงหาคม</string>
+    <string name="month_8_cut">ส.ค.</string>
+    <string name="month_9_full">กันยายน</string>
+    <string name="month_9_cut">ก.ย.</string>
+    <string name="month_10_full">ตุลาคม</string>
+    <string name="month_10_cut">ต.ค.</string>
+    <string name="month_11_full">พฤศจิกายน</string>
+    <string name="month_11_cut">พ.ย.</string>
+    <string name="month_12_full">ธันวาคม</string>
+    <string name="month_12_cut">ธ.ค.</string>
+    <string name="sun">อา.</string>
+    <string name="mon">จ.</string>
+    <string name="tue">อ.</string>
+    <string name="wed">พ.</string>
+    <string name="thu">พฤ.</string>
+    <string name="fri">ศ.</string>
+    <string name="sat">ส.</string>
     <string name="landing_heading">พบกับ LUMA !</string>
     <string name="landing_subheading">AI ผู้ช่วยจัดการงานของคุณ</string>
     <string name="landing_btn">เริ่มใช้งาน</string>

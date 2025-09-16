@@ -9,9 +9,13 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
 import org.bkkz.lumaapp.R
 import org.bkkz.lumaapp.data.entity.task.Task
 import org.bkkz.lumaapp.presentation.main.task.view_task.adapter.TaskListAdapter
+import org.bkkz.lumaapp.util.CalendarViewPagerAdapter
+import java.time.YearMonth
+import java.util.Date
 
 class ViewTaskDailyFragment : Fragment() {
 
@@ -35,7 +39,12 @@ class ViewTaskDailyFragment : Fragment() {
         )
     )
     private val mockEmptyData: List<Task> = listOf()
-
+    private val baseYm: YearMonth = YearMonth.now()
+    private lateinit var backMonth : ImageView
+    private lateinit var txtViewCurrentMonth : TextView
+    private lateinit var forwardMonth : ImageView
+    //UI
+    private lateinit var viewPagerCalendar: ViewPager2
     private lateinit var recyclerTaskLists : RecyclerView
     private lateinit var imgViewNoTask : ImageView
     private lateinit var txtViewNoTask : TextView
@@ -56,11 +65,31 @@ class ViewTaskDailyFragment : Fragment() {
     }
 
     private fun findView(){
+        backMonth = requireView().findViewById(R.id.imgview_daily_task_month_back)
+        txtViewCurrentMonth = requireView().findViewById(R.id.txtview_daily_task_month)
+        forwardMonth = requireView().findViewById(R.id.imgview_daily_task_month_forward)
+        viewPagerCalendar = requireView().findViewById(R.id.viewpager_daily_task_calendar)
         recyclerTaskLists = requireView().findViewById(R.id.recyclerview_daily_task)
         imgViewNoTask = requireView().findViewById(R.id.imgview_daily_task_no_task)
         txtViewNoTask = requireView().findViewById(R.id.txtview_daily_task_no_task)
     }
     private fun setupView(){
+        setMonthTitle(baseYm)
+
+        //Adapter for calendar
+        val adapter = CalendarViewPagerAdapter(requireActivity())
+        viewPagerCalendar.adapter = adapter
+        viewPagerCalendar.setCurrentItem(CalendarViewPagerAdapter.START_POSITION, false)
+        viewPagerCalendar.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                //TODO: Implement ViewModel when Implement services
+                super.onPageSelected(position)
+                val ym = yearMonthFor(position)
+                setMonthTitle(ym)
+            }
+        })
+
+        //Adapter for Task
         recyclerTaskLists.layoutManager =
             LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
         recyclerTaskLists.adapter = TaskListAdapter(mockData)
@@ -71,7 +100,24 @@ class ViewTaskDailyFragment : Fragment() {
         }
     }
     private fun setupEvents(){
+        backMonth.setOnClickListener {
+            viewPagerCalendar.currentItem = viewPagerCalendar.currentItem - 1
+        }
+        forwardMonth.setOnClickListener {
+            viewPagerCalendar.currentItem = viewPagerCalendar.currentItem + 1
+        }
+    }
 
+    private fun yearMonthFor(position: Int): YearMonth {
+        val diff = position - CalendarViewPagerAdapter.START_POSITION
+        return baseYm.plusMonths(diff.toLong())
+    }
+
+    private fun setMonthTitle(ym: YearMonth) {
+        val resName = "month_${ym.monthValue}_full"
+        val resId = resources.getIdentifier(resName, "string", requireContext().packageName)
+        val monthText = if (resId != 0) getString(resId) else ym.month.name
+        txtViewCurrentMonth.text = "$monthText ${ym.year}"
     }
 
 }

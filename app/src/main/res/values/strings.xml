@@ -1,6 +1,37 @@
 <resources>
     <!--========== STRING UTILS ==========-->
     <string name="app_name" translatable="false">LumaAI</string>
+    <string name="month_1_full">January</string>
+    <string name="month_1_cut">Jan</string>
+    <string name="month_2_full">February</string>
+    <string name="month_2_cut">Feb</string>
+    <string name="month_3_full">March</string>
+    <string name="month_3_cut">Mar</string>
+    <string name="month_4_full">April</string>
+    <string name="month_4_cut">Apr</string>
+    <string name="month_5_full">May</string>
+    <string name="month_5_cut">May</string>
+    <string name="month_6_full">June</string>
+    <string name="month_6_cut">Jun</string>
+    <string name="month_7_full">July</string>
+    <string name="month_7_cut">Jul</string>
+    <string name="month_8_full">August</string>
+    <string name="month_8_cut">Aug</string>
+    <string name="month_9_full">September</string>
+    <string name="month_9_cut">Sep</string>
+    <string name="month_10_full">October</string>
+    <string name="month_10_cut">Oct</string>
+    <string name="month_11_full">November</string>
+    <string name="month_11_cut">Nov</string>
+    <string name="month_12_full">December</string>
+    <string name="month_12_cut">Dec</string>
+    <string name="sun">Sun</string>
+    <string name="mon">Mon</string>
+    <string name="tue">Tue</string>
+    <string name="wed">Wed</string>
+    <string name="thu">Thu</string>
+    <string name="fri">Fri</string>
+    <string name="sat">Sat</string>
 
     <!--========== LANDING PAGE ==========-->
     <string name="landing_heading">Meet LUMA !</string>
