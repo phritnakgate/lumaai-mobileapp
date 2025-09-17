@@ -12,14 +12,14 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import org.bkkz.lumaapp.R
 import org.bkkz.lumaapp.data.entity.task.Task
-import org.bkkz.lumaapp.presentation.main.task.view_task.adapter.TaskListAdapter
+import org.bkkz.lumaapp.presentation.main.task.view_task.daily_view.adapter.TaskListAdapter
 import org.bkkz.lumaapp.util.CalendarViewPagerAdapter
+import org.bkkz.lumaapp.util.mapper.MonthStringMapper
 import java.time.YearMonth
-import java.util.Date
 
 class ViewTaskDailyFragment : Fragment() {
 
-    //TEMPORARY DATA FOR TESTING CHANGE TO ENTITY INSTEAD\\
+    //TEMPORARY DATA FOR TESTING CHANGE TO SERVICE INSTEAD\\
     private val mockData: List<Task> = listOf(
         Task(
             id = "-OY9HJ4mDW-BGyoqbWdj",
@@ -40,10 +40,10 @@ class ViewTaskDailyFragment : Fragment() {
     )
     private val mockEmptyData: List<Task> = listOf()
     private val baseYm: YearMonth = YearMonth.now()
+    //UI
     private lateinit var backMonth : ImageView
     private lateinit var txtViewCurrentMonth : TextView
     private lateinit var forwardMonth : ImageView
-    //UI
     private lateinit var viewPagerCalendar: ViewPager2
     private lateinit var recyclerTaskLists : RecyclerView
     private lateinit var imgViewNoTask : ImageView
@@ -115,8 +115,7 @@ class ViewTaskDailyFragment : Fragment() {
 
     private fun setMonthTitle(ym: YearMonth) {
         val resName = "month_${ym.monthValue}_full"
-        val resId = resources.getIdentifier(resName, "string", requireContext().packageName)
-        val monthText = if (resId != 0) getString(resId) else ym.month.name
+        val monthText = MonthStringMapper.getString(requireContext(), resName)
         txtViewCurrentMonth.text = "$monthText ${ym.year}"
     }
 

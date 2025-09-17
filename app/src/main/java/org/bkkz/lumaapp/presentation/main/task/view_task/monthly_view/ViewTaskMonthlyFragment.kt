@@ -5,29 +5,41 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
 import org.bkkz.lumaapp.R
+import org.bkkz.lumaapp.data.entity.task.Task
+import org.bkkz.lumaapp.presentation.main.task.view_task.monthly_view.adapter.MonthlyViewPagerAdapter
+import org.bkkz.lumaapp.util.CalendarViewPagerAdapter
+import org.bkkz.lumaapp.util.component.monthly_task_recycler.TimelineItem
+import org.bkkz.lumaapp.util.mapper.MonthStringMapper
+import java.time.OffsetDateTime
+import java.time.YearMonth
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [ViewTaskMonthlyFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class ViewTaskMonthlyFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+    //ViewModel
+    private val viewModel: ViewTaskMonthlyViewModel by activityViewModels() //Change to koin vm later
+
+    //UI
+    private lateinit var backMonth : ImageView
+    private lateinit var txtViewCurrentMonth : TextView
+    private lateinit var forwardMonth : ImageView
+    private lateinit var viewPagerTaskLists : ViewPager2
+
+    //Variable
+    private val baseYm: YearMonth = YearMonth.now()
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        findView()
+        setupView()
+        setupEvents()
     }
 
     override fun onCreateView(
@@ -38,23 +50,48 @@ class ViewTaskMonthlyFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_view_task_monthly, container, false)
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment ViewTaskMonthlyFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            ViewTaskMonthlyFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    private fun findView(){
+        backMonth = requireView().findViewById(R.id.imgview_monthly_task_month_back)
+        txtViewCurrentMonth = requireView().findViewById(R.id.txtview_monthly_task_month)
+        forwardMonth = requireView().findViewById(R.id.imgview_monthly_task_month_forward)
+        viewPagerTaskLists = requireView().findViewById(R.id.viewpager_monthly_task)
+
     }
+    private fun setupView(){
+        setMonthTitle(baseYm)
+        //Adapter for MonthlyTask
+        val adapter = MonthlyViewPagerAdapter(requireActivity())
+        viewPagerTaskLists.adapter = adapter
+        viewPagerTaskLists.setCurrentItem(MonthlyViewPagerAdapter.START_POSITION, false)
+        viewPagerTaskLists.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                //TODO: Implement ViewModel when Implement services
+                super.onPageSelected(position)
+                val ym = yearMonthFor(position)
+                setMonthTitle(ym)
+                viewModel.loadTasksFor(ym)
+            }
+        })
+        viewModel.loadTasksFor(baseYm)
+    }
+    private fun setupEvents(){
+        backMonth.setOnClickListener {
+            viewPagerTaskLists.currentItem = viewPagerTaskLists.currentItem - 1
+        }
+        forwardMonth.setOnClickListener {
+            viewPagerTaskLists.currentItem = viewPagerTaskLists.currentItem + 1
+        }
+    }
+
+    private fun yearMonthFor(position: Int): YearMonth {
+        val diff = position - CalendarViewPagerAdapter.START_POSITION
+        return baseYm.plusMonths(diff.toLong())
+    }
+
+    private fun setMonthTitle(ym: YearMonth) {
+        val resName = "month_${ym.monthValue}_full"
+        val monthText = MonthStringMapper.getString(requireContext(), resName)
+        txtViewCurrentMonth.text = "$monthText ${ym.year}"
+    }
+
 }

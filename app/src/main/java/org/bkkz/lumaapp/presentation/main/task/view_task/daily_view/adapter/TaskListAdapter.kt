@@ -1,4 +1,4 @@
-package org.bkkz.lumaapp.presentation.main.task.view_task.adapter
+package org.bkkz.lumaapp.presentation.main.task.view_task.daily_view.adapter
 
 import android.view.LayoutInflater
 import android.view.View

@@ -77,5 +77,7 @@
     <string name="view_task_add">Add Task</string>
     <string name="view_task_add_to_calendar">Add To Google Calendar</string>
     <string name="view_task_no_task_today">No Task Today</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

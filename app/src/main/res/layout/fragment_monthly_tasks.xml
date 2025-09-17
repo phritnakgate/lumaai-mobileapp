@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".presentation.main.task.view_task.monthly_view.MonthlyTasksFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerview_monthly_task"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingBottom="100dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            />
+        <!--No Task Found-->
+        <ImageView
+            android:id="@+id/imgview_monthly_task_no_task"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_no_task"
+            android:visibility="gone"
+            app:layout_constraintVertical_chainStyle="packed"
+            app:tint="@color/border_color"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/txtview_monthly_task_no_task"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="visible"
+            />
+        <TextView
+            android:id="@+id/txtview_monthly_task_no_task"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/view_task_no_task_today"
+            android:textColor="@color/border_color"
+            android:textAppearance="@style/LumaAI.TextAppearance.BodyMedium.Eng"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/imgview_monthly_task_no_task"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:visibility="visible"
+            />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</FrameLayout>
