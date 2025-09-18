@@ -17,12 +17,13 @@ import org.bkkz.lumaapp.R
 import org.bkkz.lumaapp.data.entity.chat_history.ChatHistory
 import org.bkkz.lumaapp.presentation.main.chat_history.adapter.ChatHistoryAdapter
 import org.bkkz.lumaapp.util.component.chat_history.ChatHistoryItem
+import org.bkkz.lumaapp.util.component.chat_history.ReadAllHistoryBottomSheet
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 import java.util.TimeZone
 
-class ChatHistoryActivity : AppCompatActivity() {
+class ChatHistoryActivity : AppCompatActivity(), ChatHistoryAdapter.OnHistoryInteractionListener {
 
     //UI
     private lateinit var backBtn: ImageView
@@ -110,7 +111,6 @@ IELTS มีสองรุ่นหลักคือ IELTS Academic และ 
     }
 
     private fun setupEvents() {
-        // ใช้ Loop เพื่อลดการเขียนโค้ดซ้ำ
         categoryViews.forEach { (category, textView) ->
             textView.setOnClickListener {
                 updateFilter(category)
@@ -134,7 +134,7 @@ IELTS มีสองรุ่นหลักคือ IELTS Academic และ 
         }
 
         val recyclerData = groupHistoryForAdapter(selectedCategory, mockData)
-        recyclerChat.adapter = ChatHistoryAdapter(recyclerData)
+        recyclerChat.adapter = ChatHistoryAdapter(recyclerData, this@ChatHistoryActivity)
 
         updateNoHistoryView(recyclerData.isEmpty())
     }
@@ -191,6 +191,11 @@ IELTS มีสองรุ่นหลักคือ IELTS Academic และ 
         }
 
         return items
+    }
+
+    override fun onShowBottomSheet(fullText: String) {
+        val bottomSheet = ReadAllHistoryBottomSheet.newInstance(fullText)
+        bottomSheet.show(supportFragmentManager, "FullTextBottomSheetFragment")
     }
 
     companion object {

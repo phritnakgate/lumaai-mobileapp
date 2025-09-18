@@ -35,6 +35,11 @@
         <item name="fontFamily">@font/english_fonts</item>
         <item name="android:textSize">14sp</item>
     </style>
+    <!-- Body Small -->
+    <style name="LumaAI.TextAppearance.BodySmall.Eng" parent="TextAppearance.AppCompat">
+        <item name="fontFamily">@font/english_fonts</item>
+        <item name="android:textSize">12sp</item>
+    </style>
 
     <!--========= THAI STYLE =========-->
     <!-- Heading 1 -->
@@ -70,5 +75,10 @@
     <style name="LumaAI.TextAppearance.BodyMedium.Thai" parent="TextAppearance.AppCompat">
         <item name="fontFamily">@font/thai_fonts</item>
         <item name="android:textSize">14sp</item>
+    </style>
+    <!-- Body Medium -->
+    <style name="LumaAI.TextAppearance.BodySmall.Thai" parent="TextAppearance.AppCompat">
+        <item name="fontFamily">@font/thai_fonts</item>
+        <item name="android:textSize">12sp</item>
     </style>
 </resources>

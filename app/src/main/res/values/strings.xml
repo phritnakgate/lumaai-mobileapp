@@ -98,5 +98,7 @@
     <string name="chat_history_plan">Plan</string>
     <string name="chat_history_search_hint">Search</string>
     <string name="chat_history_empty">No Chat Found</string>
+    <string name="chat_history_readall">Read All</string>
+    <string name="read_all_bottomsheet_title">Search Results</string>
 
 </resources>

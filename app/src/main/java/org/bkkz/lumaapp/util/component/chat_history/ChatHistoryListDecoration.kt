@@ -1,4 +1,4 @@
-package org.bkkz.lumaapp.util
+package org.bkkz.lumaapp.util.component.chat_history
 
 import android.content.Context
 import android.graphics.Canvas

@@ -7,17 +7,21 @@ import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import org.bkkz.lumaapp.R
-import org.bkkz.lumaapp.presentation.main.home.adapter.ChatHistoryListAdapter
-import org.bkkz.lumaapp.util.ChatHistoryListDecoration
 import org.bkkz.lumaapp.util.component.chat_history.ChatHistoryItem
+import org.bkkz.lumaapp.util.component.chat_history.ChatHistoryListAdapter
+import org.bkkz.lumaapp.util.component.chat_history.ChatHistoryListDecoration
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-class ChatHistoryAdapter(private val items: List<ChatHistoryItem>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ChatHistoryAdapter(private val items: List<ChatHistoryItem>, private val listener: OnHistoryInteractionListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>(), ChatHistoryListAdapter.OnChatHistoryListener{
 
     companion object {
         private const val VIEW_TYPE_DATE = 1
         private const val VIEW_TYPE_HISTORY_LIST = 2
+    }
+
+    interface OnHistoryInteractionListener {
+        fun onShowBottomSheet(fullText: String)
     }
 
     inner class DateViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -33,7 +37,7 @@ class ChatHistoryAdapter(private val items: List<ChatHistoryItem>) : RecyclerVie
         val chats: RecyclerView = itemView.findViewById(R.id.recyclerview_chat_history_holder)
         fun bind(body: ChatHistoryItem.ChatHistoryLists){
             chats.layoutManager = LinearLayoutManager(itemView.context, RecyclerView.VERTICAL, false)
-            chats.adapter = ChatHistoryListAdapter(false,body.histories)
+            chats.adapter = ChatHistoryListAdapter(false,body.histories, this@ChatHistoryAdapter)
             chats.addItemDecoration(ChatHistoryListDecoration(itemView.context, false))
         }
     }
@@ -79,4 +83,10 @@ class ChatHistoryAdapter(private val items: List<ChatHistoryItem>) : RecyclerVie
     }
 
     override fun getItemCount(): Int = items.size
+
+    override fun onReadAllClicked(fullText: String) {
+        // เมื่อ Adapter ตัวใน (ChatHistoryListAdapter) ถูกกด
+        // เราจะไม่แสดง BottomSheet ที่นี่ แต่จะส่งสัญญาณต่อไปยัง Activity ผ่าน listener ของเรา
+        listener.onShowBottomSheet(fullText)
+    }
 }

@@ -18,10 +18,11 @@ import org.bkkz.lumaapp.data.remote.Repository
 import org.bkkz.lumaapp.presentation.auth.LandingActivity
 import org.bkkz.lumaapp.presentation.main.chat_history.ChatHistoryActivity
 import org.bkkz.lumaapp.presentation.main.task.view_task.ViewTaskActivity
-import org.bkkz.lumaapp.presentation.main.home.adapter.ChatHistoryListAdapter
-import org.bkkz.lumaapp.util.ChatHistoryListDecoration
+import org.bkkz.lumaapp.util.component.chat_history.ChatHistoryListAdapter
+import org.bkkz.lumaapp.util.component.chat_history.ChatHistoryListDecoration
+import org.bkkz.lumaapp.util.component.chat_history.ReadAllHistoryBottomSheet
 
-class HomeActivity : AppCompatActivity() {
+class HomeActivity : AppCompatActivity(), ChatHistoryListAdapter.OnChatHistoryListener {
 
     private lateinit var logoutBtn : ConstraintLayout
     private lateinit var talkBtn : ConstraintLayout
@@ -67,7 +68,7 @@ class HomeActivity : AppCompatActivity() {
     private fun setupViews(){
         recyclerViewRecentChats.layoutManager =
             LinearLayoutManager(this@HomeActivity, RecyclerView.VERTICAL, false)
-        recyclerViewRecentChats.adapter = ChatHistoryListAdapter(true,chatData)
+        recyclerViewRecentChats.adapter = ChatHistoryListAdapter(true,chatData, this@HomeActivity)
         recyclerViewRecentChats.addItemDecoration(ChatHistoryListDecoration(this@HomeActivity, true))
     }
     private fun setupEvents(){
@@ -91,5 +92,10 @@ class HomeActivity : AppCompatActivity() {
             }
 
         }
+    }
+
+    override fun onReadAllClicked(fullText: String) {
+        val bottomSheet = ReadAllHistoryBottomSheet.newInstance(fullText)
+        bottomSheet.show(supportFragmentManager, "FullTextBottomSheetFragment")
     }
 }
