@@ -97,7 +97,6 @@ IELTS มีสองรุ่นหลักคือ IELTS Academic และ 
         imgViewNoChat = findViewById(R.id.imgview_chat_history_no_history)
         txtViewNoChat = findViewById(R.id.txtview_chat_history_no_history)
 
-        // ผูก Category กับ TextView ที่เกี่ยวข้อง
         categoryViews = mapOf(
             CATEGORY_TASK to selectTask,
             CATEGORY_SEARCH to selectSearch,
@@ -107,7 +106,6 @@ IELTS มีสองรุ่นหลักคือ IELTS Academic และ 
 
     private fun setupViews() {
         recyclerChat.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
-        // แสดงข้อมูลเริ่มต้นตาม `selectedCategory`
         updateFilter(selectedCategory)
     }
 
