@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background_primary"
-    tools:context=".presentation.main.task.add_task.AddTaskActivity">
+    tools:context=".presentation.main.task.edit_task.EditTaskActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -14,7 +14,7 @@
         android:paddingHorizontal="20dp"
         >
         <ImageView
-            android:id="@+id/imgview_add_task_back"
+            android:id="@+id/imgview_edit_task_back"
             android:layout_width="wrap_content"
             android:layout_height="35dp"
             android:src="@drawable/ic_back"
@@ -22,18 +22,18 @@
             app:layout_constraintTop_toTopOf="parent"
             />
         <TextView
-            android:id="@+id/txtview_add_task_title"
+            android:id="@+id/txtview_edit_task_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/add_task_title"
+            android:text="@string/edit_task_title"
             android:textAppearance="@style/LumaAI.TextAppearance.Heading1.Eng"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/imgview_add_task_back"
+            app:layout_constraintStart_toEndOf="@+id/imgview_edit_task_back"
             />
 
         <org.bkkz.lumaapp.util.LabelEditText
-            android:id="@+id/lbledt_add_task_name"
+            android:id="@+id/lbledt_edit_task_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingTop="24dp"
@@ -41,23 +41,23 @@
             app:labelText="@string/form_task_name"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txtview_add_task_title"
+            app:layout_constraintTop_toBottomOf="@+id/txtview_edit_task_title"
             />
 
         <TextView
-            android:id="@+id/txtview_add_task_desc"
+            android:id="@+id/txtview_edit_task_desc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/form_task_desc"
             android:paddingTop="21dp"
             android:textAppearance="@style/LumaAI.TextAppearance.BodyLarge.Eng"
-            app:layout_constraintTop_toBottomOf="@+id/lbledt_add_task_name"
+            app:layout_constraintTop_toBottomOf="@+id/lbledt_edit_task_name"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             />
 
         <EditText
-            android:id="@+id/edttxt_add_task_desc"
+            android:id="@+id/edttxt_edit_task_desc"
             android:layout_width="match_parent"
             android:layout_height="108dp"
             android:layout_marginTop="8dp"
@@ -69,27 +69,27 @@
             android:paddingEnd="50dp"
             android:paddingBottom="16dp"
             android:textAppearance="@style/LumaAI.TextAppearance.BodyMedium.Thai"
-            app:layout_constraintTop_toBottomOf="@+id/txtview_add_task_desc"
+            app:layout_constraintTop_toBottomOf="@+id/txtview_edit_task_desc"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
         <LinearLayout
-            android:id="@+id/linearlayout_add_task_chkbox"
+            android:id="@+id/linearlayout_edit_task_chkbox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingTop="24dp"
-            app:layout_constraintTop_toBottomOf="@+id/edttxt_add_task_desc"
+            app:layout_constraintTop_toBottomOf="@+id/edttxt_edit_task_desc"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             >
             <CheckBox
-                android:id="@+id/chkbox_add_task_chkbox"
+                android:id="@+id/chkbox_edit_task_chkbox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:buttonTint="@color/primary"
                 />
             <TextView
-                android:id="@+id/txtview_add_task_chkbox"
+                android:id="@+id/txtview_edit_task_chkbox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/form_task_chkbox"
@@ -97,31 +97,31 @@
                 />
         </LinearLayout>
         <TextView
-            android:id="@+id/txtview_add_task_date"
+            android:id="@+id/txtview_edit_task_date"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/form_task_date"
             android:paddingTop="12dp"
             android:textAppearance="@style/LumaAI.TextAppearance.BodyLarge.Eng"
-            app:layout_constraintTop_toBottomOf="@+id/linearlayout_add_task_chkbox"
+            app:layout_constraintTop_toBottomOf="@+id/linearlayout_edit_task_chkbox"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/txtview_add_task_time"
+            app:layout_constraintEnd_toStartOf="@+id/txtview_edit_task_time"
             />
         <TextView
-            android:id="@+id/txtview_add_task_time"
+            android:id="@+id/txtview_edit_task_time"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/form_task_time"
             android:layout_marginStart="6dp"
             android:paddingTop="12dp"
             android:textAppearance="@style/LumaAI.TextAppearance.BodyLarge.Eng"
-            app:layout_constraintTop_toBottomOf="@+id/linearlayout_add_task_chkbox"
-            app:layout_constraintStart_toEndOf="@+id/txtview_add_task_date"
+            app:layout_constraintTop_toBottomOf="@+id/linearlayout_edit_task_chkbox"
+            app:layout_constraintStart_toEndOf="@+id/txtview_edit_task_date"
             app:layout_constraintEnd_toEndOf="parent"
             />
 
         <EditText
-            android:id="@+id/edttxt_add_task_date"
+            android:id="@+id/edttxt_edit_task_date"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -138,13 +138,13 @@
             android:focusable="false"
             android:clickable="true"
             android:textAppearance="@style/LumaAI.TextAppearance.BodyMedium.Eng"
-            app:layout_constraintTop_toBottomOf="@+id/txtview_add_task_date"
+            app:layout_constraintTop_toBottomOf="@+id/txtview_edit_task_date"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/edttxt_add_task_time"
+            app:layout_constraintEnd_toStartOf="@+id/edttxt_edit_task_time"
             tools:text = "10/10/2025"
             />
         <EditText
-            android:id="@+id/edttxt_add_task_time"
+            android:id="@+id/edttxt_edit_task_time"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -161,28 +161,40 @@
             android:drawableTint="@color/border_color"
             android:drawablePadding="10dp"
             android:textAppearance="@style/LumaAI.TextAppearance.BodyMedium.Eng"
-            app:layout_constraintTop_toBottomOf="@+id/txtview_add_task_time"
-            app:layout_constraintStart_toEndOf="@+id/edttxt_add_task_date"
+            app:layout_constraintTop_toBottomOf="@+id/txtview_edit_task_time"
+            app:layout_constraintStart_toEndOf="@+id/edttxt_edit_task_date"
             app:layout_constraintEnd_toEndOf="parent"
             tools:text="10:00"
             />
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/compatbtn_add_task"
-            android:layout_width="match_parent"
+            android:id="@+id/compatbtn_edit_task"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="50dp"
-            android:layout_marginHorizontal="100dp"
-            android:text="@string/add_task_button"
+            android:layout_marginEnd="10dp"
+            android:text="@string/edit_task_button"
+            android:textAppearance="@style/LumaAI.TextAppearance.Heading4.Eng"
+            android:textColor="@color/white"
+            android:background="@drawable/rect_secondary_btn"
+            app:layout_constraintTop_toBottomOf="@+id/edttxt_edit_task_date"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/compatbtn_delete_task"
+            />
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/compatbtn_delete_task"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:layout_marginStart="10dp"
+            android:text="@string/delete_task_button"
             android:textAppearance="@style/LumaAI.TextAppearance.Heading4.Eng"
             android:textColor="@color/white"
             android:background="@drawable/rect_danger_btn"
-            app:layout_constraintTop_toBottomOf="@+id/edttxt_add_task_date"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/edttxt_edit_task_date"
+            app:layout_constraintStart_toEndOf="@+id/compatbtn_edit_task"
             app:layout_constraintEnd_toEndOf="parent"
             />
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-
+    
 </androidx.constraintlayout.widget.ConstraintLayout>

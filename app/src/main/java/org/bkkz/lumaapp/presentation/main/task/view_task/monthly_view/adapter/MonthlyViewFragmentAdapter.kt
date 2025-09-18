@@ -1,5 +1,6 @@
 package org.bkkz.lumaapp.presentation.main.task.view_task.monthly_view.adapter
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +10,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import org.bkkz.lumaapp.R
+import org.bkkz.lumaapp.presentation.main.task.edit_task.EditTaskActivity
 import org.bkkz.lumaapp.util.component.monthly_task_recycler.TimelineItem
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
@@ -29,16 +31,34 @@ class MonthlyViewFragmentAdapter(private val items: List<TimelineItem>) : Recycl
         val taskName: TextView = itemView.findViewById(R.id.txtview_recycler_task_name)
         val taskTime: TextView = itemView.findViewById(R.id.txtview_recycler_task_time)
         val taskDesc: TextView = itemView.findViewById(R.id.txtview_recycler_task_desc)
+        val taskEdit : ImageView = itemView.findViewById(R.id.imgview_recycler_task_edit)
         fun bind(header: TimelineItem.TaskHeader) {
+            var isFinished : Boolean = header.task.isFinished
             dateTextView.text = header.date
             dayTextView.text = header.day
-            if(header.task.isFinished){
+            if(isFinished){
                 taskHead.background = ContextCompat.getDrawable(itemView.context, R.drawable.rect_disabled_color)
                 taskCheck.setImageResource(R.drawable.ic_task_success)
             }
             taskName.text = header.task.name
             taskTime.text = OffsetDateTime.parse(header.task.dateTime).format(DateTimeFormatter.ofPattern("HH:mm"))
             taskDesc.text = header.task.description
+            taskEdit.setOnClickListener {
+                val context = itemView.context
+                val intent = Intent(context, EditTaskActivity::class.java)
+                intent.putExtra("TASK_DATA", header.task)
+                context.startActivity(intent)
+            }
+            taskCheck.setOnClickListener {
+                isFinished = !isFinished
+                if(isFinished){
+                    taskHead.background = ContextCompat.getDrawable(itemView.context, R.drawable.rect_disabled_color)
+                    taskCheck.setImageResource(R.drawable.ic_task_success)
+                }else{
+                    taskHead.background = ContextCompat.getDrawable(itemView.context, R.drawable.rect_secondary)
+                    taskCheck.setImageResource(R.drawable.circ_white)
+                }
+            }
         }
     }
 
@@ -48,32 +68,67 @@ class MonthlyViewFragmentAdapter(private val items: List<TimelineItem>) : Recycl
         val taskName: TextView = itemView.findViewById(R.id.txtview_recycler_task_name)
         val taskTime: TextView = itemView.findViewById(R.id.txtview_recycler_task_time)
         val taskDesc: TextView = itemView.findViewById(R.id.txtview_recycler_task_desc)
-
+        val taskEdit : ImageView = itemView.findViewById(R.id.imgview_recycler_task_edit)
         fun bind(data: TimelineItem.TaskBody) {
-            if(data.task.isFinished){
+            var isFinished : Boolean = data.task.isFinished
+            if(isFinished){
                 taskHead.background = ContextCompat.getDrawable(itemView.context, R.drawable.rect_disabled_color)
                 taskCheck.setImageResource(R.drawable.ic_task_success)
             }
             taskName.text = data.task.name
             taskTime.text = OffsetDateTime.parse(data.task.dateTime).format(DateTimeFormatter.ofPattern("HH:mm"))
             taskDesc.text = data.task.description
+            taskEdit.setOnClickListener {
+                val context = itemView.context
+                val intent = Intent(context, EditTaskActivity::class.java)
+                intent.putExtra("TASK_DATA", data.task)
+                context.startActivity(intent)
+            }
+            taskCheck.setOnClickListener {
+                isFinished = !isFinished
+                if(isFinished){
+                    taskHead.background = ContextCompat.getDrawable(itemView.context, R.drawable.rect_disabled_color)
+                    taskCheck.setImageResource(R.drawable.ic_task_success)
+                }else{
+                    taskHead.background = ContextCompat.getDrawable(itemView.context, R.drawable.rect_secondary)
+                    taskCheck.setImageResource(R.drawable.circ_white)
+                }
+            }
         }
     }
     inner class TaskFooterViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
         val taskHead: ConstraintLayout = itemView.findViewById(R.id.constraintlayout_recycler_task_head)
         val taskCheck: ImageView = itemView.findViewById(R.id.imgview_recycler_task_check)
         val taskName: TextView = itemView.findViewById(R.id.txtview_recycler_task_name)
         val taskTime: TextView = itemView.findViewById(R.id.txtview_recycler_task_time)
         val taskDesc: TextView = itemView.findViewById(R.id.txtview_recycler_task_desc)
-
+        val taskEdit : ImageView = itemView.findViewById(R.id.imgview_recycler_task_edit)
         fun bind(data: TimelineItem.TaskFooter) {
-            if(data.task.isFinished){
+            var isFinished : Boolean = data.task.isFinished
+            if(isFinished){
                 taskHead.background = ContextCompat.getDrawable(itemView.context, R.drawable.rect_disabled_color)
                 taskCheck.setImageResource(R.drawable.ic_task_success)
             }
             taskName.text = data.task.name
             taskTime.text = OffsetDateTime.parse(data.task.dateTime).format(DateTimeFormatter.ofPattern("HH:mm"))
             taskDesc.text = data.task.description
+            taskEdit.setOnClickListener {
+                val context = itemView.context
+                val intent = Intent(context, EditTaskActivity::class.java)
+                intent.putExtra("TASK_DATA", data.task)
+                context.startActivity(intent)
+            }
+            taskCheck.setOnClickListener {
+                isFinished = !isFinished
+                if(isFinished){
+                    taskHead.background = ContextCompat.getDrawable(itemView.context, R.drawable.rect_disabled_color)
+                    taskCheck.setImageResource(R.drawable.ic_task_success)
+                }else{
+                    taskHead.background = ContextCompat.getDrawable(itemView.context, R.drawable.rect_secondary)
+                    taskCheck.setImageResource(R.drawable.circ_white)
+                }
+            }
         }
     }
 

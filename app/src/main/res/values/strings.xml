@@ -80,12 +80,15 @@
     <string name="view_task_add_to_calendar">Add To Google Calendar</string>
     <string name="view_task_no_task_today">No Task Today</string>
     <!-- Form Task Page -->
-    <string name="form_task_title">Create Your Task</string>
+    <string name="add_task_title">Create Your Task</string>
     <string name="form_task_name">Task Name</string>
     <string name="form_task_desc">Task Description</string>
     <string name="form_task_chkbox">Time Specified</string>
     <string name="form_task_date">Task Date</string>
     <string name="form_task_time">Task Time</string>
     <string name="add_task_button">Create Task</string>
+    <string name="edit_task_title">Edit Your Task</string>
+    <string name="edit_task_button">Edit Task</string>
+    <string name="delete_task_button">Delete Task</string>
 
 </resources>
