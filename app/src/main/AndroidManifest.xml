@@ -17,6 +17,15 @@
         android:theme="@style/Theme.LumaAIApp"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".presentation.main.chat_history.ChatHistoryActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".presentation.main.task.edit_task.EditTaskActivity"
             android:exported="false" />
         <activity
@@ -37,11 +46,11 @@
         <activity
             android:name=".presentation.auth.LandingActivity"
             android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
         </activity>
         <activity
             android:name=".MyApplication"

@@ -10,8 +10,9 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import org.bkkz.lumaapp.R
 
-class ChatHistoryDecoration(
+class ChatHistoryListDecoration(
     context: Context,
+    isFromHome : Boolean,
     private val lineColor: Int = Color.WHITE,
     private val lineWidth: Float = 4f,
     private val circleRadius: Float = 24f
@@ -21,7 +22,12 @@ class ChatHistoryDecoration(
     private val userTextColor = ContextCompat.getColor(context, R.color.llm_request_color)
 
     private val linePaint = Paint().apply {
-        color = lineColor
+        if(!isFromHome){
+            color = context.getColor(R.color.border_color)
+        }else{
+            color = lineColor
+        }
+
         strokeWidth = lineWidth
         style = Paint.Style.STROKE
     }

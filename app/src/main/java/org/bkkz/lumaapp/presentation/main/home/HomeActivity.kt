@@ -2,6 +2,7 @@ package org.bkkz.lumaapp.presentation.main.home
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -15,9 +16,10 @@ import org.bkkz.lumaapp.R
 import org.bkkz.lumaapp.data.local.TokenManager
 import org.bkkz.lumaapp.data.remote.Repository
 import org.bkkz.lumaapp.presentation.auth.LandingActivity
+import org.bkkz.lumaapp.presentation.main.chat_history.ChatHistoryActivity
 import org.bkkz.lumaapp.presentation.main.task.view_task.ViewTaskActivity
-import org.bkkz.lumaapp.presentation.main.home.adapter.ChatHistoryAdapter
-import org.bkkz.lumaapp.util.ChatHistoryDecoration
+import org.bkkz.lumaapp.presentation.main.home.adapter.ChatHistoryListAdapter
+import org.bkkz.lumaapp.util.ChatHistoryListDecoration
 
 class HomeActivity : AppCompatActivity() {
 
@@ -25,6 +27,7 @@ class HomeActivity : AppCompatActivity() {
     private lateinit var talkBtn : ConstraintLayout
     private lateinit var taskBtn : ConstraintLayout
     private lateinit var formBtn : ConstraintLayout
+    private lateinit var seeChatHistory : TextView
     private lateinit var recyclerViewRecentChats : RecyclerView
 
     //MOCK CHAT DATA
@@ -58,18 +61,22 @@ class HomeActivity : AppCompatActivity() {
         talkBtn = findViewById(R.id.constraintlayout_home_chat_btn)
         taskBtn = findViewById(R.id.constraintlayout_home_task_btn)
         formBtn = findViewById(R.id.constraintlayout_home_form_btn)
+        seeChatHistory = findViewById(R.id.txtview_home_history_see_all)
         recyclerViewRecentChats = findViewById(R.id.recyclerview_home_history_recent)
     }
     private fun setupViews(){
         recyclerViewRecentChats.layoutManager =
             LinearLayoutManager(this@HomeActivity, RecyclerView.VERTICAL, false)
-        recyclerViewRecentChats.adapter = ChatHistoryAdapter(chatData)
-        recyclerViewRecentChats.addItemDecoration(ChatHistoryDecoration(this@HomeActivity))
+        recyclerViewRecentChats.adapter = ChatHistoryListAdapter(true,chatData)
+        recyclerViewRecentChats.addItemDecoration(ChatHistoryListDecoration(this@HomeActivity, true))
     }
     private fun setupEvents(){
         setupLogoutBtn()
         taskBtn.setOnClickListener {
             startActivity(Intent(this@HomeActivity, ViewTaskActivity::class.java))
+        }
+        seeChatHistory.setOnClickListener {
+            startActivity(Intent(this@HomeActivity, ChatHistoryActivity::class.java))
         }
     }
 

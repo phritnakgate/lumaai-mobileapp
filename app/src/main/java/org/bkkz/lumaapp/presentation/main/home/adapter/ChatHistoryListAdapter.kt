@@ -7,7 +7,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import org.bkkz.lumaapp.R
 
-class ChatHistoryAdapter(private val items: List<String>) : RecyclerView.Adapter<ChatHistoryAdapter.ViewHolder>() {
+class ChatHistoryListAdapter(private val isFromHome : Boolean, private val items: List<String>) : RecyclerView.Adapter<ChatHistoryListAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val chat: TextView = view.findViewById(R.id.txtview_viewholder_chat_history)
@@ -24,6 +24,9 @@ class ChatHistoryAdapter(private val items: List<String>) : RecyclerView.Adapter
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.chat.text = items[position]
+        if(!isFromHome){
+            holder.chat.setTextColor(holder.itemView.context.getColor(R.color.black))
+        }
     }
 
     override fun getItemCount() = items.size

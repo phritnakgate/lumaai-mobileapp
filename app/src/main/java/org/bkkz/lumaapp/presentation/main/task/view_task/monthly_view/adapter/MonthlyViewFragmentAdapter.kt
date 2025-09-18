@@ -152,12 +152,12 @@ class MonthlyViewFragmentAdapter(private val items: List<TimelineItem>) : Recycl
             }
             VIEW_TYPE_BODY -> {
                 val view = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.view_task_monthly_body, parent, false) // ใช้ layout ของ task
+                    .inflate(R.layout.view_task_monthly_body, parent, false)
                 TaskBodyViewHolder(view)
             }
             VIEW_TYPE_FOOTER -> {
                 val view = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.view_task_monthly_footer, parent, false) // ใช้ layout ของ task
+                    .inflate(R.layout.view_task_monthly_footer, parent, false)
                 TaskFooterViewHolder(view)
             }
             else -> throw IllegalArgumentException("Invalid view type")

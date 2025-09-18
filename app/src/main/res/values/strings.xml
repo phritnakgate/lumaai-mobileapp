@@ -91,4 +91,12 @@
     <string name="edit_task_button">Edit Task</string>
     <string name="delete_task_button">Delete Task</string>
 
+    <!--========== HISTORY PAGES ==========-->
+    <string name="chat_history_title">History</string>
+    <string name="chat_history_task">Task</string>
+    <string name="chat_history_search">Search</string>
+    <string name="chat_history_plan">Plan</string>
+    <string name="chat_history_search_hint">Search</string>
+    <string name="chat_history_empty">No Chat Found</string>
+
 </resources>
