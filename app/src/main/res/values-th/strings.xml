@@ -31,6 +31,7 @@
     <string name="thu">พฤ.</string>
     <string name="fri">ศ.</string>
     <string name="sat">ส.</string>
+    <string name="select_date">เลือกวันที่</string>
     <string name="landing_heading">พบกับ LUMA !</string>
     <string name="landing_subheading">AI ผู้ช่วยจัดการงานของคุณ</string>
     <string name="landing_btn">เริ่มใช้งาน</string>

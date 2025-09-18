@@ -1,5 +1,6 @@
 package org.bkkz.lumaapp.presentation.main.task.view_task.daily_view
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -7,11 +8,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import org.bkkz.lumaapp.R
 import org.bkkz.lumaapp.data.entity.task.Task
+import org.bkkz.lumaapp.presentation.main.task.add_task.AddTaskActivity
 import org.bkkz.lumaapp.presentation.main.task.view_task.daily_view.adapter.TaskListAdapter
 import org.bkkz.lumaapp.util.CalendarViewPagerAdapter
 import org.bkkz.lumaapp.util.mapper.MonthStringMapper
@@ -45,6 +48,7 @@ class ViewTaskDailyFragment : Fragment() {
     private lateinit var txtViewCurrentMonth : TextView
     private lateinit var forwardMonth : ImageView
     private lateinit var viewPagerCalendar: ViewPager2
+    private lateinit var addTaskBtn : ConstraintLayout
     private lateinit var recyclerTaskLists : RecyclerView
     private lateinit var imgViewNoTask : ImageView
     private lateinit var txtViewNoTask : TextView
@@ -70,6 +74,7 @@ class ViewTaskDailyFragment : Fragment() {
         forwardMonth = requireView().findViewById(R.id.imgview_daily_task_month_forward)
         viewPagerCalendar = requireView().findViewById(R.id.viewpager_daily_task_calendar)
         recyclerTaskLists = requireView().findViewById(R.id.recyclerview_daily_task)
+        addTaskBtn = requireView().findViewById(R.id.constraintlayout_daily_task_add)
         imgViewNoTask = requireView().findViewById(R.id.imgview_daily_task_no_task)
         txtViewNoTask = requireView().findViewById(R.id.txtview_daily_task_no_task)
     }
@@ -105,6 +110,10 @@ class ViewTaskDailyFragment : Fragment() {
         }
         forwardMonth.setOnClickListener {
             viewPagerCalendar.currentItem = viewPagerCalendar.currentItem + 1
+        }
+        addTaskBtn.setOnClickListener {
+            val intent = Intent(requireContext(), AddTaskActivity::class.java)
+            startActivity(intent)
         }
     }
 

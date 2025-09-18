@@ -12,8 +12,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
-import org.bkkz.lumaapp.R
 import androidx.core.content.withStyledAttributes
+import org.bkkz.lumaapp.R
 
 class LabelEditText @JvmOverloads constructor(
     context: Context,

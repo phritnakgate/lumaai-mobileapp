@@ -1,25 +1,22 @@
 package org.bkkz.lumaapp.presentation.main.task.view_task.monthly_view
 
+import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import org.bkkz.lumaapp.R
-import org.bkkz.lumaapp.data.entity.task.Task
+import org.bkkz.lumaapp.presentation.main.task.add_task.AddTaskActivity
 import org.bkkz.lumaapp.presentation.main.task.view_task.monthly_view.adapter.MonthlyViewPagerAdapter
 import org.bkkz.lumaapp.util.CalendarViewPagerAdapter
-import org.bkkz.lumaapp.util.component.monthly_task_recycler.TimelineItem
 import org.bkkz.lumaapp.util.mapper.MonthStringMapper
-import java.time.OffsetDateTime
 import java.time.YearMonth
-import java.time.format.DateTimeFormatter
-import java.util.Locale
 
 class ViewTaskMonthlyFragment : Fragment() {
 
@@ -30,6 +27,7 @@ class ViewTaskMonthlyFragment : Fragment() {
     private lateinit var backMonth : ImageView
     private lateinit var txtViewCurrentMonth : TextView
     private lateinit var forwardMonth : ImageView
+    private lateinit var addTaskBtn : ConstraintLayout
     private lateinit var viewPagerTaskLists : ViewPager2
 
     //Variable
@@ -54,6 +52,7 @@ class ViewTaskMonthlyFragment : Fragment() {
         backMonth = requireView().findViewById(R.id.imgview_monthly_task_month_back)
         txtViewCurrentMonth = requireView().findViewById(R.id.txtview_monthly_task_month)
         forwardMonth = requireView().findViewById(R.id.imgview_monthly_task_month_forward)
+        addTaskBtn = requireView().findViewById(R.id.constraintlayout_monthly_task_add)
         viewPagerTaskLists = requireView().findViewById(R.id.viewpager_monthly_task)
 
     }
@@ -80,6 +79,10 @@ class ViewTaskMonthlyFragment : Fragment() {
         }
         forwardMonth.setOnClickListener {
             viewPagerTaskLists.currentItem = viewPagerTaskLists.currentItem + 1
+        }
+        addTaskBtn.setOnClickListener {
+            val intent = Intent(requireActivity(), AddTaskActivity::class.java)
+            startActivity(intent)
         }
     }
 
