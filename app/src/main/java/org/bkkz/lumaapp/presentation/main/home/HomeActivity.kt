@@ -16,6 +16,7 @@ import org.bkkz.lumaapp.R
 import org.bkkz.lumaapp.data.local.TokenManager
 import org.bkkz.lumaapp.data.remote.Repository
 import org.bkkz.lumaapp.presentation.auth.LandingActivity
+import org.bkkz.lumaapp.presentation.main.chat.ChatActivity
 import org.bkkz.lumaapp.presentation.main.chat_history.ChatHistoryActivity
 import org.bkkz.lumaapp.presentation.main.task.view_task.ViewTaskActivity
 import org.bkkz.lumaapp.util.component.chat_history.ChatHistoryListAdapter
@@ -78,6 +79,9 @@ class HomeActivity : AppCompatActivity(), ChatHistoryListAdapter.OnChatHistoryLi
         }
         seeChatHistory.setOnClickListener {
             startActivity(Intent(this@HomeActivity, ChatHistoryActivity::class.java))
+        }
+        talkBtn.setOnClickListener {
+            startActivity(Intent(this@HomeActivity, ChatActivity::class.java))
         }
     }
 

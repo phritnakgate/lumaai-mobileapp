@@ -4,6 +4,8 @@ plugins {
     id("com.google.gms.google-services")
     id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
     id("kotlin-parcelize")
+    id("com.google.devtools.ksp")
+
 }
 
 android {
@@ -77,6 +79,13 @@ dependencies {
 
     //EncryptedSharedPref
     implementation("androidx.security:security-crypto:1.0.0")
+
+    //Lottie
+    implementation("com.airbnb.android:lottie:6.6.9")
+
+    //Room DB
+    ksp("androidx.room:room-compiler:2.8.0")
+    implementation("androidx.room:room-ktx:2.8.0")
 
     //=== Test Implementation ===\\
     testImplementation(libs.junit)

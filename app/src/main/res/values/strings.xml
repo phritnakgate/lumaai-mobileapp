@@ -101,4 +101,9 @@
     <string name="chat_history_readall">Read All</string>
     <string name="read_all_bottomsheet_title">Search Results</string>
 
+    <!--========== CHAT PAGES ==========-->
+    <string name="chat_title">Chat with LUMA</string>
+    <string name="chat_empty">What can I do for you today?</string>
+    <string name="chat_hint">Write your message here...</string>
+
 </resources>
