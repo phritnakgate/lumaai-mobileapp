@@ -54,6 +54,7 @@ dependencies {
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
     implementation("androidx.viewpager2:viewpager2:1.1.0")
+    implementation("androidx.webkit:webkit:1.14.0")
 
     //ViewModel, Coroutines, Koin
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.9.3")

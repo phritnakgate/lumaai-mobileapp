@@ -104,6 +104,9 @@
     <!--========== CHAT PAGES ==========-->
     <string name="chat_title">Chat with LUMA</string>
     <string name="chat_empty">What can I do for you today?</string>
-    <string name="chat_hint">Write your message here...</string>
-
+    <string name="chat_hint">Write your message here…</string>
+    <string name="chat_confirm_add">Confirm Adding</string>
+    <string name="chat_confirm_edit">Confirm Editing</string>
+    <string name="chat_confirm_delete">Confirm Deletion</string>
+    <string name="chat_web_readall"><u>Read All…</u></string>
 </resources>

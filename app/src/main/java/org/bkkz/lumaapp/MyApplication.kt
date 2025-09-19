@@ -2,13 +2,11 @@ package org.bkkz.lumaapp
 
 import android.app.Application
 import com.google.firebase.FirebaseApp
-import org.bkkz.lumaapp.data.di.remoteDataModules
+import org.bkkz.lumaapp.data.di.dataModules
 import org.bkkz.lumaapp.presentation.di.presentationModules
 import org.koin.android.ext.koin.androidContext
 
 class MyApplication : Application() {
-
-
 
     override fun onCreate() {
         super.onCreate()
@@ -19,7 +17,7 @@ class MyApplication : Application() {
     private fun startKoin(){
         org.koin.core.context.startKoin {
             androidContext(this@MyApplication)
-            modules(listOf(presentationModules, remoteDataModules))
+            modules(listOf(presentationModules, dataModules))
         }
     }
 }

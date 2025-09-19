@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="16dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <Space
+        android:id="@+id/space_chat_user"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/txtview_chat_user"
+        />
+    <TextView
+        android:id="@+id/txtview_chat_user"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintHorizontal_weight="2"
+        android:padding="12dp"
+        android:gravity="end"
+        android:textColor="@color/white"
+        android:background="@drawable/rect_secondary"
+        android:textAppearance="@style/LumaAI.TextAppearance.BodyMedium.Thai"
+        app:layout_constraintStart_toEndOf="@+id/space_chat_user"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="ขอดูงานทั้งหมดวันที่ 5 กันยาหน่อยย"
+        />
+</androidx.constraintlayout.widget.ConstraintLayout>
