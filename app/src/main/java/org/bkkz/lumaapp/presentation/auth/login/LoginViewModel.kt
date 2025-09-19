@@ -6,8 +6,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import org.bkkz.lumaapp.data.remote.Repository
-import org.bkkz.lumaapp.data.remote.Result
+import org.bkkz.lumaapp.data.Repository
+import org.bkkz.lumaapp.data.remote.ApiResult
 import org.bkkz.lumaapp.presentation.auth.login.state.LoginState
 
 class LoginViewModel(private val repository: Repository) : ViewModel() {
@@ -18,8 +18,8 @@ class LoginViewModel(private val repository: Repository) : ViewModel() {
         viewModelScope.launch {
             _state.value = LoginState.Loading
             when(val result = repository.loginWithEmail(email, password)){
-                is Result.Success -> _state.value = LoginState.Success("Login Success")
-                is Result.Error -> _state.value = LoginState.Error(result.exception.message ?: "Login failed with unknown error :(")
+                is ApiResult.Success -> _state.value = LoginState.Success("Login Success")
+                is ApiResult.Error -> _state.value = LoginState.Error(result.exception.message ?: "Login failed with unknown error :(")
             }
         }
     }
@@ -28,8 +28,8 @@ class LoginViewModel(private val repository: Repository) : ViewModel() {
         viewModelScope.launch {
             _state.value = LoginState.Loading
             when (val result = repository.loginWithGoogle(idToken)) {
-                is Result.Success -> _state.value = LoginState.Success("Login successful!")
-                is Result.Error -> _state.value = LoginState.Error(result.exception.message ?: "Login failed with unknown error :(")
+                is ApiResult.Success -> _state.value = LoginState.Success("Login successful!")
+                is ApiResult.Error -> _state.value = LoginState.Error(result.exception.message ?: "Login failed with unknown error :(")
             }
         }
     }
@@ -38,14 +38,14 @@ class LoginViewModel(private val repository: Repository) : ViewModel() {
         viewModelScope.launch {
             _state.value = LoginState.Loading
             when (val result = repository.refreshToken()) {
-                is Result.Success -> {
+                is ApiResult.Success -> {
                     if (result.data) {
                         _state.value = LoginState.Success("Session restored")
                     } else {
                         _state.value = LoginState.Idle
                     }
                 }
-                is Result.Error -> {
+                is ApiResult.Error -> {
                     _state.value = LoginState.Idle
                 }
             }

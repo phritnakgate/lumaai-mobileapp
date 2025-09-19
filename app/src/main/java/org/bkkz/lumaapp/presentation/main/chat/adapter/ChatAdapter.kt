@@ -9,7 +9,10 @@ import androidx.recyclerview.widget.RecyclerView
 import org.bkkz.lumaapp.R
 import org.bkkz.lumaapp.util.component.chat.ChatItem
 
-class ChatAdapter(private val items: List<ChatItem>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ChatAdapter(
+    private val items: List<ChatItem>,
+    private val onConfirmClick: (dbId: Int) -> Unit
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
         private const val VIEW_TYPE_USER = 0
@@ -58,6 +61,7 @@ class ChatAdapter(private val items: List<ChatItem>) : RecyclerView.Adapter<Recy
             confirmBtn.setOnClickListener {
                 //TODO: Implement add service, then change color
                 confirmBtn.setBackgroundResource(R.drawable.rect_disabled_color_btn)
+                onConfirmClick(task.roomDbId)
             }
         }
     }
@@ -73,6 +77,7 @@ class ChatAdapter(private val items: List<ChatItem>) : RecyclerView.Adapter<Recy
             confirmBtn.setOnClickListener {
                 //TODO: Implement edit service, then change color
                 confirmBtn.setBackgroundResource(R.drawable.rect_disabled_color_btn)
+                onConfirmClick(task.roomDbId)
             }
         }
     }
@@ -88,6 +93,7 @@ class ChatAdapter(private val items: List<ChatItem>) : RecyclerView.Adapter<Recy
             confirmBtn.setOnClickListener {
                 //TODO: Implement delete service, then change color
                 confirmBtn.setBackgroundResource(R.drawable.rect_disabled_color_btn)
+                onConfirmClick(task.roomDbId)
             }
         }
     }

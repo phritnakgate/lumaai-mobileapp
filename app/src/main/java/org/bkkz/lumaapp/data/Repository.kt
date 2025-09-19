@@ -1,4 +1,4 @@
-package org.bkkz.lumaapp.data.remote
+package org.bkkz.lumaapp.data
 
 import android.util.Log
 import com.google.gson.Gson
@@ -9,24 +9,47 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.bkkz.lumaapp.data.local.TokenManager
+import org.bkkz.lumaapp.data.local.UserChat
+import org.bkkz.lumaapp.data.local.UserChatDao
+import org.bkkz.lumaapp.data.remote.ApiResult
 import org.json.JSONObject
 import java.nio.charset.StandardCharsets
 import java.security.MessageDigest
 import java.security.SecureRandom
 import java.util.Base64
 
-sealed class Result<out T> {
-    data class Success<out T>(val data: T) : Result<T>()
-    data class Error(val exception: Exception) : Result<Nothing>()
-}
 
-class Repository(private val tokenManager: TokenManager) {
+class Repository(private val tokenManager: TokenManager, private val userChatDao: UserChatDao) {
+
+    /*===========LOCAL DATA SOURCES===========*/
+    fun getAllChats(): List<UserChat> {
+        return userChatDao.getAllUserChat()
+    }
+
+    suspend fun insertChat(userChat: UserChat){
+        withContext(Dispatchers.IO){
+            userChatDao.insertUserChat(userChat)
+        }
+    }
+
+    suspend fun deleleAllChat(){
+        withContext(Dispatchers.IO){
+            userChatDao.deleteAllUserChat()
+        }
+    }
+
+    suspend fun confirmAction(dbId : Int){
+        withContext(Dispatchers.IO){
+            userChatDao.confirmAction(dbId)
+        }
+    }
+
+    /*===========REMOTE DATA SOURCES===========*/
     private val client = OkHttpClient()
     private val gson = Gson()
     private val mediaType = "application/json; charset=utf-8".toMediaType()
     private val apiBaseUrl = "http://10.0.2.2:8080/api/auth"
-
-    suspend fun loginWithEmail(email: String, password: String): Result<Unit> = withContext(
+    suspend fun loginWithEmail(email: String, password: String): ApiResult<Unit> = withContext(
         Dispatchers.IO) {
         try {
             // 1. Generate PKCE
@@ -38,14 +61,14 @@ class Repository(private val tokenManager: TokenManager) {
             // 3. Exchange Code for Token
             exchangeCodeForToken(authCode, codeVerifier)
 
-            Result.Success(Unit) // Return success
+            ApiResult.Success(Unit) // Return success
         } catch (e: Exception) {
             Log.e("AuthRepository", "Email login failed", e)
-            Result.Error(e)
+            ApiResult.Error(e)
         }
     }
 
-    suspend fun loginWithGoogle(idToken: String): Result<Unit> = withContext(Dispatchers.IO) {
+    suspend fun loginWithGoogle(idToken: String): ApiResult<Unit> = withContext(Dispatchers.IO) {
         try {
             val requestBody = gson.toJson(mapOf("idToken" to idToken))
             val request = Request.Builder()
@@ -63,18 +86,18 @@ class Repository(private val tokenManager: TokenManager) {
             val refreshToken = JSONObject(responseBody).getString("refresh_token")
             tokenManager.saveTokens(accessToken, refreshToken)
 
-            Result.Success(Unit)
+            ApiResult.Success(Unit)
         } catch (e: Exception) {
             Log.e("AuthRepository", "Google login failed", e)
-            Result.Error(e)
+            ApiResult.Error(e)
         }
     }
 
 
-    suspend fun refreshToken(): Result<Boolean> = withContext(Dispatchers.IO) {
+    suspend fun refreshToken(): ApiResult<Boolean> = withContext(Dispatchers.IO) {
         val refreshToken = tokenManager.getRefreshToken()
         if (refreshToken == null) {
-            return@withContext Result.Success(false)
+            return@withContext ApiResult.Success(false)
         }
 
         try {
@@ -96,11 +119,11 @@ class Repository(private val tokenManager: TokenManager) {
             val newRefreshToken = JSONObject(responseBody).getString("refresh_token")
             tokenManager.saveTokens(newAccessToken, newRefreshToken)
 
-            Result.Success(true)
+            ApiResult.Success(true)
         } catch (e: Exception) {
             Log.e("AuthRepository", "Session refresh failed", e)
             tokenManager.clearTokens()
-            Result.Success(false)
+            ApiResult.Success(false)
         }
     }
 

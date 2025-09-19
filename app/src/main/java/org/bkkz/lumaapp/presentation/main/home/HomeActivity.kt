@@ -13,8 +13,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.launch
 import org.bkkz.lumaapp.R
-import org.bkkz.lumaapp.data.local.TokenManager
-import org.bkkz.lumaapp.data.remote.Repository
 import org.bkkz.lumaapp.presentation.auth.LandingActivity
 import org.bkkz.lumaapp.presentation.main.chat.ChatActivity
 import org.bkkz.lumaapp.presentation.main.chat_history.ChatHistoryActivity
@@ -88,7 +86,7 @@ class HomeActivity : AppCompatActivity(), ChatHistoryListAdapter.OnChatHistoryLi
     private fun setupLogoutBtn(){
         logoutBtn.setOnClickListener {
             lifecycleScope.launch {
-                Repository(TokenManager(applicationContext)).logout()
+                //TODO : ADD LOGOUT FROM REPO
                 val intent = Intent(this@HomeActivity, LandingActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 startActivity(intent)

@@ -3,60 +3,40 @@ package org.bkkz.lumaapp.presentation.main.chat
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.bkkz.lumaapp.R
-import org.bkkz.lumaapp.data.entity.chat_history.ChatHistory
-import org.bkkz.lumaapp.data.local.UserChat
-import org.bkkz.lumaapp.data.local.UserChatDao
+import org.bkkz.lumaapp.data.entity.task.Task
 import org.bkkz.lumaapp.presentation.main.chat.adapter.ChatAdapter
-import org.koin.android.ext.android.inject
 import org.bkkz.lumaapp.presentation.main.chat.voice_chat.VoiceChatActivity
-import org.bkkz.lumaapp.util.component.chat.ChatItem
+import org.bkkz.lumaapp.util.enums.LocalChatFlag
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class ChatActivity : AppCompatActivity() {
 
-    private val userChatDao: UserChatDao by inject()
+    private val viewModel: ChatViewModel by viewModel()
 
     //UI
+    private lateinit var backBtn : ImageView
     private lateinit var newChatBtn: ImageView
     private lateinit var recyclerChats: RecyclerView
+    private lateinit var edtChat : EditText
     private lateinit var btnVoice: ImageButton
+    private lateinit var btnSend : ImageButton
     private lateinit var imgNoChat: ImageView
     private lateinit var txtNoChat: TextView
 
-    private var userChats: List<UserChat>? = null
 
-    // MOCK DATA
-    private val mockData: List<ChatItem> = listOf(
-        ChatItem.ChatUser("ขอดูงานทั้งหมดวันที่ 5 กันยาหน่อย"),
-        ChatItem.ChatResponse("นี่คืองานทั้งหมดครับ"),
-        ChatItem.ChatGetTask("ประชุมอัพเดตงาน", "-", "4 Sep 2025 | 18.00"),
-        ChatItem.ChatUser("เพิ่มจัดตารางเรียน"),
-        ChatItem.ChatResponse("ได้เลย แต่วันนี้มีอยู่แล้วนะครับ"),
-        ChatItem.ChatAddTask("จัดตารางเรียน", "-", "4 Sep 2025 | 18.00", false),
-        ChatItem.ChatUser("แก้ลบทานอาหารค่ำเป็น 30 กค 18.30 ให้หน่อย"),
-        ChatItem.ChatResponse("ได้เลยครับ แต่มีงานนี้เยอะนะครับ"),
-        ChatItem.ChatEditTask("xxx","ทานอาหารค่ำ","-", "4 Sep 2025 | 19.00", false),
-        ChatItem.ChatDeleteTask("xxx","ทานอาหารค่ำ","-", "4 Sep 2025 | 19.00", false),
-        ChatItem.ChatUser("หาข้อมูลเรื่อง Shio Pan ให้หน่อย"),
-        ChatItem.ChatWebSearch("https://iel.co.th/%E0%B8%8A%E0%B8%B4%E0%B9%82%E0%B8%AD%E0%B8%B0%E0%B8%9B%E0%B8%B1%E0%B8%87/")
-    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContentView(R.layout.activity_chat)
 
         setupData()
@@ -64,46 +44,72 @@ class ChatActivity : AppCompatActivity() {
         setupView()
         setupEvents()
 
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            val ime = insets.getInsets(WindowInsetsCompat.Type.ime())
+            v.setPadding(
+                systemBars.left,
+                systemBars.top,
+                systemBars.right,
+                systemBars.bottom.coerceAtLeast(ime.bottom)
+            )
             insets
         }
     }
 
     private fun setupData() {
-        lifecycleScope.launch {
-            userChats = withContext(Dispatchers.IO) {
-                userChatDao.getAllUserChat()
+        viewModel.chatItems.observe(this@ChatActivity){ userChats ->
+            if (userChats.isNullOrEmpty()) {
+                recyclerChats.visibility = View.GONE
+                imgNoChat.visibility = View.VISIBLE
+                txtNoChat.visibility = View.VISIBLE
+            } else {
+                recyclerChats.visibility = View.VISIBLE
+                imgNoChat.visibility = View.GONE
+                txtNoChat.visibility = View.GONE
             }
+            val adapter = ChatAdapter(userChats, onConfirmClick = {dbId -> viewModel.confirmTaskAction(dbId)})
+            recyclerChats.layoutManager = LinearLayoutManager(this@ChatActivity, RecyclerView.VERTICAL, false)
+            recyclerChats.adapter = adapter
+            recyclerChats.scrollToPosition(adapter.itemCount - 1)
         }
-
     }
 
     private fun findView() {
+        backBtn = findViewById(R.id.imgview_chat_back)
         newChatBtn = findViewById(R.id.imgview_chat_new_btn)
         recyclerChats = findViewById(R.id.recyclerview_chat)
+        edtChat = findViewById(R.id.edttxt_chat)
         btnVoice = findViewById(R.id.imgbtn_chat_mic)
+        btnSend = findViewById(R.id.imgbtn_chat_send)
         imgNoChat = findViewById(R.id.imgview_chat_new_mascot)
         txtNoChat = findViewById(R.id.txtview_chat_new_desc)
     }
 
     private fun setupView() {
-        //TODO: CHANGE TO DATA FROM ROOM LATER
-        if (mockData.isNullOrEmpty()) {
-            recyclerChats.visibility = View.GONE
-            imgNoChat.visibility = View.VISIBLE
-            txtNoChat.visibility = View.VISIBLE
-        } else {
-            recyclerChats.visibility = View.VISIBLE
-            imgNoChat.visibility = View.GONE
-            txtNoChat.visibility = View.GONE
+        recyclerChats.addOnLayoutChangeListener { view, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom ->
+            if (bottom < oldBottom) {
+                recyclerChats.postDelayed({
+                    val adapter = recyclerChats.adapter
+                    if (adapter != null && adapter.itemCount > 0) {
+                        recyclerChats.smoothScrollToPosition(adapter.itemCount - 1)
+                    }
+                }, 100)
+            }
         }
-        recyclerChats.layoutManager = LinearLayoutManager(this@ChatActivity, RecyclerView.VERTICAL, false)
-        recyclerChats.adapter = ChatAdapter(mockData)
     }
 
     private fun setupEvents() {
+
+        backBtn.setOnClickListener {
+            finish()
+        }
+
+        edtChat.setOnClickListener {
+
+        }
+
         btnVoice.setOnClickListener {
             startActivity(
                 Intent(
@@ -112,8 +118,30 @@ class ChatActivity : AppCompatActivity() {
                 )
             )
         }
+        btnSend.setOnClickListener {
+            viewModel.insertNewChat(LocalChatFlag.CHAT_USER.flag,edtChat.text.toString())
+            //MOCK MODEL RESPONSE CHANGE TO REAL SERVICE LATER
+            viewModel.insertNewChat(LocalChatFlag.CHAT_MODEL.flag,"ตอบกลับมาแล้วครับ")
+            val r = (2..6).random()
+            val mockTask = Task(
+                "-OZNle77lJsusGm0CrFD",
+                "ประชุมงานประจำเดือน",
+                "postman :D",
+                "2025-09-05T14:27:11.2037297+07:00",
+                false,
+                "p6W1pVygPBgKgYB77yqpEw8Hx8B2")
+            val mockUrl = "https://www.wongnai.com/recipes/ugc/6256334b980d4b05818d9a5e9d45bccc"
+            when(r){
+                2 -> viewModel.insertNewChat(flag=LocalChatFlag.CHAT_VIEW_TASK.flag, task = mockTask)
+                3 -> viewModel.insertNewChat(flag=LocalChatFlag.CHAT_ADD_TASK.flag, task = mockTask)
+                4 -> viewModel.insertNewChat(flag=LocalChatFlag.CHAT_EDIT_TASK.flag, task = mockTask)
+                5 -> viewModel.insertNewChat(flag=LocalChatFlag.CHAT_DELETE_TASK.flag, task = mockTask)
+                6 -> viewModel.insertNewChat(flag=LocalChatFlag.CHAT_WEB.flag, url = mockUrl)
+            }
+            edtChat.text.clear()
+        }
         newChatBtn.setOnClickListener {
-            userChats = null
+            viewModel.clearAllChats()
         }
     }
 }
