@@ -7,6 +7,8 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -32,6 +34,21 @@ class ChatActivity : AppCompatActivity() {
     private lateinit var btnSend : ImageButton
     private lateinit var imgNoChat: ImageView
     private lateinit var txtNoChat: TextView
+
+    private val voiceChatLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == RESULT_OK) {
+            val data: Intent? = result.data
+            val spokenText = data?.getStringExtra(VoiceChatActivity.VOICE_RESULT)
+
+            if (spokenText != null) {
+                mockSendChats(spokenText)
+            }
+        } else {
+            Toast.makeText(this@ChatActivity, "Failed to Recognize Speech", Toast.LENGTH_SHORT).show()
+        }
+    }
 
 
 
@@ -107,11 +124,11 @@ class ChatActivity : AppCompatActivity() {
         }
 
         edtChat.setOnClickListener {
-
+            mockSendChats(edtChat.text.toString())
         }
 
         btnVoice.setOnClickListener {
-            startActivity(
+            voiceChatLauncher.launch(
                 Intent(
                     this@ChatActivity,
                     VoiceChatActivity::class.java
@@ -119,29 +136,33 @@ class ChatActivity : AppCompatActivity() {
             )
         }
         btnSend.setOnClickListener {
-            viewModel.insertNewChat(LocalChatFlag.CHAT_USER.flag,edtChat.text.toString())
-            //MOCK MODEL RESPONSE CHANGE TO REAL SERVICE LATER
-            viewModel.insertNewChat(LocalChatFlag.CHAT_MODEL.flag,"ตอบกลับมาแล้วครับ")
-            val r = (2..6).random()
-            val mockTask = Task(
-                "-OZNle77lJsusGm0CrFD",
-                "ประชุมงานประจำเดือน",
-                "postman :D",
-                "2025-09-05T14:27:11.2037297+07:00",
-                false,
-                "p6W1pVygPBgKgYB77yqpEw8Hx8B2")
-            val mockUrl = "https://www.wongnai.com/recipes/ugc/6256334b980d4b05818d9a5e9d45bccc"
-            when(r){
-                2 -> viewModel.insertNewChat(flag=LocalChatFlag.CHAT_VIEW_TASK.flag, task = mockTask)
-                3 -> viewModel.insertNewChat(flag=LocalChatFlag.CHAT_ADD_TASK.flag, task = mockTask)
-                4 -> viewModel.insertNewChat(flag=LocalChatFlag.CHAT_EDIT_TASK.flag, task = mockTask)
-                5 -> viewModel.insertNewChat(flag=LocalChatFlag.CHAT_DELETE_TASK.flag, task = mockTask)
-                6 -> viewModel.insertNewChat(flag=LocalChatFlag.CHAT_WEB.flag, url = mockUrl)
-            }
-            edtChat.text.clear()
+
         }
         newChatBtn.setOnClickListener {
             viewModel.clearAllChats()
         }
+    }
+
+    private fun mockSendChats(message: String){
+        viewModel.insertNewChat(LocalChatFlag.CHAT_USER.flag, message)
+        //MOCK MODEL RESPONSE CHANGE TO REAL SERVICE LATER
+        viewModel.insertNewChat(LocalChatFlag.CHAT_MODEL.flag,"ตอบกลับมาแล้วครับ")
+        val r = (2..6).random()
+        val mockTask = Task(
+            "-OZNle77lJsusGm0CrFD",
+            "ประชุมงานประจำเดือน",
+            "postman :D",
+            "2025-09-05T14:27:11.2037297+07:00",
+            false,
+            "p6W1pVygPBgKgYB77yqpEw8Hx8B2")
+        val mockUrl = "https://www.wongnai.com/recipes/ugc/6256334b980d4b05818d9a5e9d45bccc"
+        when(r){
+            2 -> viewModel.insertNewChat(flag=LocalChatFlag.CHAT_VIEW_TASK.flag, task = mockTask)
+            3 -> viewModel.insertNewChat(flag=LocalChatFlag.CHAT_ADD_TASK.flag, task = mockTask)
+            4 -> viewModel.insertNewChat(flag=LocalChatFlag.CHAT_EDIT_TASK.flag, task = mockTask)
+            5 -> viewModel.insertNewChat(flag=LocalChatFlag.CHAT_DELETE_TASK.flag, task = mockTask)
+            6 -> viewModel.insertNewChat(flag=LocalChatFlag.CHAT_WEB.flag, url = mockUrl)
+        }
+        edtChat.text.clear()
     }
 }
