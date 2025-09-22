@@ -1,25 +1,28 @@
 package org.bkkz.lumaapp.data
 
 import android.util.Log
-import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.RequestBody.Companion.toRequestBody
+import org.bkkz.lumaapp.data.entity.auth.EmailSignInRequest
+import org.bkkz.lumaapp.data.entity.auth.EmailSignInResponse
+import org.bkkz.lumaapp.data.entity.auth.GoogleSignInRequest
+import org.bkkz.lumaapp.data.entity.auth.LogoutRequest
+import org.bkkz.lumaapp.data.entity.auth.TokenRequest
 import org.bkkz.lumaapp.data.local.TokenManager
 import org.bkkz.lumaapp.data.local.UserChat
 import org.bkkz.lumaapp.data.local.UserChatDao
 import org.bkkz.lumaapp.data.remote.ApiResult
-import org.json.JSONObject
+import org.bkkz.lumaapp.data.remote.LumaApi
 import java.nio.charset.StandardCharsets
 import java.security.MessageDigest
 import java.security.SecureRandom
 import java.util.Base64
 
 
-class Repository(private val tokenManager: TokenManager, private val userChatDao: UserChatDao) {
+class Repository(
+    private val lumaApi: LumaApi,
+    private val tokenManager: TokenManager,
+    private val userChatDao: UserChatDao) {
 
     /*===========LOCAL DATA SOURCES===========*/
     fun getAllChats(): List<UserChat> {
@@ -45,10 +48,6 @@ class Repository(private val tokenManager: TokenManager, private val userChatDao
     }
 
     /*===========REMOTE DATA SOURCES===========*/
-    private val client = OkHttpClient()
-    private val gson = Gson()
-    private val mediaType = "application/json; charset=utf-8".toMediaType()
-    private val apiBaseUrl = "http://10.0.2.2:8080/api/auth"
     suspend fun loginWithEmail(email: String, password: String): ApiResult<Unit> = withContext(
         Dispatchers.IO) {
         try {
@@ -59,7 +58,7 @@ class Repository(private val tokenManager: TokenManager, private val userChatDao
             val authCode = requestAuthorizationCode(email, password, codeChallenge)
 
             // 3. Exchange Code for Token
-            exchangeCodeForToken(authCode, codeVerifier)
+            exchangeCodeForToken(authCode.code, codeVerifier)
 
             ApiResult.Success(Unit) // Return success
         } catch (e: Exception) {
@@ -70,22 +69,8 @@ class Repository(private val tokenManager: TokenManager, private val userChatDao
 
     suspend fun loginWithGoogle(idToken: String): ApiResult<Unit> = withContext(Dispatchers.IO) {
         try {
-            val requestBody = gson.toJson(mapOf("idToken" to idToken))
-            val request = Request.Builder()
-                .url("$apiBaseUrl/login-google")
-                .post(requestBody.toRequestBody(mediaType))
-                .build()
-
-            val response = client.newCall(request).execute()
-            if (!response.isSuccessful) {
-                throw Exception("Google login failed on server: ${response.message}")
-            }
-
-            val responseBody = response.body?.string()
-            val accessToken = JSONObject(responseBody).getString("access_token")
-            val refreshToken = JSONObject(responseBody).getString("refresh_token")
-            tokenManager.saveTokens(accessToken, refreshToken)
-
+            val response = lumaApi.loginWithGoogle(GoogleSignInRequest(idToken))
+            tokenManager.saveTokens(response.accessToken, response.refreshToken)
             ApiResult.Success(Unit)
         } catch (e: Exception) {
             Log.e("AuthRepository", "Google login failed", e)
@@ -101,23 +86,12 @@ class Repository(private val tokenManager: TokenManager, private val userChatDao
         }
 
         try {
-            val requestBodyMap = mapOf(
-                "grantType" to "refresh_token",
-                "refreshToken" to refreshToken
-            )
-            val requestBody = gson.toJson(requestBodyMap).toRequestBody(mediaType)
-            val request = Request.Builder()
-                .url("$apiBaseUrl/token")
-                .post(requestBody)
-                .build()
-
-            val response = client.newCall(request).execute()
-            if (!response.isSuccessful) throw Exception("Failed to refresh token")
-
-            val responseBody = response.body?.string()
-            val newAccessToken = JSONObject(responseBody).getString("access_token")
-            val newRefreshToken = JSONObject(responseBody).getString("refresh_token")
-            tokenManager.saveTokens(newAccessToken, newRefreshToken)
+            val request = TokenRequest(
+                grantType = "refresh_token",
+                refreshToken = refreshToken
+                )
+            val response = lumaApi.tokenRequest(request)
+            tokenManager.saveTokens(response.accessToken, response.refreshToken)
 
             ApiResult.Success(true)
         } catch (e: Exception) {
@@ -129,71 +103,31 @@ class Repository(private val tokenManager: TokenManager, private val userChatDao
 
     suspend fun logout() = withContext(Dispatchers.IO) {
         val refreshToken = tokenManager.getRefreshToken()
-        val requestBodyMap = mapOf(
-            "refreshToken" to refreshToken
-        )
-        val requestBody = gson.toJson(requestBodyMap).toRequestBody(mediaType)
-        val request = Request.Builder()
-            .url("$apiBaseUrl/logout")
-            .post(requestBody)
-            .build()
-        tokenManager.clearTokens()
         try {
-            val response = client.newCall(request).execute()
+            val response = lumaApi.logout(LogoutRequest(refreshToken!!))
+            tokenManager.clearTokens()
             if (!response.isSuccessful) throw Exception("Failed to logout")
         }catch (e: Exception){
             Log.e("AuthRepository", "Logout failed", e)
         }
-
-
-
     }
 
-    private fun requestAuthorizationCode(email: String, password: String, codeChallenge: String): String {
-        val requestBodyMap = mapOf(
-            "email" to email,
-            "password" to password,
-            "codeChallenge" to codeChallenge,
-            "codeChallengeMethod" to "S256"
-        )
-        val requestBody = gson.toJson(requestBodyMap).toRequestBody(mediaType)
-        val request = Request.Builder()
-            .url("$apiBaseUrl/login-email")
-            .post(requestBody)
-            .build()
+    private suspend fun requestAuthorizationCode(email: String, password: String, codeChallenge: String): EmailSignInResponse {
 
-        val response = client.newCall(request).execute()
-        val responseBody = response.body?.string()
+        val request = EmailSignInRequest(email, password, codeChallenge)
 
-        if (!response.isSuccessful || responseBody == null) {
-            throw Exception("Step 1 failed: ${response.message}")
-        }
-        return JSONObject(responseBody).getString("code")
+        val response = lumaApi.loginWithEmail(request)
+        return response
     }
 
-    private fun exchangeCodeForToken(authCode: String, codeVerifier: String) {
-        val requestBodyMap = mapOf(
-            "grantType" to "authorization_code",
-            "code" to authCode,
-            "codeVerifier" to codeVerifier
+    private suspend fun exchangeCodeForToken(authCode: String, codeVerifier: String) {
+        val requestBody = TokenRequest(
+            grantType = "authorization_code",
+            code = authCode,
+            codeVerifier = codeVerifier
         )
-        val requestBody = gson.toJson(requestBodyMap).toRequestBody(mediaType)
-        val request = Request.Builder()
-            .url("$apiBaseUrl/token")
-            .post(requestBody)
-            .build()
-
-        val response = client.newCall(request).execute()
-        val responseBody = response.body?.string()
-
-        if (!response.isSuccessful || responseBody == null) {
-            val errorDesc = JSONObject(responseBody ?: "{}").optString("error_description", response.message)
-            throw Exception("Step 2 failed: $errorDesc")
-        }
-
-        val accessToken = JSONObject(responseBody).getString("access_token")
-        val refreshToken = JSONObject(responseBody).getString("refresh_token")
-        tokenManager.saveTokens(accessToken, refreshToken)
+        val response = lumaApi.tokenRequest(requestBody)
+        tokenManager.saveTokens(response.accessToken, response.refreshToken)
     }
 
     private fun generatePkceChallenge(): Pair<String, String> {
