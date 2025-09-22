@@ -1,6 +1,7 @@
 package org.bkkz.lumaapp.data.remote
 
 import org.bkkz.lumaapp.data.entity.auth.EmailRegistrationRequest
+import org.bkkz.lumaapp.data.entity.auth.EmailRegistrationResponse
 import org.bkkz.lumaapp.data.entity.auth.EmailSignInRequest
 import org.bkkz.lumaapp.data.entity.auth.EmailSignInResponse
 import org.bkkz.lumaapp.data.entity.auth.GoogleSignInRequest
@@ -32,7 +33,7 @@ interface LumaApi {
     @POST("auth/register")
     suspend fun registerWithEmail(
         @Body emailRegistrationRequest: EmailRegistrationRequest
-    ) : TokenResponse
+    ) : EmailRegistrationResponse
 
     @POST("auth/logout")
     suspend fun logout(

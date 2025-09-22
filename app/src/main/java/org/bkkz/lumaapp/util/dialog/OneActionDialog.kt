@@ -1,0 +1,53 @@
+package org.bkkz.lumaapp.util.dialog
+
+import android.app.Dialog
+import android.content.Context
+import android.graphics.Color
+import android.os.Bundle
+import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.appcompat.widget.AppCompatButton
+import androidx.core.graphics.drawable.toDrawable
+import org.bkkz.lumaapp.R
+
+class OneActionDialog(
+    context: Context,
+    ) : Dialog(context){
+    private lateinit var imgViewIcon : ImageView
+    private lateinit var titleTextView: TextView
+    private lateinit var messageTextView: TextView
+    private lateinit var confirmButton: AppCompatButton
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.dialog_one_choice)
+
+        imgViewIcon = findViewById(R.id.imgview_dialog_one_action)
+        titleTextView = findViewById(R.id.txtview_dialog_one_action_title)
+        messageTextView = findViewById(R.id.txtview_dialog_one_action_desc)
+        confirmButton = findViewById(R.id.compatbtn_dialog_one_action)
+
+        setCancelable(false)
+        setCanceledOnTouchOutside(false)
+        window?.setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
+        window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+    }
+    fun show(
+        drawable: Int,
+        title: String,
+        message: String,
+        onConfirmClickListener: (() -> Unit)? = null
+    ) {
+        super.show()
+        imgViewIcon.setImageResource(drawable)
+        titleTextView.text = title
+        messageTextView.text = message
+
+        confirmButton.setOnClickListener {
+            onConfirmClickListener?.invoke()
+            dismiss()
+        }
+
+    }
+}

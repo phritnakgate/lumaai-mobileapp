@@ -8,46 +8,28 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.bkkz.lumaapp.data.Repository
 import org.bkkz.lumaapp.data.remote.ApiResult
-import org.bkkz.lumaapp.presentation.auth.login.state.LoginState
+import org.bkkz.lumaapp.presentation.auth.login.state.LoginEvent
 
 class LoginViewModel(private val repository: Repository) : ViewModel() {
-    private val _state = MutableStateFlow<LoginState>(LoginState.Idle)
-    val state: StateFlow<LoginState> = _state.asStateFlow()
+    private val _state = MutableStateFlow<LoginEvent>(LoginEvent.Idle)
+    val state: StateFlow<LoginEvent> = _state.asStateFlow()
 
      fun loginWithEmail(email: String, password: String) {
         viewModelScope.launch {
-            _state.value = LoginState.Loading
+            _state.value = LoginEvent.Loading
             when(val result = repository.loginWithEmail(email, password)){
-                is ApiResult.Success -> _state.value = LoginState.Success("Login Success")
-                is ApiResult.Error -> _state.value = LoginState.Error(result.exception.message ?: "Login failed with unknown error :(")
+                is ApiResult.Success -> _state.value = LoginEvent.Success("Login Success")
+                is ApiResult.Error -> _state.value = LoginEvent.Error(result.exception.message ?: "Login failed with unknown error :(")
             }
         }
     }
 
     fun loginWithGoogle(idToken: String) {
         viewModelScope.launch {
-            _state.value = LoginState.Loading
+            _state.value = LoginEvent.Loading
             when (val result = repository.loginWithGoogle(idToken)) {
-                is ApiResult.Success -> _state.value = LoginState.Success("Login successful!")
-                is ApiResult.Error -> _state.value = LoginState.Error(result.exception.message ?: "Login failed with unknown error :(")
-            }
-        }
-    }
-
-    fun checkSession() {
-        viewModelScope.launch {
-            _state.value = LoginState.Loading
-            when (val result = repository.refreshToken()) {
-                is ApiResult.Success -> {
-                    if (result.data) {
-                        _state.value = LoginState.Success("Session restored")
-                    } else {
-                        _state.value = LoginState.Idle
-                    }
-                }
-                is ApiResult.Error -> {
-                    _state.value = LoginState.Idle
-                }
+                is ApiResult.Success -> _state.value = LoginEvent.Success("Login successful!")
+                is ApiResult.Error -> _state.value = LoginEvent.Error(result.exception.message ?: "Login failed with unknown error :(")
             }
         }
     }

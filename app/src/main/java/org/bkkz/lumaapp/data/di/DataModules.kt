@@ -5,11 +5,13 @@ import okhttp3.OkHttpClient
 import org.bkkz.lumaapp.data.local.TokenManager
 import org.bkkz.lumaapp.data.local.UserChatDatabase
 import org.bkkz.lumaapp.data.Repository
+import org.bkkz.lumaapp.data.remote.AuthInterceptor
 import org.bkkz.lumaapp.data.remote.LumaApi
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 
 val dataModules = module {
     single { Repository(get(), get(), get()) }
@@ -26,8 +28,15 @@ val dataModules = module {
         get<UserChatDatabase>().userChatDao()
     }
 
-    //OkHttp & Retrofit
-    single { OkHttpClient.Builder().build() }
+    //OkHttp & Retrofit & Interceptor
+    single { AuthInterceptor() }
+
+    single { OkHttpClient.Builder()
+        .addInterceptor(get<AuthInterceptor>())
+        .connectTimeout(1, TimeUnit.MINUTES)
+        .readTimeout(1, TimeUnit.MINUTES)
+        .build()
+    }
     single {
         Retrofit.Builder()
             .baseUrl("https://lumaai-backend-672244117841.asia-southeast1.run.app/api/")

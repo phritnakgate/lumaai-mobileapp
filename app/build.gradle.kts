@@ -56,6 +56,7 @@ dependencies {
     implementation("androidx.viewpager2:viewpager2:1.1.0")
     implementation("androidx.webkit:webkit:1.14.0")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.8.3")
+    implementation("androidx.core:core-splashscreen:1.0.1")
 
     //ViewModel, Coroutines, Koin
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.9.3")

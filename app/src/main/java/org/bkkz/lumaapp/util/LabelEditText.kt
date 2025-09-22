@@ -13,6 +13,7 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.content.withStyledAttributes
+import androidx.core.widget.doOnTextChanged
 import org.bkkz.lumaapp.R
 
 class LabelEditText @JvmOverloads constructor(
@@ -24,10 +25,7 @@ class LabelEditText @JvmOverloads constructor(
     private val txtViewLabel : TextView
     private val editText : EditText
     private val btnShowPassword : ImageView
-
-    private var isError = false
     private var isPasswordVisible = false
-    private val STATE_ERROR = intArrayOf(R.attr.isError)
 
     var text: String
         get() = editText.text.toString()
@@ -59,13 +57,6 @@ class LabelEditText @JvmOverloads constructor(
         }
     }
 
-    override fun onCreateDrawableState(extraSpace: Int): IntArray {
-        val drawableState = super.onCreateDrawableState(extraSpace + 1)
-        if (isError) {
-            mergeDrawableStates(drawableState, STATE_ERROR)
-        }
-        return drawableState
-    }
 
     private fun setLabelText(text: String, required: Boolean) {
         if(required){
@@ -87,10 +78,14 @@ class LabelEditText @JvmOverloads constructor(
     }
 
     fun setError(error: Boolean) {
-        if (isError != error) {
-            isError = error
-            refreshDrawableState()
+        if(error){
+            editText.background = ContextCompat.getDrawable(context, R.drawable.edit_text_bg_danger)
+            editText.setTextColor(context.getColor(R.color.danger))
+        }else{
+            editText.background = ContextCompat.getDrawable(context, R.drawable.edit_text_bg)
+            editText.setTextColor(context.getColor(R.color.black))
         }
+
     }
 
     private fun setPasswordInput(){
@@ -113,5 +108,9 @@ class LabelEditText @JvmOverloads constructor(
             }
             editText.setSelection(editText.text.length)
         }
+    }
+
+    fun onTextChanged(listener: (text: CharSequence?, start: Int, before: Int, count: Int) -> Unit) {
+        editText.doOnTextChanged(listener)
     }
 }

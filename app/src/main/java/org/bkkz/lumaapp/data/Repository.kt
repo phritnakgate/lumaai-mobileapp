@@ -3,6 +3,7 @@ package org.bkkz.lumaapp.data
 import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.bkkz.lumaapp.data.entity.auth.EmailRegistrationRequest
 import org.bkkz.lumaapp.data.entity.auth.EmailSignInRequest
 import org.bkkz.lumaapp.data.entity.auth.EmailSignInResponse
 import org.bkkz.lumaapp.data.entity.auth.GoogleSignInRequest
@@ -103,12 +104,25 @@ class Repository(
 
     suspend fun logout() = withContext(Dispatchers.IO) {
         val refreshToken = tokenManager.getRefreshToken()
+        Log.d("AuthRepository", "Logout with $refreshToken")
         try {
             val response = lumaApi.logout(LogoutRequest(refreshToken!!))
             tokenManager.clearTokens()
             if (!response.isSuccessful) throw Exception("Failed to logout")
         }catch (e: Exception){
             Log.e("AuthRepository", "Logout failed", e)
+        }
+    }
+
+    suspend fun registerWithEmail(email: String, password: String, name: String ) = withContext(Dispatchers.IO){
+        try {
+            val (codeVerifier, codeChallenge) = generatePkceChallenge()
+            val response = lumaApi.registerWithEmail(EmailRegistrationRequest(email,password,name,codeChallenge))
+            exchangeCodeForToken(response.authorizationCode, codeVerifier)
+            ApiResult.Success(Unit)
+        }catch (e: Exception) {
+            Log.e("AuthRepository", "Email registration failed", e)
+            ApiResult.Error(e)
         }
     }
 

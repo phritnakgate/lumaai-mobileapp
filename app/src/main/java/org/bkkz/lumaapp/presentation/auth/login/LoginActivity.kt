@@ -3,16 +3,12 @@ package org.bkkz.lumaapp.presentation.auth.login
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.widget.EditText
+import android.util.Patterns
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.credentials.CredentialManager
 import androidx.credentials.CustomCredential
 import androidx.credentials.GetCredentialRequest
@@ -31,10 +27,12 @@ import com.google.firebase.auth.auth
 import kotlinx.coroutines.launch
 import org.bkkz.lumaapp.BuildConfig
 import org.bkkz.lumaapp.R
-import org.bkkz.lumaapp.presentation.auth.login.state.LoginState
+import org.bkkz.lumaapp.presentation.auth.login.state.LoginEvent
 import org.bkkz.lumaapp.presentation.auth.register.RegisterActivity
 import org.bkkz.lumaapp.presentation.main.home.HomeActivity
 import org.bkkz.lumaapp.util.LabelEditText
+import org.bkkz.lumaapp.util.dialog.LoadingDialog
+import org.bkkz.lumaapp.util.dialog.OneActionDialog
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class LoginActivity : AppCompatActivity() {
@@ -48,6 +46,7 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var emailSignInBtn: AppCompatButton
     private lateinit var googleSignInBtn : ConstraintLayout
     private lateinit var txtSignUp : TextView
+    private lateinit var loadingDialog: LoadingDialog
 
     //Google Auth
     private lateinit var auth : FirebaseAuth
@@ -69,6 +68,7 @@ class LoginActivity : AppCompatActivity() {
         emailSignInBtn = findViewById(R.id.compatbtn_login_login)
         googleSignInBtn = findViewById(R.id.constraintlayout_login_google_button)
         txtSignUp = findViewById(R.id.txtview_login_register)
+        loadingDialog = LoadingDialog(this@LoginActivity)
     }
     private fun setupViews(){
 
@@ -78,22 +78,27 @@ class LoginActivity : AppCompatActivity() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED){
                 viewModel.state.collect { state ->
+                    if (loadingDialog.isShowing) {
+                        loadingDialog.dismiss()
+                    }
                     when(state) {
-                        is LoginState.Loading -> {
-                           //TODO: Decorate loading state
+                        is LoginEvent.Loading -> {
+                            loadingDialog.show()
                             emailSignInBtn.isEnabled = false
-                            Toast.makeText(this@LoginActivity, "Logging in...", Toast.LENGTH_SHORT).show()
                         }
-                        is LoginState.Idle -> {
+                        is LoginEvent.Idle -> {
                             emailSignInBtn.isEnabled = true
                         }
-                        is LoginState.Error -> {
-                            //TODO: Add popup
+                        is LoginEvent.Error -> {
                             emailSignInBtn.isEnabled = true
-                            Toast.makeText(this@LoginActivity, "Invalid Email or Password!", Toast.LENGTH_SHORT).show()
+                            OneActionDialog(this@LoginActivity).show(
+                                drawable = R.drawable.ic_dialog_no,
+                                title = "Authentication Failed!",
+                                message = "Email or Password Incorrect!",
+                            )
 
                         }
-                        is LoginState.Success -> {
+                        is LoginEvent.Success -> {
                             val intent = Intent(this@LoginActivity, HomeActivity::class.java)
                             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                             startActivity(intent)
@@ -109,6 +114,8 @@ class LoginActivity : AppCompatActivity() {
         setupEmailSignInBtn()
         setupGoogleSignInBtn()
         setupSignUpBtn()
+        setupEdtEmail()
+        setupEdtPassword()
     }
 
     private fun setupEmailSignInBtn(){
@@ -215,6 +222,25 @@ class LoginActivity : AppCompatActivity() {
         txtSignUp.setOnClickListener {
             val intent = Intent(this@LoginActivity, RegisterActivity::class.java)
             startActivity(intent)
+        }
+    }
+
+    private fun setupEdtEmail(){
+        edtEmail.onTextChanged { text, start, before, count ->
+            if(text.isNullOrBlank() || !Patterns.EMAIL_ADDRESS.matcher(text).matches()){
+                edtEmail.setError(true)
+            }else{
+                edtEmail.setError(false)
+            }
+        }
+    }
+    private fun setupEdtPassword(){
+        edtPassword.onTextChanged { text, start, before, count ->
+            if(text.isNullOrBlank()){
+                edtPassword.setError(true)
+            }else{
+                edtPassword.setError(false)
+            }
         }
     }
 }

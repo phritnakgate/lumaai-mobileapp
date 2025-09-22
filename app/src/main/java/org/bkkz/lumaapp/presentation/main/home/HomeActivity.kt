@@ -20,9 +20,14 @@ import org.bkkz.lumaapp.presentation.main.task.view_task.ViewTaskActivity
 import org.bkkz.lumaapp.util.component.chat_history.ChatHistoryListAdapter
 import org.bkkz.lumaapp.util.component.chat_history.ChatHistoryListDecoration
 import org.bkkz.lumaapp.util.component.chat_history.ReadAllHistoryBottomSheet
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class HomeActivity : AppCompatActivity(), ChatHistoryListAdapter.OnChatHistoryListener {
 
+    //ViewModel
+    private val viewModel : HomeViewModel by viewModel()
+
+    //UI
     private lateinit var logoutBtn : ConstraintLayout
     private lateinit var talkBtn : ConstraintLayout
     private lateinit var taskBtn : ConstraintLayout
@@ -86,7 +91,7 @@ class HomeActivity : AppCompatActivity(), ChatHistoryListAdapter.OnChatHistoryLi
     private fun setupLogoutBtn(){
         logoutBtn.setOnClickListener {
             lifecycleScope.launch {
-                //TODO : ADD LOGOUT FROM REPO
+                viewModel.logout()
                 val intent = Intent(this@HomeActivity, LandingActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 startActivity(intent)
