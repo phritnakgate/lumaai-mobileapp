@@ -68,8 +68,11 @@ class CalendarFragment : Fragment() {
             viewModel.state.collect { state ->
                 val layoutManager = GridLayoutManager(requireContext(), 7)
                 val events: Set<LocalDate> = state.allMonthlyEventsDate
+                val vmSelectedDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(state.selectedDate)
+                currentMonthDate = Date.from(state.selectedMonth.atDay(1).atStartOfDay(ZoneId.systemDefault()).toInstant())
+                loadedDates = generateDaysInMonth(currentMonthDate!!)
 
-                calendarAdapter = CalendarAdapter(events, requireContext(), null, currentMonthDate!!) { clickedDay ->
+                calendarAdapter = CalendarAdapter(events, requireContext(), vmSelectedDate, currentMonthDate!!) { clickedDay ->
                     val localDate = clickedDay.date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
                     val formattedDate = localDate.format(DateTimeFormatter.ISO_LOCAL_DATE)
                     viewModel.onEvent(ViewTaskEvent.OnUserSelectedDate(formattedDate))

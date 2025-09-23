@@ -32,14 +32,14 @@ class ViewTaskDailyFragment : Fragment() {
     private val viewModel: ViewTaskViewModel by activityViewModel()
 
     //UI
-    private lateinit var backMonth : ImageView
-    private lateinit var txtViewCurrentMonth : TextView
-    private lateinit var forwardMonth : ImageView
+    private lateinit var backMonth: ImageView
+    private lateinit var txtViewCurrentMonth: TextView
+    private lateinit var forwardMonth: ImageView
     private lateinit var viewPagerCalendar: ViewPager2
-    private lateinit var addTaskBtn : ConstraintLayout
-    private lateinit var recyclerTaskLists : RecyclerView
-    private lateinit var imgViewNoTask : ImageView
-    private lateinit var txtViewNoTask : TextView
+    private lateinit var addTaskBtn: ConstraintLayout
+    private lateinit var recyclerTaskLists: RecyclerView
+    private lateinit var imgViewNoTask: ImageView
+    private lateinit var txtViewNoTask: TextView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -56,7 +56,7 @@ class ViewTaskDailyFragment : Fragment() {
         setupEvents()
     }
 
-    private fun findView(){
+    private fun findView() {
         backMonth = requireView().findViewById(R.id.imgview_daily_task_month_back)
         txtViewCurrentMonth = requireView().findViewById(R.id.txtview_daily_task_month)
         forwardMonth = requireView().findViewById(R.id.imgview_daily_task_month_forward)
@@ -66,35 +66,27 @@ class ViewTaskDailyFragment : Fragment() {
         imgViewNoTask = requireView().findViewById(R.id.imgview_daily_task_no_task)
         txtViewNoTask = requireView().findViewById(R.id.txtview_daily_task_no_task)
     }
-    private fun setupView(){
-        setMonthTitle(viewModel.state.value.selectedMonth)
 
+    private fun setupView() {
         //Adapter for calendar
         val adapter = CalendarViewPagerAdapter(requireActivity())
         viewPagerCalendar.adapter = adapter
         viewPagerCalendar.setCurrentItem(viewModel.state.value.selectedMonthPosition, false)
-        viewPagerCalendar.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+        viewPagerCalendar.registerOnPageChangeCallback(object :
+            ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
                 val ym = yearMonthFor(position)
-                setMonthTitle(ym)
                 viewModel.onEvent(ViewTaskEvent.OnUserSelectedMonth(position, ym))
             }
         })
-
-        //Adapter for Task
-        recyclerTaskLists.layoutManager =
-            LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-        recyclerTaskLists.adapter = TaskListAdapter(emptyList())
-        if(recyclerTaskLists.adapter?.itemCount == 0){
-            recyclerTaskLists.visibility = View.GONE
-            imgViewNoTask.visibility = View.VISIBLE
-            txtViewNoTask.visibility = View.VISIBLE
-        }
-
-        //ViewModel Observer
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.state.collect { state ->
+                setMonthTitle(state.selectedMonth)
+                //Adapter for Task
+                recyclerTaskLists.layoutManager =
+                    LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+
                 val dailyTasks = state.allDailyUserTasks
                 if (dailyTasks.isNullOrEmpty()) {
                     recyclerTaskLists.visibility = View.GONE
@@ -106,11 +98,11 @@ class ViewTaskDailyFragment : Fragment() {
                     txtViewNoTask.visibility = View.GONE
                     recyclerTaskLists.adapter = TaskListAdapter(dailyTasks)
                 }
-                //viewPagerCalendar.setCurrentItem(state.selectedMonthPosition, false)
             }
         }
     }
-    private fun setupEvents(){
+
+    private fun setupEvents() {
         backMonth.setOnClickListener {
             val position = viewPagerCalendar.currentItem - 1
             viewPagerCalendar.currentItem = position

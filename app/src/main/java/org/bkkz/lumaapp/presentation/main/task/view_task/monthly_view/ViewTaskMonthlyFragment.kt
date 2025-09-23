@@ -28,11 +28,11 @@ class ViewTaskMonthlyFragment : Fragment() {
     private val viewModel: ViewTaskViewModel by activityViewModel()
 
     //UI
-    private lateinit var backMonth : ImageView
-    private lateinit var txtViewCurrentMonth : TextView
-    private lateinit var forwardMonth : ImageView
-    private lateinit var addTaskBtn : ConstraintLayout
-    private lateinit var viewPagerTaskLists : ViewPager2
+    private lateinit var backMonth: ImageView
+    private lateinit var txtViewCurrentMonth: TextView
+    private lateinit var forwardMonth: ImageView
+    private lateinit var addTaskBtn: ConstraintLayout
+    private lateinit var viewPagerTaskLists: ViewPager2
 
     //Variable
     private val baseYm: YearMonth = YearMonth.now()
@@ -52,7 +52,7 @@ class ViewTaskMonthlyFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_view_task_monthly, container, false)
     }
 
-    private fun findView(){
+    private fun findView() {
         backMonth = requireView().findViewById(R.id.imgview_monthly_task_month_back)
         txtViewCurrentMonth = requireView().findViewById(R.id.txtview_monthly_task_month)
         forwardMonth = requireView().findViewById(R.id.imgview_monthly_task_month_forward)
@@ -60,26 +60,32 @@ class ViewTaskMonthlyFragment : Fragment() {
         viewPagerTaskLists = requireView().findViewById(R.id.viewpager_monthly_task)
 
     }
-    private fun setupView(){
 
-
-        setMonthTitle(viewModel.state.value.selectedMonth)
+    private fun setupView() {
         //Adapter for MonthlyTask
         val adapter = MonthlyViewPagerAdapter(requireActivity())
         viewPagerTaskLists.adapter = adapter
-        viewPagerTaskLists.setCurrentItem(viewModel.state.value.selectedMonthPosition, false)
-        viewPagerTaskLists.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+        viewPagerTaskLists.setCurrentItem(
+            viewModel.state.value.selectedMonthPosition,
+            false
+        )
+        viewPagerTaskLists.registerOnPageChangeCallback(object :
+            ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
                 val ym = yearMonthFor(position)
-                setMonthTitle(ym)
                 viewModel.onEvent(ViewTaskEvent.OnUserSelectedMonth(position, ym))
 
             }
         })
-
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.state.collect { state ->
+                setMonthTitle(state.selectedMonth)
+            }
+        }
     }
-    private fun setupEvents(){
+
+    private fun setupEvents() {
         backMonth.setOnClickListener {
             viewPagerTaskLists.currentItem = viewPagerTaskLists.currentItem - 1
         }
