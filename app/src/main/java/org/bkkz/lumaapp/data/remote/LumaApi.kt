@@ -8,9 +8,12 @@ import org.bkkz.lumaapp.data.entity.auth.GoogleSignInRequest
 import org.bkkz.lumaapp.data.entity.auth.LogoutRequest
 import org.bkkz.lumaapp.data.entity.auth.TokenRequest
 import org.bkkz.lumaapp.data.entity.auth.TokenResponse
+import org.bkkz.lumaapp.data.entity.task.Task
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Query
 
 interface LumaApi {
 
@@ -39,4 +42,10 @@ interface LumaApi {
     suspend fun logout(
         @Body logoutRequest: LogoutRequest
     ) : Response<Unit>
+
+    /*=========== TASK API ===========*/
+    @GET("task/my-tasks")
+    suspend fun getUserTasks(
+        @Query("date") date : String
+    ) : Response<ApiResponse<Task>>
 }

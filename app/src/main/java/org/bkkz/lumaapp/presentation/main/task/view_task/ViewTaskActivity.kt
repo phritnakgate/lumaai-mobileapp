@@ -1,19 +1,29 @@
 package org.bkkz.lumaapp.presentation.main.task.view_task
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.ImageView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import kotlinx.coroutines.launch
 import org.bkkz.lumaapp.R
-import org.bkkz.lumaapp.util.ViewTaskPagerAdapter
+import org.bkkz.lumaapp.presentation.main.task.view_task.adapter.ViewTaskPagerAdapter
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.text.SimpleDateFormat
+import java.util.Date
 
 class ViewTaskActivity : AppCompatActivity() {
 
+    //ViewModel
+    private val viewModel : ViewTaskViewModel by viewModel()
+
+    //UI
     private lateinit var homeBtn : ImageView
     private lateinit var tabLayout : TabLayout
     private lateinit var taskView : ViewPager2
@@ -49,6 +59,15 @@ class ViewTaskActivity : AppCompatActivity() {
                 else -> null
             }
         }.attach()
+
+        val formatted = SimpleDateFormat("yyyy-MM-dd").format(Date())
+        Log.d("ViewTaskActivity",formatted)
+
+        lifecycleScope.launch {
+            viewModel.getAllUserTask(formatted)
+        }
+
+
     }
     private fun setupEvents(){
         homeBtn.setOnClickListener {

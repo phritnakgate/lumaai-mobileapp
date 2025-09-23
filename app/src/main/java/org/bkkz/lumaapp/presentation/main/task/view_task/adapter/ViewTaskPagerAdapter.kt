@@ -1,4 +1,4 @@
-package org.bkkz.lumaapp.util
+package org.bkkz.lumaapp.presentation.main.task.view_task.adapter
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity

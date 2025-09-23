@@ -11,6 +11,7 @@ import org.bkkz.lumaapp.data.entity.auth.EmailSignInResponse
 import org.bkkz.lumaapp.data.entity.auth.GoogleSignInRequest
 import org.bkkz.lumaapp.data.entity.auth.LogoutRequest
 import org.bkkz.lumaapp.data.entity.auth.TokenRequest
+import org.bkkz.lumaapp.data.entity.task.Task
 import org.bkkz.lumaapp.data.local.TokenManager
 import org.bkkz.lumaapp.data.local.UserChat
 import org.bkkz.lumaapp.data.local.UserChatDao
@@ -163,5 +164,22 @@ class Repository(
         val hashedBytes = digest.digest(codeVerifier.toByteArray(StandardCharsets.US_ASCII))
         val codeChallenge = Base64.getUrlEncoder().withoutPadding().encodeToString(hashedBytes)
         return Pair(codeVerifier, codeChallenge)
+    }
+
+    suspend fun getAllUserTasks(date : String) : ApiResult<List<Task>?> = withContext(Dispatchers.IO){
+        try{
+            val response = lumaApi.getUserTasks(date).body()
+            if(response == null){
+                val taskList = emptyList<Task>()
+                ApiResult.Success(taskList)
+            }else{
+                val taskList = response.results
+                ApiResult.Success(taskList)
+            }
+
+        } catch (e: Exception){
+            Log.e("Repository","Failed to get task bc ${e.message}")
+            ApiResult.Error(Exception(e.message))
+        }
     }
 }

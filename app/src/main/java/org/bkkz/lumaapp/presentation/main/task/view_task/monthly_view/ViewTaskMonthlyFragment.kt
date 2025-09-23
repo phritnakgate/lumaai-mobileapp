@@ -9,19 +9,20 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.viewpager2.widget.ViewPager2
 import org.bkkz.lumaapp.R
 import org.bkkz.lumaapp.presentation.main.task.add_task.AddTaskActivity
+import org.bkkz.lumaapp.presentation.main.task.view_task.ViewTaskViewModel
+import org.bkkz.lumaapp.presentation.main.task.view_task.daily_view.calendar.CalendarViewPagerAdapter
 import org.bkkz.lumaapp.presentation.main.task.view_task.monthly_view.adapter.MonthlyViewPagerAdapter
-import org.bkkz.lumaapp.util.CalendarViewPagerAdapter
 import org.bkkz.lumaapp.util.mapper.MonthStringMapper
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import java.time.YearMonth
 
 class ViewTaskMonthlyFragment : Fragment() {
 
     //ViewModel
-    private val viewModel: ViewTaskMonthlyViewModel by activityViewModels() //Change to koin vm later
+    private val viewModel: ViewTaskViewModel by activityViewModel()
 
     //UI
     private lateinit var backMonth : ImageView
@@ -68,10 +69,10 @@ class ViewTaskMonthlyFragment : Fragment() {
                 super.onPageSelected(position)
                 val ym = yearMonthFor(position)
                 setMonthTitle(ym)
-                viewModel.loadTasksFor(ym)
+
             }
         })
-        viewModel.loadTasksFor(baseYm)
+
     }
     private fun setupEvents(){
         backMonth.setOnClickListener {

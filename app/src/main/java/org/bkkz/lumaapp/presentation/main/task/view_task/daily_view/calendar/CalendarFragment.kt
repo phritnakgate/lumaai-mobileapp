@@ -1,21 +1,28 @@
-package org.bkkz.lumaapp.util
+package org.bkkz.lumaapp.presentation.main.task.view_task.daily_view.calendar
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import org.bkkz.lumaapp.R
 import org.bkkz.lumaapp.data.entity.calendar.CalendarDay
+import org.bkkz.lumaapp.presentation.main.task.view_task.ViewTaskViewModel
+import org.bkkz.lumaapp.presentation.main.task.view_task.state.ViewTaskEvent
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import java.text.SimpleDateFormat
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
 class CalendarFragment : Fragment() {
+
+    private val viewModel: ViewTaskViewModel by activityViewModel()
 
     private lateinit var loadedDates: List<CalendarDay>
     private var currentMonthDate: Date? = null
@@ -56,11 +63,13 @@ class CalendarFragment : Fragment() {
 
     private fun setupView() {
         val layoutManager = GridLayoutManager(requireContext(), 7)
-        //TEMP MOCK EVENTS
         val events: List<Date> = listOf(Date())
 
         calendarAdapter = CalendarAdapter(events, requireContext(), null, currentMonthDate!!) { clickedDay ->
-            Toast.makeText(requireContext(), "Clicked on: ${clickedDay.date}", Toast.LENGTH_SHORT).show()
+            val localDate = clickedDay.date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
+            val formattedDate = localDate.format(DateTimeFormatter.ISO_LOCAL_DATE)
+            viewModel.onEvent(ViewTaskEvent.OnUserSelectedDate(formattedDate))
+            Toast.makeText(requireContext(), "Clicked on: $formattedDate", Toast.LENGTH_SHORT).show()
         }
 
         calendarRecyclerView.layoutManager = layoutManager

@@ -2,47 +2,34 @@ package org.bkkz.lumaapp.presentation.main.task.view_task.daily_view
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
+import kotlinx.coroutines.launch
 import org.bkkz.lumaapp.R
-import org.bkkz.lumaapp.data.entity.task.Task
 import org.bkkz.lumaapp.presentation.main.task.add_task.AddTaskActivity
+import org.bkkz.lumaapp.presentation.main.task.view_task.ViewTaskViewModel
 import org.bkkz.lumaapp.presentation.main.task.view_task.daily_view.adapter.TaskListAdapter
-import org.bkkz.lumaapp.util.CalendarViewPagerAdapter
+import org.bkkz.lumaapp.presentation.main.task.view_task.daily_view.calendar.CalendarViewPagerAdapter
 import org.bkkz.lumaapp.util.mapper.MonthStringMapper
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import java.time.YearMonth
 
 class ViewTaskDailyFragment : Fragment() {
 
-    //TEMPORARY DATA FOR TESTING CHANGE TO SERVICE INSTEAD\\
-    private val mockData: List<Task> = listOf(
-        Task(
-            id = "-OY9HJ4mDW-BGyoqbWdj",
-            name = "ทดสอบ 1",
-            description = "ทดสอบบบบบบบบบบบบบบบบบบบบบบบบบบบบบบบบบ",
-            dateTime = "2025-09-01T17:00:00.0615169+07:00",
-            isFinished = true,
-            userId = "532QI5E8sJdgzMo4ao0k4ucqyi03"
-        ),
-        Task(
-            id = "-OY9HgBvvgtwgvOV4sEK",
-            name = "Task with only Date",
-            description = "",
-            dateTime = "2025-09-01T08:41:40.0615169+07:00",
-            isFinished = false,
-            userId = "532QI5E8sJdgzMo4ao0k4ucqyi03"
-        )
-    )
-    private val mockEmptyData: List<Task> = listOf()
     private val baseYm: YearMonth = YearMonth.now()
+
+    //ViewModel
+    private val viewModel: ViewTaskViewModel by activityViewModel()
+
     //UI
     private lateinit var backMonth : ImageView
     private lateinit var txtViewCurrentMonth : TextView
@@ -97,11 +84,28 @@ class ViewTaskDailyFragment : Fragment() {
         //Adapter for Task
         recyclerTaskLists.layoutManager =
             LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-        recyclerTaskLists.adapter = TaskListAdapter(mockData)
+        recyclerTaskLists.adapter = TaskListAdapter(emptyList())
         if(recyclerTaskLists.adapter?.itemCount == 0){
             recyclerTaskLists.visibility = View.GONE
             imgViewNoTask.visibility = View.VISIBLE
             txtViewNoTask.visibility = View.VISIBLE
+        }
+
+        //ViewModel Observer
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.state.collect { state ->
+                val dailyTasks = state.allDailyUserTasks
+                if (dailyTasks.isNullOrEmpty()) {
+                    recyclerTaskLists.visibility = View.GONE
+                    imgViewNoTask.visibility = View.VISIBLE
+                    txtViewNoTask.visibility = View.VISIBLE
+                } else {
+                    recyclerTaskLists.visibility = View.VISIBLE
+                    imgViewNoTask.visibility = View.GONE
+                    txtViewNoTask.visibility = View.GONE
+                    recyclerTaskLists.adapter = TaskListAdapter(dailyTasks)
+                }
+            }
         }
     }
     private fun setupEvents(){

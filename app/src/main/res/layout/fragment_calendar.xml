@@ -6,7 +6,7 @@
     android:paddingHorizontal="20dp"
     android:background="@drawable/view_task_tab_bg"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".util.CalendarFragment">
+    tools:context=".presentation.main.task.view_task.daily_view.calendar.CalendarFragment">
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">

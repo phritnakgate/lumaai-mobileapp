@@ -34,7 +34,7 @@ class AuthInterceptor() : Interceptor, KoinComponent {
             if(tokenManager.getAccessToken() != null){
                 val newRequest = originalRequest.newBuilder().addHeader("Authorization","Bearer $accessToken").build()
                 response.close()
-                Log.i("AuthInterceptor","New Request Send!")
+                Log.i("AuthInterceptor","New Request ${newRequest.url.encodedPath} Send!")
                 return chain.proceed(newRequest)
             }
         }
