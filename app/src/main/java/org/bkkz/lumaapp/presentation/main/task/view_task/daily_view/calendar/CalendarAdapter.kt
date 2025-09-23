@@ -1,6 +1,7 @@
 package org.bkkz.lumaapp.presentation.main.task.view_task.daily_view.calendar
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,11 +13,13 @@ import androidx.recyclerview.widget.RecyclerView
 import org.bkkz.lumaapp.R
 import org.bkkz.lumaapp.data.entity.calendar.CalendarDay
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.ZoneId
 import java.util.Date
 import java.util.Locale
 
 class CalendarAdapter(
-    val events: List<Date>,
+    val events: Set<LocalDate>,
     val context: Context,
     initialSelectedDate: Date?,
     val currentMonth: Date,
@@ -88,7 +91,11 @@ class CalendarAdapter(
             holder.dateCell.setBackgroundResource(android.R.color.transparent)
             holder.dateCell.setOnClickListener(null)
         }
-        val hasEvent = events.any { areDatesEqual(it, calendarDay.date) }
+        val dayLocalDate = calendarDay.date.toInstant()
+            .atZone(ZoneId.systemDefault())
+            .toLocalDate()
+        val hasEvent = events.contains(dayLocalDate)
+        //Log.i("CalendarAdapter","Generated: $dayLocalDate | hasEvent: $hasEvent\nEvents : $events")
         holder.eventLine.visibility = if (hasEvent) View.VISIBLE else View.GONE
     }
 

@@ -14,6 +14,8 @@ import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.launch
 import org.bkkz.lumaapp.R
 import org.bkkz.lumaapp.presentation.main.task.view_task.adapter.ViewTaskPagerAdapter
+import org.bkkz.lumaapp.presentation.main.task.view_task.state.ViewTaskEvent
+import org.bkkz.lumaapp.util.dialog.LoadingDialog
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -27,11 +29,12 @@ class ViewTaskActivity : AppCompatActivity() {
     private lateinit var homeBtn : ImageView
     private lateinit var tabLayout : TabLayout
     private lateinit var taskView : ViewPager2
+    private lateinit var loadingDialog : LoadingDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContentView(R.layout.activity_view_task)
+        enableEdgeToEdge()
 
         findView()
         setupView()
@@ -48,6 +51,7 @@ class ViewTaskActivity : AppCompatActivity() {
         homeBtn = findViewById(R.id.imgview_view_task_home)
         tabLayout = findViewById(R.id.tablayout_view_task)
         taskView = findViewById(R.id.viewpager_view_task)
+        loadingDialog = LoadingDialog(this@ViewTaskActivity)
     }
     private fun setupView(){
         val pagerAdapter = ViewTaskPagerAdapter(this@ViewTaskActivity)
@@ -60,13 +64,17 @@ class ViewTaskActivity : AppCompatActivity() {
             }
         }.attach()
 
-        val formatted = SimpleDateFormat("yyyy-MM-dd").format(Date())
-        Log.d("ViewTaskActivity",formatted)
+        viewModel.onEvent(ViewTaskEvent.LoadFirstTimeTasks)
 
         lifecycleScope.launch {
-            viewModel.getAllUserTask(formatted)
+            viewModel.state.collect { state ->
+                if (state.isLoading) {
+                    loadingDialog.show()
+                } else {
+                    loadingDialog.dismiss()
+                }
+            }
         }
-
 
     }
     private fun setupEvents(){

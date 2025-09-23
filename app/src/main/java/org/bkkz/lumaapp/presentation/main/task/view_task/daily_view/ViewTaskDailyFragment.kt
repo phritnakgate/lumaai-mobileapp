@@ -19,6 +19,7 @@ import org.bkkz.lumaapp.presentation.main.task.add_task.AddTaskActivity
 import org.bkkz.lumaapp.presentation.main.task.view_task.ViewTaskViewModel
 import org.bkkz.lumaapp.presentation.main.task.view_task.daily_view.adapter.TaskListAdapter
 import org.bkkz.lumaapp.presentation.main.task.view_task.daily_view.calendar.CalendarViewPagerAdapter
+import org.bkkz.lumaapp.presentation.main.task.view_task.state.ViewTaskEvent
 import org.bkkz.lumaapp.util.mapper.MonthStringMapper
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import java.time.YearMonth
@@ -66,18 +67,18 @@ class ViewTaskDailyFragment : Fragment() {
         txtViewNoTask = requireView().findViewById(R.id.txtview_daily_task_no_task)
     }
     private fun setupView(){
-        setMonthTitle(baseYm)
+        setMonthTitle(viewModel.state.value.selectedMonth)
 
         //Adapter for calendar
         val adapter = CalendarViewPagerAdapter(requireActivity())
         viewPagerCalendar.adapter = adapter
-        viewPagerCalendar.setCurrentItem(CalendarViewPagerAdapter.START_POSITION, false)
+        viewPagerCalendar.setCurrentItem(viewModel.state.value.selectedMonthPosition, false)
         viewPagerCalendar.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
-                //TODO: Implement ViewModel when Implement services
                 super.onPageSelected(position)
                 val ym = yearMonthFor(position)
                 setMonthTitle(ym)
+                viewModel.onEvent(ViewTaskEvent.OnUserSelectedMonth(position, ym))
             }
         })
 
@@ -105,15 +106,18 @@ class ViewTaskDailyFragment : Fragment() {
                     txtViewNoTask.visibility = View.GONE
                     recyclerTaskLists.adapter = TaskListAdapter(dailyTasks)
                 }
+                //viewPagerCalendar.setCurrentItem(state.selectedMonthPosition, false)
             }
         }
     }
     private fun setupEvents(){
         backMonth.setOnClickListener {
-            viewPagerCalendar.currentItem = viewPagerCalendar.currentItem - 1
+            val position = viewPagerCalendar.currentItem - 1
+            viewPagerCalendar.currentItem = position
         }
         forwardMonth.setOnClickListener {
-            viewPagerCalendar.currentItem = viewPagerCalendar.currentItem + 1
+            val position = viewPagerCalendar.currentItem + 1
+            viewPagerCalendar.currentItem = position
         }
         addTaskBtn.setOnClickListener {
             val intent = Intent(requireContext(), AddTaskActivity::class.java)

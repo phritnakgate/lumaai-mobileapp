@@ -9,12 +9,15 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
+import kotlinx.coroutines.launch
 import org.bkkz.lumaapp.R
 import org.bkkz.lumaapp.presentation.main.task.add_task.AddTaskActivity
 import org.bkkz.lumaapp.presentation.main.task.view_task.ViewTaskViewModel
 import org.bkkz.lumaapp.presentation.main.task.view_task.daily_view.calendar.CalendarViewPagerAdapter
 import org.bkkz.lumaapp.presentation.main.task.view_task.monthly_view.adapter.MonthlyViewPagerAdapter
+import org.bkkz.lumaapp.presentation.main.task.view_task.state.ViewTaskEvent
 import org.bkkz.lumaapp.util.mapper.MonthStringMapper
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import java.time.YearMonth
@@ -58,17 +61,19 @@ class ViewTaskMonthlyFragment : Fragment() {
 
     }
     private fun setupView(){
-        setMonthTitle(baseYm)
+
+
+        setMonthTitle(viewModel.state.value.selectedMonth)
         //Adapter for MonthlyTask
         val adapter = MonthlyViewPagerAdapter(requireActivity())
         viewPagerTaskLists.adapter = adapter
-        viewPagerTaskLists.setCurrentItem(MonthlyViewPagerAdapter.START_POSITION, false)
+        viewPagerTaskLists.setCurrentItem(viewModel.state.value.selectedMonthPosition, false)
         viewPagerTaskLists.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
-                //TODO: Implement ViewModel when Implement services
                 super.onPageSelected(position)
                 val ym = yearMonthFor(position)
                 setMonthTitle(ym)
+                viewModel.onEvent(ViewTaskEvent.OnUserSelectedMonth(position, ym))
 
             }
         })
