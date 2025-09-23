@@ -4,7 +4,9 @@ import com.google.gson.annotations.SerializedName
 
 data class EmailRegistrationResponse(
     @SerializedName("authorization_code")
-    val authorizationCode : String,
+    val authorizationCode : String? = null,
     @SerializedName("result")
-    val result : String
+    val result : String? = null,
+    @SerializedName("error")
+    val error : String? = null
 )

@@ -1,9 +1,11 @@
 package org.bkkz.lumaapp.data
 
 import android.util.Log
+import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.bkkz.lumaapp.data.entity.auth.EmailRegistrationRequest
+import org.bkkz.lumaapp.data.entity.auth.EmailRegistrationResponse
 import org.bkkz.lumaapp.data.entity.auth.EmailSignInRequest
 import org.bkkz.lumaapp.data.entity.auth.EmailSignInResponse
 import org.bkkz.lumaapp.data.entity.auth.GoogleSignInRequest
@@ -14,6 +16,7 @@ import org.bkkz.lumaapp.data.local.UserChat
 import org.bkkz.lumaapp.data.local.UserChatDao
 import org.bkkz.lumaapp.data.remote.ApiResult
 import org.bkkz.lumaapp.data.remote.LumaApi
+import retrofit2.HttpException
 import java.nio.charset.StandardCharsets
 import java.security.MessageDigest
 import java.security.SecureRandom
@@ -52,16 +55,14 @@ class Repository(
     suspend fun loginWithEmail(email: String, password: String): ApiResult<Unit> = withContext(
         Dispatchers.IO) {
         try {
-            // 1. Generate PKCE
             val (codeVerifier, codeChallenge) = generatePkceChallenge()
-
-            // 2. Request Authorization Code
             val authCode = requestAuthorizationCode(email, password, codeChallenge)
-
-            // 3. Exchange Code for Token
-            exchangeCodeForToken(authCode.code, codeVerifier)
-
+            exchangeCodeForToken(authCode.code!!, codeVerifier)
             ApiResult.Success(Unit) // Return success
+
+        } catch (e : HttpException){
+            Log.e("AuthRepository", "Email login failed ${e.response()?.errorBody()?.string()}")
+            ApiResult.Error(Exception("Incorrect Email or Password"))
         } catch (e: Exception) {
             Log.e("AuthRepository", "Email login failed", e)
             ApiResult.Error(e)
@@ -105,9 +106,9 @@ class Repository(
     suspend fun logout() = withContext(Dispatchers.IO) {
         val refreshToken = tokenManager.getRefreshToken()
         Log.d("AuthRepository", "Logout with $refreshToken")
+        tokenManager.clearTokens()
         try {
             val response = lumaApi.logout(LogoutRequest(refreshToken!!))
-            tokenManager.clearTokens()
             if (!response.isSuccessful) throw Exception("Failed to logout")
         }catch (e: Exception){
             Log.e("AuthRepository", "Logout failed", e)
@@ -118,9 +119,19 @@ class Repository(
         try {
             val (codeVerifier, codeChallenge) = generatePkceChallenge()
             val response = lumaApi.registerWithEmail(EmailRegistrationRequest(email,password,name,codeChallenge))
-            exchangeCodeForToken(response.authorizationCode, codeVerifier)
-            ApiResult.Success(Unit)
-        }catch (e: Exception) {
+            if(response.error != null){
+                ApiResult.Error(Exception(response.error))
+            }else{
+                exchangeCodeForToken(response.authorizationCode!!, codeVerifier)
+                ApiResult.Success(Unit)
+            }
+        }catch (e : HttpException){
+            val body = e.response()?.errorBody()?.string()
+            val response = Gson().fromJson(body, EmailRegistrationResponse::class.java)
+            Log.e("AuthRepository", "Email registration failed $body")
+            ApiResult.Error(Exception(response.error))
+        }
+        catch (e: Exception) {
             Log.e("AuthRepository", "Email registration failed", e)
             ApiResult.Error(e)
         }

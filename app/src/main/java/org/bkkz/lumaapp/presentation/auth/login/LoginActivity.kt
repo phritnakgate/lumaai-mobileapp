@@ -93,8 +93,8 @@ class LoginActivity : AppCompatActivity() {
                             emailSignInBtn.isEnabled = true
                             OneActionDialog(this@LoginActivity).show(
                                 drawable = R.drawable.ic_dialog_no,
-                                title = "Authentication Failed!",
-                                message = "Email or Password Incorrect!",
+                                title = getString(R.string.login_failed_dialog_title),
+                                message = getString(R.string.login_failed_dialog_desc),
                             )
 
                         }
@@ -122,19 +122,20 @@ class LoginActivity : AppCompatActivity() {
         emailSignInBtn.setOnClickListener {
             val email = edtEmail.text
             val password = edtPassword.text
-
-            edtEmail.setError(false)
-            edtPassword.setError(false)
+            var errorFlag = false
 
             if(email.isBlank() || email.isEmpty()){
                 edtEmail.setError(true)
-                return@setOnClickListener
+                errorFlag = true
             }
             if(password.isBlank() || password.isEmpty()){
                 edtPassword.setError(true)
-                return@setOnClickListener
+                errorFlag = true
             }
-            viewModel.loginWithEmail(email, password)
+            if(!errorFlag){
+                viewModel.loginWithEmail(email, password)
+            }
+
         }
     }
 

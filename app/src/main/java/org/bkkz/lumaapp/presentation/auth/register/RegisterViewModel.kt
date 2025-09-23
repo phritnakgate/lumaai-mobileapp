@@ -14,6 +14,7 @@ class RegisterViewModel(private val repository: Repository) : ViewModel() {
     private val _state = MutableStateFlow<RegisterState>(RegisterState.Idle)
     val state: StateFlow<RegisterState> = _state.asStateFlow()
 
+
     fun register(email: String, password: String, name: String){
         viewModelScope.launch {
             _state.value = RegisterState.Loading
