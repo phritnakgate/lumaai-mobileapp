@@ -94,6 +94,9 @@
     <string name="edit_task_title">Edit Your Task</string>
     <string name="edit_task_button">Edit Task</string>
     <string name="delete_task_button">Delete Task</string>
+    <string name="create_task_success_dialog">Create Task Success!</string>
+    <string name="create_task_failed_dialog_title">Create Task Failed!</string>
+    <string name="create_task_failed_dialog_desc">Please input all required data.</string>
 
     <!--========== HISTORY PAGES ==========-->
     <string name="chat_history_title">History</string>

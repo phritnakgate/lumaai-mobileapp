@@ -1,7 +1,6 @@
 package org.bkkz.lumaapp.presentation.main.task.view_task
 
 import android.os.Bundle
-import android.util.Log
 import android.widget.ImageView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -17,8 +16,6 @@ import org.bkkz.lumaapp.presentation.main.task.view_task.adapter.ViewTaskPagerAd
 import org.bkkz.lumaapp.presentation.main.task.view_task.state.ViewTaskEvent
 import org.bkkz.lumaapp.util.dialog.LoadingDialog
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.text.SimpleDateFormat
-import java.util.Date
 
 class ViewTaskActivity : AppCompatActivity() {
 
@@ -45,6 +42,11 @@ class ViewTaskActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+    }
+
+    override fun onRestart() {
+        super.onRestart()
+        viewModel.onEvent(ViewTaskEvent.LoadFirstTimeTasks)
     }
 
     private fun findView(){

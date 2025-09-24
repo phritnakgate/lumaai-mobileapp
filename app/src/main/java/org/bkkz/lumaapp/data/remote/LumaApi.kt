@@ -8,11 +8,15 @@ import org.bkkz.lumaapp.data.entity.auth.GoogleSignInRequest
 import org.bkkz.lumaapp.data.entity.auth.LogoutRequest
 import org.bkkz.lumaapp.data.entity.auth.TokenRequest
 import org.bkkz.lumaapp.data.entity.auth.TokenResponse
+import org.bkkz.lumaapp.data.entity.task.CreateTaskRequest
 import org.bkkz.lumaapp.data.entity.task.Task
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.PATCH
 import retrofit2.http.POST
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface LumaApi {
@@ -48,4 +52,19 @@ interface LumaApi {
     suspend fun getUserTasks(
         @Query("date") date : String
     ) : Response<ApiResponse<Task>>
+
+    @POST("task/")
+    suspend fun createTask(
+        @Body createTaskRequest: CreateTaskRequest
+    ) : Response<ApiResponse<Any>>
+
+    @DELETE("task/{taskId}")
+    suspend fun deleteTask(
+        @Path("taskId") taskId : String
+    ) : Response<ApiResponse<Any>>
+
+    @PATCH("task/{taskId}")
+    suspend fun editTask(
+        @Path("taskId") taskId : String
+    ) : Response<ApiResponse<Any>>
 }
