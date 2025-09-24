@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.bkkz.lumaapp.data.Repository
+import org.bkkz.lumaapp.data.entity.task.EditTaskRequest
 import org.bkkz.lumaapp.data.entity.task.Task
 import org.bkkz.lumaapp.data.remote.ApiResult
 import org.bkkz.lumaapp.presentation.main.task.view_task.state.ViewTaskEvent
@@ -105,5 +106,16 @@ class ViewTaskViewModel(private val repository: Repository) : ViewModel() {
                 zonedDateTime.toLocalDate()
             }
             .toSet()
+    }
+
+    suspend fun markCompleted(taskId : String, editTaskRequest: EditTaskRequest) = coroutineScope{
+        val response = repository.editTask(taskId, editTaskRequest)
+        when(response){
+            is ApiResult.Success -> {
+                getAllDailyUserTask(state.value.selectedDate)
+                getAllMonthlyUserTask("${state.value.selectedMonth.year}-${state.value.selectedMonth.monthValue.toString().padStart(2,'0')}")
+            }
+            is ApiResult.Error -> {}
+        }
     }
 }

@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.launch
 import org.bkkz.lumaapp.R
+import org.bkkz.lumaapp.data.entity.task.EditTaskRequest
 import org.bkkz.lumaapp.data.entity.task.Task
 import org.bkkz.lumaapp.presentation.main.task.view_task.ViewTaskViewModel
 import org.bkkz.lumaapp.presentation.main.task.view_task.monthly_view.adapter.MonthlyViewFragmentAdapter
@@ -20,7 +21,7 @@ import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 
-class MonthlyTasksFragment : Fragment() {
+class MonthlyTasksFragment : Fragment(), MonthlyViewFragmentAdapter.OnTaskCheckedListener {
 
     //ViewModel
     private val viewModel: ViewTaskViewModel by activityViewModel()
@@ -65,13 +66,17 @@ class MonthlyTasksFragment : Fragment() {
 
                     val timelineItems = prepareTimelineData(tasks)
                     if (recyclerTaskLists.adapter == null) {
-                        recyclerTaskLists.adapter = MonthlyViewFragmentAdapter(timelineItems)
+                        val adapter = MonthlyViewFragmentAdapter(timelineItems)
+                        adapter.setOnTaskCheckedListener(this@MonthlyTasksFragment)
+                        recyclerTaskLists.adapter = adapter
                         recyclerTaskLists.layoutManager = LinearLayoutManager(
                             requireContext(),
                             RecyclerView.VERTICAL, false
                         )
                     } else {
-                        recyclerTaskLists.adapter = MonthlyViewFragmentAdapter(timelineItems)
+                        val adapter = MonthlyViewFragmentAdapter(timelineItems)
+                        adapter.setOnTaskCheckedListener(this@MonthlyTasksFragment)
+                        recyclerTaskLists.adapter = adapter
                     }
                 }
             }
@@ -93,12 +98,22 @@ class MonthlyTasksFragment : Fragment() {
             val dateString = date.format(dayFormatter)
             val dayString = date.format(dayOfWeekFormatter)
             tasksOnDate.forEachIndexed { index, task ->
-                if(index == 0) timelineItems.add(TimelineItem.TaskHeader(dateString, dayString, task))
-                else if (index == tasksOnDate.size - 1) timelineItems.add(TimelineItem.TaskFooter(task))
-                else timelineItems.add(TimelineItem.TaskBody(task))
+                when (index) {
+                    0 -> timelineItems.add(TimelineItem.TaskHeader(dateString, dayString, task))
+                    tasksOnDate.size - 1 -> timelineItems.add(TimelineItem.TaskFooter(task))
+                    else -> timelineItems.add(TimelineItem.TaskBody(task))
+                }
             }
         }
         return timelineItems
+    }
+
+    override fun onTaskChecked(item: Task) {
+        val id = item.id
+        val newCheck = EditTaskRequest(isFinished = !item.isFinished)
+        lifecycleScope.launch {
+            viewModel.markCompleted(id,newCheck)
+        }
     }
 
     companion object {

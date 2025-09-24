@@ -17,7 +17,17 @@ import java.time.format.DateTimeFormatter
 
 class TaskListAdapter(private val items: List<Task>) : RecyclerView.Adapter<TaskListAdapter.ViewHolder>() {
 
+    interface OnTaskCheckedListener{
+        fun onTaskChecked(item: Task)
+    }
+
+    private var onTaskCheckedListener : OnTaskCheckedListener? = null
+    fun setOnTaskCheckedListener(listener: OnTaskCheckedListener){
+        this.onTaskCheckedListener = listener
+    }
+
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+
         val taskHead: ConstraintLayout = view.findViewById(R.id.constraintlayout_recycler_task_head)
         val taskCheck: ImageView = view.findViewById(R.id.imgview_recycler_task_check)
         val taskName: TextView = view.findViewById(R.id.txtview_recycler_task_name)
@@ -54,6 +64,7 @@ class TaskListAdapter(private val items: List<Task>) : RecyclerView.Adapter<Task
         }
         holder.taskCheck.setOnClickListener {
             isFinished = !isFinished
+            onTaskCheckedListener?.onTaskChecked(items[position])
             if(isFinished){
                 holder.taskHead.background = ContextCompat.getDrawable(holder.itemView.context, R.drawable.rect_disabled_color)
                 holder.taskCheck.setImageResource(R.drawable.ic_task_success)

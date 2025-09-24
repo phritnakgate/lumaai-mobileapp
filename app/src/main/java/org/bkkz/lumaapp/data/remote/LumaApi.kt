@@ -9,6 +9,7 @@ import org.bkkz.lumaapp.data.entity.auth.LogoutRequest
 import org.bkkz.lumaapp.data.entity.auth.TokenRequest
 import org.bkkz.lumaapp.data.entity.auth.TokenResponse
 import org.bkkz.lumaapp.data.entity.task.CreateTaskRequest
+import org.bkkz.lumaapp.data.entity.task.EditTaskRequest
 import org.bkkz.lumaapp.data.entity.task.Task
 import retrofit2.Response
 import retrofit2.http.Body
@@ -65,6 +66,7 @@ interface LumaApi {
 
     @PATCH("task/{taskId}")
     suspend fun editTask(
-        @Path("taskId") taskId : String
+        @Path("taskId") taskId : String,
+        @Body editTaskRequest: EditTaskRequest
     ) : Response<ApiResponse<Any>>
 }

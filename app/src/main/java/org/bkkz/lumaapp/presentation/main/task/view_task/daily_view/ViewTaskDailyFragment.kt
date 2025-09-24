@@ -13,8 +13,11 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import org.bkkz.lumaapp.R
+import org.bkkz.lumaapp.data.entity.task.EditTaskRequest
+import org.bkkz.lumaapp.data.entity.task.Task
 import org.bkkz.lumaapp.presentation.main.task.add_task.AddTaskActivity
 import org.bkkz.lumaapp.presentation.main.task.view_task.ViewTaskViewModel
 import org.bkkz.lumaapp.presentation.main.task.view_task.daily_view.adapter.TaskListAdapter
@@ -24,7 +27,7 @@ import org.bkkz.lumaapp.util.mapper.MonthStringMapper
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import java.time.YearMonth
 
-class ViewTaskDailyFragment : Fragment() {
+class ViewTaskDailyFragment : Fragment(), TaskListAdapter.OnTaskCheckedListener {
 
     private val baseYm: YearMonth = YearMonth.now()
 
@@ -96,7 +99,10 @@ class ViewTaskDailyFragment : Fragment() {
                     recyclerTaskLists.visibility = View.VISIBLE
                     imgViewNoTask.visibility = View.GONE
                     txtViewNoTask.visibility = View.GONE
-                    recyclerTaskLists.adapter = TaskListAdapter(dailyTasks)
+                    val adapter = TaskListAdapter(dailyTasks)
+                    adapter.setOnTaskCheckedListener(this@ViewTaskDailyFragment)
+                    recyclerTaskLists.adapter = adapter
+
                 }
             }
         }
@@ -126,6 +132,14 @@ class ViewTaskDailyFragment : Fragment() {
         val resName = "month_${ym.monthValue}_full"
         val monthText = MonthStringMapper.getString(requireContext(), resName)
         txtViewCurrentMonth.text = "$monthText ${ym.year}"
+    }
+
+    override fun onTaskChecked(item: Task) {
+        val id = item.id
+        val newCheck = EditTaskRequest(isFinished = !item.isFinished)
+        lifecycleScope.launch {
+            viewModel.markCompleted(id,newCheck)
+        }
     }
 
 }

@@ -10,12 +10,22 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import org.bkkz.lumaapp.R
+import org.bkkz.lumaapp.data.entity.task.Task
 import org.bkkz.lumaapp.presentation.main.task.edit_task.EditTaskActivity
 import org.bkkz.lumaapp.util.component.monthly_task_recycler.TimelineItem
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 
 class MonthlyViewFragmentAdapter(private val items: List<TimelineItem>) : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
+
+    interface OnTaskCheckedListener{
+        fun onTaskChecked(item: Task)
+    }
+
+    private var onTaskCheckedListener : OnTaskCheckedListener? = null
+    fun setOnTaskCheckedListener(listener: OnTaskCheckedListener){
+        this.onTaskCheckedListener = listener
+    }
 
     companion object {
         private const val VIEW_TYPE_HEADER = 1
@@ -51,6 +61,7 @@ class MonthlyViewFragmentAdapter(private val items: List<TimelineItem>) : Recycl
             }
             taskCheck.setOnClickListener {
                 isFinished = !isFinished
+                onTaskCheckedListener?.onTaskChecked(header.task)
                 if(isFinished){
                     taskHead.background = ContextCompat.getDrawable(itemView.context, R.drawable.rect_disabled_color)
                     taskCheck.setImageResource(R.drawable.ic_task_success)
@@ -86,6 +97,7 @@ class MonthlyViewFragmentAdapter(private val items: List<TimelineItem>) : Recycl
             }
             taskCheck.setOnClickListener {
                 isFinished = !isFinished
+                onTaskCheckedListener?.onTaskChecked(data.task)
                 if(isFinished){
                     taskHead.background = ContextCompat.getDrawable(itemView.context, R.drawable.rect_disabled_color)
                     taskCheck.setImageResource(R.drawable.ic_task_success)
@@ -121,6 +133,7 @@ class MonthlyViewFragmentAdapter(private val items: List<TimelineItem>) : Recycl
             }
             taskCheck.setOnClickListener {
                 isFinished = !isFinished
+                onTaskCheckedListener?.onTaskChecked(data.task)
                 if(isFinished){
                     taskHead.background = ContextCompat.getDrawable(itemView.context, R.drawable.rect_disabled_color)
                     taskCheck.setImageResource(R.drawable.ic_task_success)

@@ -12,6 +12,7 @@ import org.bkkz.lumaapp.data.entity.auth.GoogleSignInRequest
 import org.bkkz.lumaapp.data.entity.auth.LogoutRequest
 import org.bkkz.lumaapp.data.entity.auth.TokenRequest
 import org.bkkz.lumaapp.data.entity.task.CreateTaskRequest
+import org.bkkz.lumaapp.data.entity.task.EditTaskRequest
 import org.bkkz.lumaapp.data.entity.task.Task
 import org.bkkz.lumaapp.data.local.TokenManager
 import org.bkkz.lumaapp.data.local.UserChat
@@ -184,7 +185,7 @@ class Repository(
         }
     }
 
-    suspend fun createTask(createTaskRequest: CreateTaskRequest) : ApiResult<String> = withContext(
+    suspend fun createTask(createTaskRequest: CreateTaskRequest) : ApiResult<Any> = withContext(
         Dispatchers.IO){
         try{
             val response = lumaApi.createTask(createTaskRequest)
@@ -196,6 +197,34 @@ class Repository(
 
         }catch (e: Exception){
             Log.e("Repository","Failed to create task bc ${e.message}")
+            ApiResult.Error(Exception(e.message))
+        }
+    }
+    suspend fun editTask(taskId : String, editTaskRequest: EditTaskRequest) : ApiResult<Any> = withContext(
+        Dispatchers.IO){
+        try{
+            val response = lumaApi.editTask(taskId, editTaskRequest)
+            if(response.isSuccessful){
+                ApiResult.Success(response.body()?.result!!)
+            }else{
+                ApiResult.Error(Exception())
+            }
+        }catch (e: Exception){
+            Log.e("Repository","Failed to edit task bc ${e.message}")
+            ApiResult.Error(Exception(e.message))
+        }
+    }
+
+    suspend fun deleteTask(taskId : String) : ApiResult<Any> = withContext(Dispatchers.IO){
+        try{
+            val response = lumaApi.deleteTask(taskId)
+            if(response.isSuccessful){
+                ApiResult.Success(response)
+            }else{
+                ApiResult.Error(Exception())
+            }
+        }catch (e: Exception){
+            Log.e("Repository","Failed to delete task bc ${e.message}")
             ApiResult.Error(Exception(e.message))
         }
     }

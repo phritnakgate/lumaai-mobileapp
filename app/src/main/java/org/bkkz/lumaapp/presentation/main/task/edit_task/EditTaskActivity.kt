@@ -7,14 +7,26 @@ import android.widget.EditText
 import android.widget.ImageView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatButton
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.widget.doOnTextChanged
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
+import kotlinx.coroutines.launch
 import org.bkkz.lumaapp.R
 import org.bkkz.lumaapp.data.entity.task.Task
+import org.bkkz.lumaapp.presentation.main.task.add_task.state.AddTaskEvent
+import org.bkkz.lumaapp.presentation.main.task.add_task.state.AddTaskState
+import org.bkkz.lumaapp.presentation.main.task.edit_task.state.EditTaskEvent
+import org.bkkz.lumaapp.presentation.main.task.edit_task.state.EditTaskState
 import org.bkkz.lumaapp.util.LabelEditText
+import org.bkkz.lumaapp.util.dialog.LoadingDialog
+import org.bkkz.lumaapp.util.dialog.OneActionDialog
+import org.bkkz.lumaapp.util.enums.ServiceState
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -22,23 +34,28 @@ import java.util.TimeZone
 
 class EditTaskActivity : AppCompatActivity() {
 
+    //ViewModel
+    private val viewModel : EditTaskViewModel by viewModel()
+
+    //UI
     private lateinit var lbledtTaskName : LabelEditText
     private lateinit var lblTaskDesc : EditText
     private lateinit var chkboxTime : CheckBox
     private lateinit var edtDate : EditText
     private lateinit var edtTime : EditText
     private lateinit var backBtn : ImageView
-
+    private lateinit var loadingDialog: LoadingDialog
+    private lateinit var editTaskBtn : AppCompatButton
+    private lateinit var deleteTaskBtn : AppCompatButton
     private var oldTask : Task? = null
-    private val selectedCalendar = Calendar.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_edit_task)
 
-        setupData()
         findView()
+        setupData()
         setupView()
         setupEvents()
 
@@ -56,6 +73,10 @@ class EditTaskActivity : AppCompatActivity() {
             @Suppress("DEPRECATION")
             intent.getParcelableExtra("TASK_DATA")
         }
+        viewModel.onEvent(EditTaskEvent.InitData(oldTask!!))
+        lbledtTaskName.text = oldTask!!.name
+        lblTaskDesc.setText(oldTask!!.description)
+
     }
 
     private fun findView(){
@@ -65,26 +86,56 @@ class EditTaskActivity : AppCompatActivity() {
         edtDate = findViewById(R.id.edttxt_edit_task_date)
         edtTime = findViewById(R.id.edttxt_edit_task_time)
         backBtn = findViewById(R.id.imgview_edit_task_back)
+        editTaskBtn = findViewById(R.id.compatbtn_edit_task)
+        deleteTaskBtn = findViewById(R.id.compatbtn_delete_task)
+        loadingDialog = LoadingDialog(this@EditTaskActivity)
     }
     private fun setupView(){
-        oldTask?.let { task ->
-            lbledtTaskName.text = task.name
-            lblTaskDesc.setText(task.description)
-            chkboxTime.isChecked = task.dateTime.isNotEmpty()
-            if(task.dateTime.isNotEmpty()){
-                val isoFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSSSXXX", Locale.getDefault())
-                isoFormat.timeZone = TimeZone.getTimeZone("GMT+07:00")
-                val date = isoFormat.parse(task.dateTime)
-                date?.let {
-                    selectedCalendar.time = it
-                    val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-                    val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
-                    edtDate.setText(dateFormat.format(selectedCalendar.time))
+        lifecycleScope.launch {
+            viewModel.state.collect { state ->
+                setupName(state.errorField[EditTaskState.RequiredFormField.TASK_NAME])
+                setupDesc()
+                chkboxTime.isChecked = state.isTimeSpecify
+                if(state.isTimeSpecify){
+                    edtDate.setText(state.taskDate)
                     edtDate.setBackgroundResource(R.drawable.edit_text_bg)
                     edtDate.setOnClickListener { showDatePicker() }
-                    edtTime.setText(timeFormat.format(selectedCalendar.time))
+                    edtTime.setText(state.taskTime)
                     edtTime.setBackgroundResource(R.drawable.edit_text_bg)
                     edtTime.setOnClickListener { showTimePicker() }
+                }else{
+                    edtDate.setBackgroundResource(R.drawable.edit_text_bg_disabled)
+                    edtTime.setBackgroundResource(R.drawable.edit_text_bg_disabled)
+                    edtDate.setOnClickListener { null }
+                    edtTime.setOnClickListener { null }
+                    edtDate.setText(state.taskDate)
+                    edtTime.setText(state.taskTime)
+                }
+                if(loadingDialog.isShowing){ loadingDialog.dismiss() }
+                when(state.serviceState){
+                    ServiceState.IDLE -> {}
+                    ServiceState.LOADING -> { loadingDialog.show() }
+                    ServiceState.SUCCESS -> {
+                        OneActionDialog(this@EditTaskActivity).show(
+                            drawable = R.drawable.ic_dialog_success,
+                            title = "",
+                            message = "",
+                            onConfirmClickListener = {
+                                finish()
+                            },
+                        )
+                    }
+                    ServiceState.FAILED -> {
+                        OneActionDialog(this@EditTaskActivity).show(
+                            drawable = R.drawable.ic_dialog_no,
+                            title = "",
+                            message = "",
+                            onConfirmClickListener = {
+                                viewModel.setIdle()
+
+                            },
+                        )
+                    }
                 }
             }
         }
@@ -92,56 +143,60 @@ class EditTaskActivity : AppCompatActivity() {
     }
     private fun setupEvents(){
         chkboxTime.setOnCheckedChangeListener{ _, isChecked ->
-            if(isChecked){
-                edtDate.setBackgroundResource(R.drawable.edit_text_bg)
-                edtDate.setOnClickListener { showDatePicker() }
-                edtTime.setBackgroundResource(R.drawable.edit_text_bg)
-                edtTime.setOnClickListener { showTimePicker() }
-            }else{
-                edtDate.setBackgroundResource(R.drawable.edit_text_bg_disabled)
-                edtTime.setBackgroundResource(R.drawable.edit_text_bg_disabled)
-                edtDate.setOnClickListener { null }
-                edtTime.setOnClickListener { null }
-                edtDate.setText("")
-                edtTime.setText("")
-            }
+            viewModel.onEvent(EditTaskEvent.OnCheckTimeSpecified(isChecked))
         }
         backBtn.setOnClickListener {
             finish()
         }
+        editTaskBtn.setOnClickListener {
+            viewModel.onEvent(EditTaskEvent.OnEditTask)
+        }
+        deleteTaskBtn.setOnClickListener {
+            viewModel.onEvent(EditTaskEvent.OnDeleteTask)
+        }
+
+
+    }
+
+    private fun setupName(isError: Boolean? = null){
+        if(isError == true){
+            lbledtTaskName.setError(true)
+        }else{
+            lbledtTaskName.setError(false)
+        }
+        lbledtTaskName.onTextChanged { text, start, before, count ->
+            viewModel.onEvent(EditTaskEvent.OnChangeName(text.toString()))
+        }
+    }
+
+    private fun setupDesc(){
+        lblTaskDesc.doOnTextChanged { text, start, before, count -> viewModel.onEvent(EditTaskEvent.OnChangeDescription(text.toString())) }
     }
 
     private fun showDatePicker(){
         val datePicker = MaterialDatePicker.Builder.datePicker()
             .setTitleText(getString(R.string.select_date))
-            .setSelection(selectedCalendar.timeInMillis)
+            .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
             .build()
         datePicker.addOnPositiveButtonClickListener { selection ->
-            selectedCalendar.timeInMillis = selection
-
             val calendar = Calendar.getInstance(TimeZone.getTimeZone("GMT+07:00"))
             calendar.timeInMillis = selection
-            val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-            edtDate.setText(sdf.format(calendar.time))
+            val requestSdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+            viewModel.onEvent(EditTaskEvent.OnSelectedDate(requestSdf.format(calendar.time)))
         }
         datePicker.show(supportFragmentManager, "MATERIAL_DATE_PICKER")
     }
     private fun showTimePicker(){
-        val hour = selectedCalendar.get(Calendar.HOUR_OF_DAY)
-        val minute = selectedCalendar.get(Calendar.MINUTE)
+        val calendar = Calendar.getInstance(TimeZone.getTimeZone("GMT+07:00"))
         val timePicker = MaterialTimePicker.Builder()
             .setTitleText(getString(R.string.select_time))
             .setTimeFormat(TimeFormat.CLOCK_24H)
-            .setHour(hour)
-            .setMinute(minute)
+            .setHour(calendar.get(Calendar.HOUR_OF_DAY))
+            .setMinute(calendar.get(Calendar.MINUTE))
             .setInputMode(MaterialTimePicker.INPUT_MODE_CLOCK)
             .build()
         timePicker.addOnPositiveButtonClickListener {
-
-            selectedCalendar.set(Calendar.HOUR_OF_DAY, timePicker.hour)
-            selectedCalendar.set(Calendar.MINUTE, timePicker.minute)
-
-            edtTime.setText("${timePicker.hour}:${timePicker.minute}")
+            viewModel.onEvent(EditTaskEvent.OnSelectedTime("${timePicker.hour.toString().padStart(2,'0')}:${timePicker.minute.toString().padStart(2,'0')}"))
         }
         timePicker.show(supportFragmentManager, "MATERIAL_TIME_PICKER")
     }
