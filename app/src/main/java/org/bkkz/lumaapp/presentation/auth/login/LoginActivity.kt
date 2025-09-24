@@ -74,6 +74,7 @@ class LoginActivity : AppCompatActivity() {
 
         auth = Firebase.auth
         credentialManager = CredentialManager.create(this@LoginActivity)
+        val sharedPref = this@LoginActivity.getSharedPreferences("userSession", MODE_PRIVATE)
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED){
@@ -99,6 +100,10 @@ class LoginActivity : AppCompatActivity() {
 
                         }
                         is LoginEvent.Success -> {
+                            sharedPref.edit().apply{
+                                putString("email", state.email)
+                                apply()
+                            }
                             val intent = Intent(this@LoginActivity, HomeActivity::class.java)
                             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                             startActivity(intent)
@@ -190,7 +195,7 @@ class LoginActivity : AppCompatActivity() {
                                             val firebaseIdToken = tokenTask.result?.token
                                             Log.d("LoginActivity", "Got Firebase ID Token: $firebaseIdToken")
                                             if(firebaseIdToken != null){
-                                                viewModel.loginWithGoogle(firebaseIdToken)
+                                                viewModel.loginWithGoogle(currentUser.email!!, firebaseIdToken)
                                             }
                                         }
                                     }

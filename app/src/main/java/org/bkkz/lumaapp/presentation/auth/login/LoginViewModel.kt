@@ -1,5 +1,6 @@
 package org.bkkz.lumaapp.presentation.auth.login
 
+import android.content.Context.MODE_PRIVATE
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,17 +19,21 @@ class LoginViewModel(private val repository: Repository) : ViewModel() {
         viewModelScope.launch {
             _state.value = LoginEvent.Loading
             when(val result = repository.loginWithEmail(email, password)){
-                is ApiResult.Success -> _state.value = LoginEvent.Success("Login Success")
+                is ApiResult.Success -> {
+                    _state.value = LoginEvent.Success(email)
+
+                }
+
                 is ApiResult.Error -> _state.value = LoginEvent.Error(result.exception.message ?: "Login failed with unknown error :(")
             }
         }
     }
 
-    fun loginWithGoogle(idToken: String) {
+    fun loginWithGoogle(authenticatedEmail : String, idToken: String) {
         viewModelScope.launch {
             _state.value = LoginEvent.Loading
             when (val result = repository.loginWithGoogle(idToken)) {
-                is ApiResult.Success -> _state.value = LoginEvent.Success("Login successful!")
+                is ApiResult.Success -> _state.value = LoginEvent.Success(authenticatedEmail)
                 is ApiResult.Error -> _state.value = LoginEvent.Error(result.exception.message ?: "Login failed with unknown error :(")
             }
         }

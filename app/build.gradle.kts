@@ -91,6 +91,16 @@ dependencies {
     ksp("androidx.room:room-compiler:2.8.0")
     implementation("androidx.room:room-ktx:2.8.0")
 
+    //Google Calendar API
+    implementation ("com.google.apis:google-api-services-calendar:v3-rev305-1.23.0"){
+        exclude(group = "com.google.guava", module = "guava-jdk5")
+    }
+    implementation("com.google.guava:guava:31.1-android")
+    implementation("com.google.api-client:google-api-client-android:1.23.0"){
+        exclude(group = "org.apache.httpcomponents")
+        exclude(group = "com.google.guava", module = "guava-jdk5")
+    }
+
     //=== Test Implementation ===\\
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

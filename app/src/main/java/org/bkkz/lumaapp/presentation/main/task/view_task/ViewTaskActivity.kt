@@ -1,6 +1,8 @@
 package org.bkkz.lumaapp.presentation.main.task.view_task
 
+import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import android.widget.ImageView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -28,6 +30,8 @@ class ViewTaskActivity : AppCompatActivity() {
     private lateinit var taskView : ViewPager2
     private lateinit var loadingDialog : LoadingDialog
 
+    private lateinit var sharedPref : SharedPreferences
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_view_task)
@@ -36,6 +40,7 @@ class ViewTaskActivity : AppCompatActivity() {
         findView()
         setupView()
         setupEvents()
+
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.view_task)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -48,6 +53,8 @@ class ViewTaskActivity : AppCompatActivity() {
         super.onRestart()
         viewModel.onEvent(ViewTaskEvent.LoadFirstTimeTasks)
     }
+
+
 
     private fun findView(){
         homeBtn = findViewById(R.id.imgview_view_task_home)
