@@ -23,6 +23,7 @@ import org.bkkz.lumaapp.presentation.main.task.edit_task.state.EditTaskState
 import org.bkkz.lumaapp.util.LabelEditText
 import org.bkkz.lumaapp.util.dialog.LoadingDialog
 import org.bkkz.lumaapp.util.dialog.OneActionDialog
+import org.bkkz.lumaapp.util.dialog.TwoActionDialog
 import org.bkkz.lumaapp.util.enums.ServiceState
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.SimpleDateFormat
@@ -155,7 +156,15 @@ class EditTaskActivity : AppCompatActivity() {
             viewModel.onEvent(EditTaskEvent.OnEditTask)
         }
         deleteTaskBtn.setOnClickListener {
-            viewModel.onEvent(EditTaskEvent.OnDeleteTask)
+            TwoActionDialog(this@EditTaskActivity).show(
+                drawable = R.drawable.ic_dialog_warning,
+                title = getString(R.string.delete_task_confirm_dialog_title),
+                message = "",
+                onConfirmClickListener = {
+                    viewModel.onEvent(EditTaskEvent.OnDeleteTask)
+                },
+                onAbortClickListener = {}
+            )
         }
 
 

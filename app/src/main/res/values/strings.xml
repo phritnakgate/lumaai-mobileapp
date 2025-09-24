@@ -34,6 +34,8 @@
     <string name="sat">Sat</string>
     <string name="select_date">Select Date</string>
     <string name="select_time">Select Time</string>
+    <string name="dialog_primary">Confirm</string>
+    <string name="dialog_secondary">Abort</string>
 
     <!--========== LANDING PAGE ==========-->
     <string name="landing_heading">Meet LUMA !</string>
@@ -100,6 +102,7 @@
     <string name="edit_task_success_dialog">Edit/Delete Task Success!</string>
     <string name="edit_task_failed_dialog_title">Edit/Delete Task Failed!</string>
     <string name="edit_task_failed_dialog_desc">Please input all required data.</string>
+    <string name="delete_task_confirm_dialog_title">Confirm Task Deletion?</string>
 
     <!--========== HISTORY PAGES ==========-->
     <string name="chat_history_title">History</string>
