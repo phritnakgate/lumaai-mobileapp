@@ -18,8 +18,6 @@ import com.google.android.material.timepicker.TimeFormat
 import kotlinx.coroutines.launch
 import org.bkkz.lumaapp.R
 import org.bkkz.lumaapp.data.entity.task.Task
-import org.bkkz.lumaapp.presentation.main.task.add_task.state.AddTaskEvent
-import org.bkkz.lumaapp.presentation.main.task.add_task.state.AddTaskState
 import org.bkkz.lumaapp.presentation.main.task.edit_task.state.EditTaskEvent
 import org.bkkz.lumaapp.presentation.main.task.edit_task.state.EditTaskState
 import org.bkkz.lumaapp.util.LabelEditText
@@ -98,10 +96,15 @@ class EditTaskActivity : AppCompatActivity() {
                 chkboxTime.isChecked = state.isTimeSpecify
                 if(state.isTimeSpecify){
                     edtDate.setText(state.taskDate)
-                    edtDate.setBackgroundResource(R.drawable.edit_text_bg)
+
+                    edtDate.setBackgroundResource(
+                        if(state.errorField[EditTaskState.RequiredFormField.TASK_DATE] == true)
+                         R.drawable.edit_text_bg_danger else R.drawable.edit_text_bg)
                     edtDate.setOnClickListener { showDatePicker() }
                     edtTime.setText(state.taskTime)
-                    edtTime.setBackgroundResource(R.drawable.edit_text_bg)
+                    edtTime.setBackgroundResource(
+                        if(state.errorField[EditTaskState.RequiredFormField.TASK_TIME] == true)
+                            R.drawable.edit_text_bg_danger else R.drawable.edit_text_bg)
                     edtTime.setOnClickListener { showTimePicker() }
                 }else{
                     edtDate.setBackgroundResource(R.drawable.edit_text_bg_disabled)
@@ -118,7 +121,7 @@ class EditTaskActivity : AppCompatActivity() {
                     ServiceState.SUCCESS -> {
                         OneActionDialog(this@EditTaskActivity).show(
                             drawable = R.drawable.ic_dialog_success,
-                            title = "",
+                            title = getString(R.string.edit_task_success_dialog),
                             message = "",
                             onConfirmClickListener = {
                                 finish()
@@ -128,8 +131,8 @@ class EditTaskActivity : AppCompatActivity() {
                     ServiceState.FAILED -> {
                         OneActionDialog(this@EditTaskActivity).show(
                             drawable = R.drawable.ic_dialog_no,
-                            title = "",
-                            message = "",
+                            title = getString(R.string.edit_task_failed_dialog_title),
+                            message = getString(R.string.edit_task_failed_dialog_desc),
                             onConfirmClickListener = {
                                 viewModel.setIdle()
 
