@@ -5,25 +5,33 @@ import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.datepicker.MaterialDatePicker
+import kotlinx.coroutines.launch
 import org.bkkz.lumaapp.R
 import org.bkkz.lumaapp.data.entity.chat_history.ChatHistory
 import org.bkkz.lumaapp.presentation.main.chat_history.adapter.ChatHistoryAdapter
+import org.bkkz.lumaapp.presentation.main.chat_history.state.ChatHistoryEvent
 import org.bkkz.lumaapp.util.component.chat_history.ChatHistoryItem
 import org.bkkz.lumaapp.util.component.chat_history.ReadAllHistoryBottomSheet
+import org.bkkz.lumaapp.util.dialog.LoadingDialog
+import org.bkkz.lumaapp.util.enums.ServiceState
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 import java.util.TimeZone
 
 class ChatHistoryActivity : AppCompatActivity(), ChatHistoryAdapter.OnHistoryInteractionListener {
+
+    //ViewModel
+    private val viewModel : ChatHistoryViewModel by viewModel()
 
     //UI
     private lateinit var backBtn: ImageView
@@ -35,44 +43,9 @@ class ChatHistoryActivity : AppCompatActivity(), ChatHistoryAdapter.OnHistoryInt
     private lateinit var recyclerChat: RecyclerView
     private lateinit var imgViewNoChat: ImageView
     private lateinit var txtViewNoChat: TextView
+    private lateinit var loadingDialog: LoadingDialog
 
     private lateinit var categoryViews: Map<String, TextView>
-    private var selectedCategory: String = CATEGORY_TASK
-
-    // MOCK DATA
-    private val mockData: List<ChatHistory> = listOf(
-        ChatHistory(
-            intent = listOf("Task"),
-            userId = "p6W1pVygPBgKgYB77yqpEw8Hx8B2",
-            userText = "เพิ่มจัดตารางเรียน",
-            modelResponse = "เพิ่มจัดตารางเรียนเรียบร้อยแล้วครับ ต้องการให้ช่วยอะไรเพิ่มเติมอีกมั้ยครับ?",
-            timeStamp = "2025-09-08T15:04:06.048004+07:00",
-            id="x"
-        ),
-        ChatHistory(
-            intent = listOf("Search"),
-            userId = "p6W1pVygPBgKgYB77yqpEw8Hx8B2",
-            userText = "หาข้อมูลเกี่ยวกับ IELTS",
-            modelResponse = """IELTS หรือ International English Language Testing System เป็นการทดสอบความสามารถในการสื่อสารภาษาอังกฤษที่ใช้สำหรับผู้ที่ต้องการเข้าศึกษาในประเทศที่พูดภาษาอังกฤษเป็นภาษาหลัก หรือทำงานในบริษัทที่มีภาษาอังกฤษเป็นภาษาหลัก
-
-IELTS มีสองรุ่นหลักคือ IELTS Academic และ IELTS General Training. IELTS Academic ออกแบบให้เหมาะสมสำหรับผู้ที่ต้องการเข้าศึกษาต่อในระดับอุดมศึกษา ในขณะที่ IELTS General Training ถูกสร้างขึ้นสำหรับผู้ที่ต้องการฝึกสื่อสารภาษาอังกฤษในบริบทประจำวัน
-
-การทดสอบ IELTS จะประกอบไปด้วยส่วนทั้งหมด 4 ส่วน: Reading, Writing, Listening และ Speaking. แต่เนื้อหาของ Writing และ Speaking จะแตกต่างระหว่าง IELTS Academic และ IELTS General Training
-
-คะแนนที่ได้จาก IELTS จะอยู่ในช่วง 0-9 และสามารถใช้เพื่อพิสูจน์ว่าคุณมีความรู้ความสามารถภาษาอังกฤษที่เหมาะสมสำหรับการศึกษา งานหรือย้ายเข้าประเทศต่างๆ""",
-            timeStamp = "2025-09-08T14:36:00.0434245+07:00",
-                    id="x"
-        ),
-        ChatHistory(
-            intent = listOf("Task", "Search"),
-            userId = "p6W1pVygPBgKgYB77yqpEw8Hx8B2",
-            userText = "เพิ่มจัดตารางและเพิ่มทานอาหารและหาขนมปังยอดฮิตในปี 2025 ",
-            modelResponse = "เพิ่มจัดตารางและเพิ่มทานอาหารเรียบร้อยแล้วครับ และขนมปังยอดฮิตในปี 2025 จากข้อมูลที่ได้รับ มีแนวโน้มว่าจะเป็น \\\"Shio Pan\\\" หรือ ขนมปังเกลือ เนื่องจากมีหลายร้านที่แนะนำและให้ความสนใจ โดยเฉพาะร้าน Eric Kayser และ Jayeon Do Salted Bakery ต้องการให้ช่วยอะไรเพิ่มเติมอีกมั้ยครับ?",
-            timeStamp = "2025-09-18T16:19:11.28558+07:00",
-            id="x"
-        )
-    )
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -100,6 +73,7 @@ IELTS มีสองรุ่นหลักคือ IELTS Academic และ 
         recyclerChat = findViewById(R.id.recyclerview_chat_history)
         imgViewNoChat = findViewById(R.id.imgview_chat_history_no_history)
         txtViewNoChat = findViewById(R.id.txtview_chat_history_no_history)
+        loadingDialog = LoadingDialog(this@ChatHistoryActivity)
 
         categoryViews = mapOf(
             CATEGORY_TASK to selectTask,
@@ -109,14 +83,27 @@ IELTS มีสองรุ่นหลักคือ IELTS Academic และ 
     }
 
     private fun setupViews() {
-        recyclerChat.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
-        updateFilter(selectedCategory)
+        recyclerChat.layoutManager = LinearLayoutManager(this@ChatHistoryActivity, RecyclerView.VERTICAL, false)
+        viewModel.onEvent(ChatHistoryEvent.OnLoadFirstTimeChatHistory)
+        lifecycleScope.launch {
+            viewModel.state.collect { state ->
+                if(loadingDialog.isShowing) loadingDialog.dismiss()
+                when(state.serviceState){
+                    ServiceState.IDLE -> {}
+                    ServiceState.LOADING -> {loadingDialog.show()}
+                    ServiceState.SUCCESS -> {loadingDialog.dismiss()}
+                    ServiceState.FAILED -> {}
+                }
+                updateFilter()
+            }
+        }
+
     }
 
     private fun setupEvents() {
         categoryViews.forEach { (category, textView) ->
             textView.setOnClickListener {
-                updateFilter(category)
+                viewModel.onEvent(ChatHistoryEvent.SelectChatHistoryType(category))
             }
         }
 
@@ -129,17 +116,29 @@ IELTS มีสองรุ่นหลักคือ IELTS Academic และ 
         }
     }
 
-    private fun updateFilter(category: String) {
-        selectedCategory = category
-
+    private fun updateFilter() {
+        val category = viewModel.state.value.currentChatHistoryPage
         categoryViews.forEach { (key, view) ->
-            setSelected(view, key == selectedCategory)
+            setSelected(view, key == category)
+        }
+        when(category){
+            CATEGORY_TASK -> {
+                val recyclerData = groupHistoryForAdapter(category, viewModel.state.value.chatHistoryTask)
+                recyclerChat.adapter = ChatHistoryAdapter(recyclerData, this@ChatHistoryActivity)
+                updateNoHistoryView(recyclerData.isEmpty())
+            }
+            CATEGORY_SEARCH -> {
+                val recyclerData = groupHistoryForAdapter(category, viewModel.state.value.chatHistorySearch)
+                recyclerChat.adapter = ChatHistoryAdapter(recyclerData, this@ChatHistoryActivity)
+                updateNoHistoryView(recyclerData.isEmpty())
+            }
+            CATEGORY_PLAN -> {
+                val recyclerData = groupHistoryForAdapter(category, viewModel.state.value.chatHistoryPlan)
+                recyclerChat.adapter = ChatHistoryAdapter(recyclerData, this@ChatHistoryActivity)
+                updateNoHistoryView(recyclerData.isEmpty())
+            }
         }
 
-        val recyclerData = groupHistoryForAdapter(selectedCategory, mockData)
-        recyclerChat.adapter = ChatHistoryAdapter(recyclerData, this@ChatHistoryActivity)
-
-        updateNoHistoryView(recyclerData.isEmpty())
     }
 
     private fun updateNoHistoryView(isEmpty: Boolean) {
@@ -167,7 +166,10 @@ IELTS มีสองรุ่นหลักคือ IELTS Academic และ 
             val calendar = Calendar.getInstance(TimeZone.getTimeZone("GMT+07:00"))
             calendar.timeInMillis = selection
             val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-            Toast.makeText(this, sdf.format(calendar.time), Toast.LENGTH_SHORT).show()
+            viewModel.onEvent(ChatHistoryEvent.OnQueryByDate(sdf.format(calendar.time)))
+        }
+        datePicker.addOnNegativeButtonClickListener {
+            viewModel.onEvent(ChatHistoryEvent.OnQueryByDate(null))
         }
         datePicker.show(supportFragmentManager, "MATERIAL_DATE_PICKER")
     }

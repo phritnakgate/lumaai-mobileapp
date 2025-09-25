@@ -35,10 +35,14 @@ class ChatHistoryAdapter(private val items: List<ChatHistoryItem>, private val l
 
     inner class HistoryListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         val chats: RecyclerView = itemView.findViewById(R.id.recyclerview_chat_history_holder)
-        fun bind(body: ChatHistoryItem.ChatHistoryLists){
+
+        init {
             chats.layoutManager = LinearLayoutManager(itemView.context, RecyclerView.VERTICAL, false)
-            chats.adapter = ChatHistoryListAdapter(false,body.histories, this@ChatHistoryAdapter)
             chats.addItemDecoration(ChatHistoryListDecoration(itemView.context, false))
+        }
+
+        fun bind(body: ChatHistoryItem.ChatHistoryLists){
+            chats.adapter = ChatHistoryListAdapter(false,body.histories, this@ChatHistoryAdapter)
         }
     }
 
@@ -85,8 +89,6 @@ class ChatHistoryAdapter(private val items: List<ChatHistoryItem>, private val l
     override fun getItemCount(): Int = items.size
 
     override fun onReadAllClicked(fullText: String) {
-        // เมื่อ Adapter ตัวใน (ChatHistoryListAdapter) ถูกกด
-        // เราจะไม่แสดง BottomSheet ที่นี่ แต่จะส่งสัญญาณต่อไปยัง Activity ผ่าน listener ของเรา
         listener.onShowBottomSheet(fullText)
     }
 }

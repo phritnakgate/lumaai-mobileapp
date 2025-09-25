@@ -6,6 +6,7 @@ import org.koin.dsl.module
 import org.bkkz.lumaapp.presentation.auth.login.LoginViewModel
 import org.bkkz.lumaapp.presentation.auth.register.RegisterViewModel
 import org.bkkz.lumaapp.presentation.main.chat.ChatViewModel
+import org.bkkz.lumaapp.presentation.main.chat_history.ChatHistoryViewModel
 import org.bkkz.lumaapp.presentation.main.home.HomeViewModel
 import org.bkkz.lumaapp.presentation.main.task.add_task.AddTaskViewModel
 import org.bkkz.lumaapp.presentation.main.task.edit_task.EditTaskViewModel
@@ -18,5 +19,6 @@ val presentationModules = module {
     viewModel { ViewTaskViewModel(get()) }
     viewModel { AddTaskViewModel(get()) }
     viewModel { EditTaskViewModel(get()) }
+    viewModel { ChatHistoryViewModel(get()) }
     viewModel { ChatViewModel(get()) }
 }
