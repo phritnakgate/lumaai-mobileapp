@@ -1,12 +1,16 @@
 package org.bkkz.lumaapp.presentation.main.task.view_task.daily_view
 
+import android.app.Activity.RESULT_OK
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -43,6 +47,17 @@ class ViewTaskDailyFragment : Fragment(), TaskListAdapter.OnTaskCheckedListener 
     private lateinit var recyclerTaskLists: RecyclerView
     private lateinit var imgViewNoTask: ImageView
     private lateinit var txtViewNoTask: TextView
+
+    private val requestCalendarPermissionForResult = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ){ result ->
+        if (result.resultCode == RESULT_OK) {
+            //TODO
+        } else {
+            //TODO
+        }
+    }
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -99,7 +114,9 @@ class ViewTaskDailyFragment : Fragment(), TaskListAdapter.OnTaskCheckedListener 
                     recyclerTaskLists.visibility = View.VISIBLE
                     imgViewNoTask.visibility = View.GONE
                     txtViewNoTask.visibility = View.GONE
-                    val adapter = TaskListAdapter(dailyTasks)
+                    val adapter = TaskListAdapter(dailyTasks, onPermissionNeeded = {
+                        requestCalendarPermissionForResult.launch(it)
+                    })
                     adapter.setOnTaskCheckedListener(this@ViewTaskDailyFragment)
                     recyclerTaskLists.adapter = adapter
 

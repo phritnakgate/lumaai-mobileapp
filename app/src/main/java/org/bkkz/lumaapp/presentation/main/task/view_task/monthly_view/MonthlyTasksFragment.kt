@@ -1,11 +1,13 @@
 package org.bkkz.lumaapp.presentation.main.task.view_task.monthly_view
 
+import android.app.Activity.RESULT_OK
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -30,6 +32,16 @@ class MonthlyTasksFragment : Fragment(), MonthlyViewFragmentAdapter.OnTaskChecke
     private lateinit var recyclerTaskLists : RecyclerView
     private lateinit var imgViewNoTask : ImageView
     private lateinit var txtViewNotask : TextView
+
+    private val requestCalendarPermissionForResult = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ){ result ->
+        if (result.resultCode == RESULT_OK) {
+            //TODO
+        } else {
+            //TODO
+        }
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -66,7 +78,7 @@ class MonthlyTasksFragment : Fragment(), MonthlyViewFragmentAdapter.OnTaskChecke
 
                     val timelineItems = prepareTimelineData(tasks)
                     if (recyclerTaskLists.adapter == null) {
-                        val adapter = MonthlyViewFragmentAdapter(timelineItems)
+                        val adapter = MonthlyViewFragmentAdapter(timelineItems, onPermissionNeeded = {requestCalendarPermissionForResult.launch(it)})
                         adapter.setOnTaskCheckedListener(this@MonthlyTasksFragment)
                         recyclerTaskLists.adapter = adapter
                         recyclerTaskLists.layoutManager = LinearLayoutManager(
@@ -74,7 +86,7 @@ class MonthlyTasksFragment : Fragment(), MonthlyViewFragmentAdapter.OnTaskChecke
                             RecyclerView.VERTICAL, false
                         )
                     } else {
-                        val adapter = MonthlyViewFragmentAdapter(timelineItems)
+                        val adapter = MonthlyViewFragmentAdapter(timelineItems, onPermissionNeeded = {requestCalendarPermissionForResult.launch(it)})
                         adapter.setOnTaskCheckedListener(this@MonthlyTasksFragment)
                         recyclerTaskLists.adapter = adapter
                     }
