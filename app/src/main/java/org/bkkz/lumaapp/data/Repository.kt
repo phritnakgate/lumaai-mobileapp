@@ -11,6 +11,7 @@ import org.bkkz.lumaapp.data.entity.auth.EmailSignInResponse
 import org.bkkz.lumaapp.data.entity.auth.GoogleSignInRequest
 import org.bkkz.lumaapp.data.entity.auth.LogoutRequest
 import org.bkkz.lumaapp.data.entity.auth.TokenRequest
+import org.bkkz.lumaapp.data.entity.chat_history.ChatHistory
 import org.bkkz.lumaapp.data.entity.task.CreateTaskRequest
 import org.bkkz.lumaapp.data.entity.task.EditTaskRequest
 import org.bkkz.lumaapp.data.entity.task.Task
@@ -227,5 +228,26 @@ class Repository(
             Log.e("Repository","Failed to delete task bc ${e.message}")
             ApiResult.Error(Exception(e.message))
         }
+    }
+
+    suspend fun getChatLogs(intent: String? = null, date: String? = null, keyword: String? = null) : ApiResult<List<ChatHistory>?> = withContext(
+        Dispatchers.IO){
+            try {
+                val response = lumaApi.getChatLogs(intent, date, keyword)
+                if(response.isSuccessful){
+                    if(response.body() == null){
+                        val chatHistoryList = emptyList<ChatHistory>()
+                        ApiResult.Success(chatHistoryList)
+                    }else{
+                        val chatHistoryList = response.body()?.results
+                        ApiResult.Success(chatHistoryList)
+                    }
+                }else{
+                    ApiResult.Error(Exception(response.body()?.error))
+                }
+            }catch (e : Exception){
+                Log.e("Repository","Failed to get log bc ${e.message}")
+                ApiResult.Error(Exception(e.message))
+            }
     }
 }

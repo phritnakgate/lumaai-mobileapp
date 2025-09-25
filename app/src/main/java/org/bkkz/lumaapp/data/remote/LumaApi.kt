@@ -8,6 +8,7 @@ import org.bkkz.lumaapp.data.entity.auth.GoogleSignInRequest
 import org.bkkz.lumaapp.data.entity.auth.LogoutRequest
 import org.bkkz.lumaapp.data.entity.auth.TokenRequest
 import org.bkkz.lumaapp.data.entity.auth.TokenResponse
+import org.bkkz.lumaapp.data.entity.chat_history.ChatHistory
 import org.bkkz.lumaapp.data.entity.task.CreateTaskRequest
 import org.bkkz.lumaapp.data.entity.task.EditTaskRequest
 import org.bkkz.lumaapp.data.entity.task.Task
@@ -69,4 +70,12 @@ interface LumaApi {
         @Path("taskId") taskId : String,
         @Body editTaskRequest: EditTaskRequest
     ) : Response<ApiResponse<Any>>
+
+    /*=========== CHAT LOG API ===========*/
+    @GET("llm/history")
+    suspend fun getChatLogs(
+        @Query("intent") intent : String?,
+        @Query("date") date : String?,
+        @Query("keyword") keyword : String?
+    ) : Response<ApiResponse<ChatHistory>>
 }

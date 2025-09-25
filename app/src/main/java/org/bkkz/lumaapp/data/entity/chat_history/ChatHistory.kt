@@ -6,10 +6,12 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class ChatHistory (
-    @SerializedName("intent")
-    val intent : List<String>,
+    @SerializedName("id")
+    val id : String,
     @SerializedName("userId")
     val userId : String,
+    @SerializedName("intent")
+    val intent : List<String>,
     @SerializedName("userText")
     val userText : String,
     @SerializedName("modelResponse")

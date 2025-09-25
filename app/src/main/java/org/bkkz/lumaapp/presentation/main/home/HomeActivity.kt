@@ -2,24 +2,30 @@ package org.bkkz.lumaapp.presentation.main.home
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.edit
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.airbnb.lottie.LottieAnimationView
 import kotlinx.coroutines.launch
 import org.bkkz.lumaapp.R
 import org.bkkz.lumaapp.presentation.auth.LandingActivity
 import org.bkkz.lumaapp.presentation.main.chat.ChatActivity
 import org.bkkz.lumaapp.presentation.main.chat_history.ChatHistoryActivity
+import org.bkkz.lumaapp.presentation.main.home.state.HomeEvent
 import org.bkkz.lumaapp.presentation.main.task.view_task.ViewTaskActivity
 import org.bkkz.lumaapp.util.component.chat_history.ChatHistoryListAdapter
 import org.bkkz.lumaapp.util.component.chat_history.ChatHistoryListDecoration
 import org.bkkz.lumaapp.util.component.chat_history.ReadAllHistoryBottomSheet
+import org.bkkz.lumaapp.util.enums.ServiceState
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class HomeActivity : AppCompatActivity(), ChatHistoryListAdapter.OnChatHistoryListener {
@@ -34,17 +40,9 @@ class HomeActivity : AppCompatActivity(), ChatHistoryListAdapter.OnChatHistoryLi
     private lateinit var formBtn : ConstraintLayout
     private lateinit var seeChatHistory : TextView
     private lateinit var recyclerViewRecentChats : RecyclerView
-
-    //MOCK CHAT DATA
-    private val chatData = listOf(
-        "เพิ่มประชุมเที่ยวเมืองกาญจน์ตอน 2 ทุ่ม เรียบร้อยครับ",
-        "เพิ่มประชุมเที่ยวเมืองกาญจน์ตอน 2 ทุ่ม",
-        "กำลังตรวจสอบให้ครับ... มีงานตามนี้ครับ",
-        "ขอดูงานเมื่อวันที่ 15 หน่อย",
-        "การวางแผนเที่ยวในสิงคโปร์ 3วัน2คืน อาจมีดังนี้\\n\\nวันที่1: \\n- เริ่มต้นที่กรุงเซ็นทารา โดยไปที่จัตุรัสเกียรติยศ\\n- แวะเที่ยวอิสระในศูนย์การค้าอย่าง เซ็นทรัล หรือ มารีน่าเบย์ เซ็นเตอร์\\n- สินใจเยี่ยมชมสถานที่สำคัญของประเทศ เช่น วัดเซนต์หลุยส์ หรืออนุสรณ์สถานอิสลามสิงคโปร์\\n- ปิดท้ายด้วยการชมแสงไฟที่อนุสาวรีย์Statue of Unity\\n\\nวันที่2:\\n- เริ่มต้นที่สวนพฤกษศาสตร์新加坡植物园\\n- แวะไปที่ศูนย์สัตว์เลี้ยงและสัตว์ป่าลุ่มน้ำแม่น้ำเซมา\\n- รับประทานอาหารกลางวันที่ตลาดอินเดียที่กรุงเซ็นทารา\\n- เยี่ยมชมสถานีรถไฟใต้ดินสิงคโปร์และห้างสรรพสินค้า\\n- ปิดท้ายด้วยการเยี่ยมชมช้อปปิ้งที่ศูนย์การค้าอีกครั้ง\\n\\nวันที่3:\\n- เริ่มต้นที่เมืองเก่าสิงคโปร์\\n- แวะเที่ยวที่ศูนย์วัฒนธรรมและประวัติศาสตร์\\n- รับประทานอาหารกลางวันที่ตลาดหุ่นเชื่อมที่กรุงเซ็นทารา\\n- เยี่ยมชมสถานีรถไฟใต้ดินสิงคโปร์และห้างสรรพสินค้า\\n- ปิดท้ายด้วยการเยี่ยมชมช้อปปิ้งที่ศูนย์การค้า\\n\\nหมายเหตุ: คำแนะนำเหล่านี้อาจ",
-        "แพลนการเที่ยว สิงค์โปร 3วัน2คืน"
-    )
-
+    private lateinit var loadingAnimation : LottieAnimationView
+    private lateinit var noRecentChatsImg : ImageView
+    private lateinit var noRecentChatsTxt : TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -68,12 +66,48 @@ class HomeActivity : AppCompatActivity(), ChatHistoryListAdapter.OnChatHistoryLi
         formBtn = findViewById(R.id.constraintlayout_home_form_btn)
         seeChatHistory = findViewById(R.id.txtview_home_history_see_all)
         recyclerViewRecentChats = findViewById(R.id.recyclerview_home_history_recent)
+        loadingAnimation = findViewById(R.id.lottie_home_loading)
+        noRecentChatsImg = findViewById(R.id.imgview_home_no_recent_history)
+        noRecentChatsTxt = findViewById(R.id.txtview_home_no_recent_history)
     }
     private fun setupViews(){
         recyclerViewRecentChats.layoutManager =
             LinearLayoutManager(this@HomeActivity, RecyclerView.VERTICAL, false)
-        recyclerViewRecentChats.adapter = ChatHistoryListAdapter(true,chatData, this@HomeActivity)
         recyclerViewRecentChats.addItemDecoration(ChatHistoryListDecoration(this@HomeActivity, true))
+
+        viewModel.onEvent(HomeEvent.OnLoadRecent)
+
+        lifecycleScope.launch {
+            viewModel.state.collect { state ->
+                when(state.serviceState){
+                    ServiceState.IDLE -> {}
+                    ServiceState.LOADING -> {
+                        noRecentChatsImg.visibility = View.GONE
+                        noRecentChatsTxt.visibility = View.GONE
+                        loadingAnimation.visibility = View.VISIBLE
+                    }
+                    ServiceState.SUCCESS -> {
+                        loadingAnimation.visibility = View.GONE
+                        recyclerViewRecentChats.adapter = ChatHistoryListAdapter(true,state.recentChats, this@HomeActivity)
+                        if(state.recentChats.isEmpty()){
+                            recyclerViewRecentChats.visibility = View.GONE
+                            noRecentChatsImg.visibility = View.VISIBLE
+                            noRecentChatsTxt.visibility = View.VISIBLE
+                        }else{
+                            recyclerViewRecentChats.visibility = View.VISIBLE
+                            noRecentChatsImg.visibility = View.GONE
+                            noRecentChatsTxt.visibility = View.GONE
+                        }
+                    }
+                    ServiceState.FAILED -> {
+                        loadingAnimation.visibility = View.GONE
+                        noRecentChatsImg.visibility = View.VISIBLE
+                        noRecentChatsTxt.visibility = View.VISIBLE
+                    }
+                }
+            }
+        }
+
     }
     private fun setupEvents(){
         setupLogoutBtn()
@@ -92,6 +126,8 @@ class HomeActivity : AppCompatActivity(), ChatHistoryListAdapter.OnChatHistoryLi
         logoutBtn.setOnClickListener {
             lifecycleScope.launch {
                 viewModel.logout()
+                val sharedPrefs = getSharedPreferences("userSession", MODE_PRIVATE)
+                sharedPrefs.edit { clear() }
                 val intent = Intent(this@HomeActivity, LandingActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 startActivity(intent)

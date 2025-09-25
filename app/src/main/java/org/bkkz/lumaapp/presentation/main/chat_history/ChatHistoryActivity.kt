@@ -46,7 +46,8 @@ class ChatHistoryActivity : AppCompatActivity(), ChatHistoryAdapter.OnHistoryInt
             userId = "p6W1pVygPBgKgYB77yqpEw8Hx8B2",
             userText = "เพิ่มจัดตารางเรียน",
             modelResponse = "เพิ่มจัดตารางเรียนเรียบร้อยแล้วครับ ต้องการให้ช่วยอะไรเพิ่มเติมอีกมั้ยครับ?",
-            timeStamp = "2025-09-08T15:04:06.048004+07:00"
+            timeStamp = "2025-09-08T15:04:06.048004+07:00",
+            id="x"
         ),
         ChatHistory(
             intent = listOf("Search"),
@@ -59,14 +60,16 @@ IELTS มีสองรุ่นหลักคือ IELTS Academic และ 
 การทดสอบ IELTS จะประกอบไปด้วยส่วนทั้งหมด 4 ส่วน: Reading, Writing, Listening และ Speaking. แต่เนื้อหาของ Writing และ Speaking จะแตกต่างระหว่าง IELTS Academic และ IELTS General Training
 
 คะแนนที่ได้จาก IELTS จะอยู่ในช่วง 0-9 และสามารถใช้เพื่อพิสูจน์ว่าคุณมีความรู้ความสามารถภาษาอังกฤษที่เหมาะสมสำหรับการศึกษา งานหรือย้ายเข้าประเทศต่างๆ""",
-            timeStamp = "2025-09-08T14:36:00.0434245+07:00"
+            timeStamp = "2025-09-08T14:36:00.0434245+07:00",
+                    id="x"
         ),
         ChatHistory(
             intent = listOf("Task", "Search"),
             userId = "p6W1pVygPBgKgYB77yqpEw8Hx8B2",
             userText = "เพิ่มจัดตารางและเพิ่มทานอาหารและหาขนมปังยอดฮิตในปี 2025 ",
             modelResponse = "เพิ่มจัดตารางและเพิ่มทานอาหารเรียบร้อยแล้วครับ และขนมปังยอดฮิตในปี 2025 จากข้อมูลที่ได้รับ มีแนวโน้มว่าจะเป็น \\\"Shio Pan\\\" หรือ ขนมปังเกลือ เนื่องจากมีหลายร้านที่แนะนำและให้ความสนใจ โดยเฉพาะร้าน Eric Kayser และ Jayeon Do Salted Bakery ต้องการให้ช่วยอะไรเพิ่มเติมอีกมั้ยครับ?",
-            timeStamp = "2025-09-18T16:19:11.28558+07:00"
+            timeStamp = "2025-09-18T16:19:11.28558+07:00",
+            id="x"
         )
     )
 
