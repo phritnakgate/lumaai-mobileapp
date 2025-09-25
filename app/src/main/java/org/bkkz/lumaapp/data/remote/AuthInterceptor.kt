@@ -19,19 +19,27 @@ class AuthInterceptor() : Interceptor, KoinComponent {
         val originalRequest = chain.request()
         val accessToken = tokenManager.getAccessToken()
 
-        if(accessToken != null && !originalRequest.url.encodedPath.contains("auth/")){
-            originalRequest.newBuilder().addHeader("Authorization","Bearer $accessToken").build()
-            //Log.i("AuthInterceptor","Bearer Added!")
-        }
+        val requestWithAuth = if (accessToken != null && !originalRequest.url.encodedPath.contains("auth/")) {
+            originalRequest.newBuilder()
+                .header("Authorization", "Bearer $accessToken")
+                .build()
+        } else originalRequest
 
-        val response = chain.proceed(originalRequest)
+        val response = chain.proceed(requestWithAuth)
 
         if(response.code == 401){
+            response.close()
             //Log.i("AuthInterceptor","Token Expired!")
-            runBlocking {
-                repository.refreshToken()
+            synchronized(this) {
+                val currentToken = tokenManager.getAccessToken()
+                if (currentToken == null || currentToken == accessToken) {
+                    runBlocking {
+                        repository.refreshToken()
+                    }
+                }
             }
-            if(tokenManager.getAccessToken() != null){
+            val newToken = tokenManager.getAccessToken()
+            if(newToken != null){
                 val newRequest = originalRequest.newBuilder().addHeader("Authorization","Bearer $accessToken").build()
                 //Log.i("AuthInterceptor","New Request ${newRequest.url.encodedPath} Send!")
                 return chain.proceed(newRequest)
