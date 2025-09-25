@@ -2,11 +2,14 @@ package org.bkkz.lumaapp.presentation.main.chat_history
 
 import android.os.Bundle
 import android.view.View
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
@@ -34,6 +37,7 @@ class ChatHistoryActivity : AppCompatActivity(), ChatHistoryAdapter.OnHistoryInt
     private val viewModel : ChatHistoryViewModel by viewModel()
 
     //UI
+    private lateinit var rootLayout: ConstraintLayout
     private lateinit var backBtn: ImageView
     private lateinit var selectTask: TextView
     private lateinit var selectSearch: TextView
@@ -64,6 +68,7 @@ class ChatHistoryActivity : AppCompatActivity(), ChatHistoryAdapter.OnHistoryInt
     }
 
     private fun findViews() {
+        rootLayout = findViewById(R.id.main)
         backBtn = findViewById(R.id.imgview_chat_history_back)
         selectTask = findViewById(R.id.txtview_chat_history_task)
         selectSearch = findViewById(R.id.txtview_chat_history_search)
@@ -101,6 +106,9 @@ class ChatHistoryActivity : AppCompatActivity(), ChatHistoryAdapter.OnHistoryInt
     }
 
     private fun setupEvents() {
+        rootLayout.setOnClickListener {
+            hideKeyboard()
+        }
         categoryViews.forEach { (category, textView) ->
             textView.setOnClickListener {
                 viewModel.onEvent(ChatHistoryEvent.SelectChatHistoryType(category))
@@ -114,6 +122,25 @@ class ChatHistoryActivity : AppCompatActivity(), ChatHistoryAdapter.OnHistoryInt
         dateSearchBtn.setOnClickListener {
             showDatePicker()
         }
+
+        edtSearch.setOnEditorActionListener { v, actionId, event ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                hideKeyboard()
+                val keyword = edtSearch.text.toString().ifBlank { null }
+                viewModel.onEvent(ChatHistoryEvent.OnQueryByKeyword(keyword))
+                true
+
+            } else {
+                false
+            }
+
+        }
+    }
+
+    private fun hideKeyboard(){
+        val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(currentFocus?.windowToken, 0)
+        edtSearch.clearFocus()
     }
 
     private fun updateFilter() {

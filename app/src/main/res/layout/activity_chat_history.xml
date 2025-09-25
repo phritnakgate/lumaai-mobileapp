@@ -95,6 +95,9 @@
             android:drawableStart="@drawable/ic_search"
             android:drawablePadding="10dp"
             android:background="@drawable/edit_text_bg"
+            android:singleLine="true"
+            android:inputType="text"
+            android:imeOptions="actionDone"
             app:layout_constraintTop_toBottomOf="@+id/linearlayout_chat_history_buttons"
             />
         <ImageView

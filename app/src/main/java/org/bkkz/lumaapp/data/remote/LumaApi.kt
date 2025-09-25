@@ -76,6 +76,6 @@ interface LumaApi {
     suspend fun getChatLogs(
         @Query("intent") intent : String?,
         @Query("date") date : String?,
-        @Query("keyword") keyword : String?
+        @Query("keyword", encoded = true) keyword : String?
     ) : Response<ApiResponse<ChatHistory>>
 }
