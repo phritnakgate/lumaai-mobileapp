@@ -12,10 +12,11 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.launch
 import org.bkkz.lumaapp.R
-import org.bkkz.lumaapp.data.entity.task.Task
 import org.bkkz.lumaapp.presentation.main.chat.adapter.ChatAdapter
 import org.bkkz.lumaapp.presentation.main.chat.voice_chat.VoiceChatActivity
 import org.bkkz.lumaapp.util.enums.LocalChatFlag
@@ -43,7 +44,7 @@ class ChatActivity : AppCompatActivity() {
             val spokenText = data?.getStringExtra(VoiceChatActivity.VOICE_RESULT)
 
             if (spokenText != null) {
-                mockSendChats(spokenText)
+                sendChats(spokenText)
             }
         } else {
             Toast.makeText(this@ChatActivity, "Failed to Recognize Speech", Toast.LENGTH_SHORT).show()
@@ -86,7 +87,7 @@ class ChatActivity : AppCompatActivity() {
                 imgNoChat.visibility = View.GONE
                 txtNoChat.visibility = View.GONE
             }
-            val adapter = ChatAdapter(userChats, onConfirmClick = {dbId -> viewModel.confirmTaskAction(dbId)})
+            val adapter = ChatAdapter(userChats, onConfirmClick = {dbId,flag, task -> viewModel.confirmTaskAction(dbId,flag, task) })
             recyclerChats.layoutManager = LinearLayoutManager(this@ChatActivity, RecyclerView.VERTICAL, false)
             recyclerChats.adapter = adapter
             recyclerChats.scrollToPosition(adapter.itemCount - 1)
@@ -124,7 +125,7 @@ class ChatActivity : AppCompatActivity() {
         }
 
         edtChat.setOnClickListener {
-            mockSendChats(edtChat.text.toString())
+
         }
 
         btnVoice.setOnClickListener {
@@ -136,33 +137,18 @@ class ChatActivity : AppCompatActivity() {
             )
         }
         btnSend.setOnClickListener {
-
+            sendChats(edtChat.text.toString())
         }
         newChatBtn.setOnClickListener {
             viewModel.clearAllChats()
         }
     }
 
-    private fun mockSendChats(message: String){
-        viewModel.insertNewChat(LocalChatFlag.CHAT_USER.flag, message)
-        //MOCK MODEL RESPONSE CHANGE TO REAL SERVICE LATER
-        viewModel.insertNewChat(LocalChatFlag.CHAT_MODEL.flag,"ตอบกลับมาแล้วครับ")
-        val r = (2..6).random()
-        val mockTask = Task(
-            "-OZNle77lJsusGm0CrFD",
-            "ประชุมงานประจำเดือน",
-            "postman :D",
-            "2025-09-05T14:27:11.2037297+07:00",
-            false,
-            "p6W1pVygPBgKgYB77yqpEw8Hx8B2")
-        val mockUrl = "https://www.wongnai.com/recipes/ugc/6256334b980d4b05818d9a5e9d45bccc"
-        when(r){
-            2 -> viewModel.insertNewChat(flag=LocalChatFlag.CHAT_VIEW_TASK.flag, task = mockTask)
-            3 -> viewModel.insertNewChat(flag=LocalChatFlag.CHAT_ADD_TASK.flag, task = mockTask)
-            4 -> viewModel.insertNewChat(flag=LocalChatFlag.CHAT_EDIT_TASK.flag, task = mockTask)
-            5 -> viewModel.insertNewChat(flag=LocalChatFlag.CHAT_DELETE_TASK.flag, task = mockTask)
-            6 -> viewModel.insertNewChat(flag=LocalChatFlag.CHAT_WEB.flag, url = mockUrl)
+    private fun sendChats(message: String){
+        lifecycleScope.launch {
+            viewModel.chatWithLuma(message)
         }
         edtChat.text.clear()
+        edtChat.clearFocus()
     }
 }

@@ -7,11 +7,15 @@ import android.webkit.WebView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import org.bkkz.lumaapp.R
+import org.bkkz.lumaapp.data.entity.task.Task
 import org.bkkz.lumaapp.util.component.chat.ChatItem
+import org.bkkz.lumaapp.util.enums.LocalChatFlag
+import java.time.OffsetDateTime
+import java.time.format.DateTimeFormatter
 
 class ChatAdapter(
     private val items: List<ChatItem>,
-    private val onConfirmClick: (dbId: Int) -> Unit
+    private val onConfirmClick: (dbId: Int, flag: Int, task: Task) -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
@@ -46,7 +50,10 @@ class ChatAdapter(
         fun bind(task: ChatItem.ChatGetTask) {
             taskName.text = task.taskName
             taskDesc.text = task.taskDesc
-            taskDate.text = task.taskDateTime
+
+            val outputFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy | HH:mm")
+            val formattedString = OffsetDateTime.parse(task.taskDateTime).format(outputFormatter)
+            taskDate.text = formattedString
         }
     }
     inner class AddTaskViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -57,11 +64,31 @@ class ChatAdapter(
         fun bind(task: ChatItem.ChatAddTask) {
             taskName.text = task.taskName
             taskDesc.text = task.taskDesc
-            taskDate.text = task.taskDateTime
-            confirmBtn.setOnClickListener {
-                //TODO: Implement add service, then change color
+
+            val outputFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy | HH:mm")
+            val formattedString = OffsetDateTime.parse(task.taskDateTime).format(outputFormatter)
+            taskDate.text = formattedString
+
+            if(task.actionCompleted){
                 confirmBtn.setBackgroundResource(R.drawable.rect_disabled_color_btn)
-                onConfirmClick(task.roomDbId)
+                confirmBtn.isEnabled = false
+            } else {
+                confirmBtn.setBackgroundResource(R.drawable.rect_danger_btn)
+                confirmBtn.isEnabled = true
+            }
+
+            confirmBtn.setOnClickListener {
+                confirmBtn.setBackgroundResource(R.drawable.rect_disabled_color_btn)
+                confirmBtn.isEnabled = false
+
+                onConfirmClick(task.roomDbId, LocalChatFlag.CHAT_ADD_TASK.flag ,Task(
+                    id="",
+                    name=task.taskName,
+                    description=task.taskDesc,
+                    dateTime=task.taskDateTime,
+                    isFinished = false,
+                    userId = ""
+                ))
             }
         }
     }
@@ -73,11 +100,31 @@ class ChatAdapter(
         fun bind(task: ChatItem.ChatEditTask) {
             taskName.text = task.taskName
             taskDesc.text = task.taskDesc
-            taskDate.text = task.taskDateTime
-            confirmBtn.setOnClickListener {
-                //TODO: Implement edit service, then change color
+
+            val outputFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy | HH:mm")
+            val formattedString = OffsetDateTime.parse(task.taskDateTime).format(outputFormatter)
+            taskDate.text = formattedString
+
+            if(task.actionCompleted){
                 confirmBtn.setBackgroundResource(R.drawable.rect_disabled_color_btn)
-                onConfirmClick(task.roomDbId)
+                confirmBtn.isEnabled = false
+            } else {
+                confirmBtn.setBackgroundResource(R.drawable.rect_danger_btn)
+                confirmBtn.isEnabled = true
+            }
+
+            confirmBtn.setOnClickListener {
+                confirmBtn.setBackgroundResource(R.drawable.rect_disabled_color_btn)
+                confirmBtn.isEnabled = false
+
+                onConfirmClick(task.roomDbId, LocalChatFlag.CHAT_EDIT_TASK.flag ,Task(
+                    id=task.taskId,
+                    name=task.taskName,
+                    description=task.taskDesc,
+                    dateTime=task.taskDateTime,
+                    isFinished = false,
+                    userId = ""
+                ))
             }
         }
     }
@@ -89,11 +136,30 @@ class ChatAdapter(
         fun bind(task: ChatItem.ChatDeleteTask) {
             taskName.text = task.taskName
             taskDesc.text = task.taskDesc
-            taskDate.text = task.taskDateTime
-            confirmBtn.setOnClickListener {
-                //TODO: Implement delete service, then change color
+
+            val outputFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy | HH:mm")
+            val formattedString = OffsetDateTime.parse(task.taskDateTime).format(outputFormatter)
+            taskDate.text = formattedString
+
+            if(task.actionCompleted){
                 confirmBtn.setBackgroundResource(R.drawable.rect_disabled_color_btn)
-                onConfirmClick(task.roomDbId)
+                confirmBtn.isEnabled = false
+            } else {
+                confirmBtn.setBackgroundResource(R.drawable.rect_danger_btn)
+                confirmBtn.isEnabled = true
+            }
+
+            confirmBtn.setOnClickListener {
+                confirmBtn.setBackgroundResource(R.drawable.rect_disabled_color_btn)
+                confirmBtn.isEnabled = false
+                onConfirmClick(task.roomDbId, LocalChatFlag.CHAT_DELETE_TASK.flag ,Task(
+                    id=task.taskId,
+                    name=task.taskName,
+                    description=task.taskDesc,
+                    dateTime=task.taskDateTime,
+                    isFinished = false,
+                    userId = ""
+                ))
             }
         }
     }

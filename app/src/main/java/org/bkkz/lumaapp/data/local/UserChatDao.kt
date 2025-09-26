@@ -16,6 +16,9 @@ interface UserChatDao {
     @Query("DELETE FROM userchat")
     suspend fun deleteAllUserChat()
 
+    @Query("UPDATE userchat SET isTaskActionCompleted = 1")
+    suspend fun confirmActionAll()
+
     @Query("UPDATE userchat SET isTaskActionCompleted = 1 WHERE id = :dbId")
     suspend fun confirmAction(dbId: Int)
 }

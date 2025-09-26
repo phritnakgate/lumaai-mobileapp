@@ -11,6 +11,8 @@ import org.bkkz.lumaapp.data.entity.auth.EmailSignInResponse
 import org.bkkz.lumaapp.data.entity.auth.GoogleSignInRequest
 import org.bkkz.lumaapp.data.entity.auth.LogoutRequest
 import org.bkkz.lumaapp.data.entity.auth.TokenRequest
+import org.bkkz.lumaapp.data.entity.chat.LLMChatRequest
+import org.bkkz.lumaapp.data.entity.chat.LLMProcess
 import org.bkkz.lumaapp.data.entity.chat_history.ChatHistory
 import org.bkkz.lumaapp.data.entity.task.CreateTaskRequest
 import org.bkkz.lumaapp.data.entity.task.EditTaskRequest
@@ -18,6 +20,7 @@ import org.bkkz.lumaapp.data.entity.task.Task
 import org.bkkz.lumaapp.data.local.TokenManager
 import org.bkkz.lumaapp.data.local.UserChat
 import org.bkkz.lumaapp.data.local.UserChatDao
+import org.bkkz.lumaapp.data.remote.ApiResponse
 import org.bkkz.lumaapp.data.remote.ApiResult
 import org.bkkz.lumaapp.data.remote.LumaApi
 import retrofit2.HttpException
@@ -52,6 +55,12 @@ class Repository(
     suspend fun confirmAction(dbId : Int){
         withContext(Dispatchers.IO){
             userChatDao.confirmAction(dbId)
+        }
+    }
+
+    suspend fun confirmAllAction(){
+        withContext(Dispatchers.IO){
+            userChatDao.confirmActionAll()
         }
     }
 
@@ -247,6 +256,21 @@ class Repository(
                 }
             }catch (e : Exception){
                 Log.e("Repository","Failed to get log bc ${e.message}")
+                ApiResult.Error(Exception(e.message))
+            }
+    }
+
+    suspend fun chatWithLuma(message: String) : ApiResult<ApiResponse<LLMProcess>?> = withContext(
+        Dispatchers.IO){
+            try {
+                val response = lumaApi.chatWithLuma(LLMChatRequest(message))
+                if(response.isSuccessful){
+                    ApiResult.Success(response.body())
+                }else{
+                    ApiResult.Error(Exception(response.errorBody()?.string()))
+                }
+            }catch (e : Exception){
+                Log.e("Repository","Failed to chat with luma bc ${e.message}")
                 ApiResult.Error(Exception(e.message))
             }
     }

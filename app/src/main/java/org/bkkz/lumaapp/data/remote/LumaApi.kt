@@ -8,6 +8,8 @@ import org.bkkz.lumaapp.data.entity.auth.GoogleSignInRequest
 import org.bkkz.lumaapp.data.entity.auth.LogoutRequest
 import org.bkkz.lumaapp.data.entity.auth.TokenRequest
 import org.bkkz.lumaapp.data.entity.auth.TokenResponse
+import org.bkkz.lumaapp.data.entity.chat.LLMChatRequest
+import org.bkkz.lumaapp.data.entity.chat.LLMProcess
 import org.bkkz.lumaapp.data.entity.chat_history.ChatHistory
 import org.bkkz.lumaapp.data.entity.task.CreateTaskRequest
 import org.bkkz.lumaapp.data.entity.task.EditTaskRequest
@@ -78,4 +80,9 @@ interface LumaApi {
         @Query("date") date : String?,
         @Query("keyword", encoded = true) keyword : String?
     ) : Response<ApiResponse<ChatHistory>>
+
+    @POST("llm/")
+    suspend fun chatWithLuma(
+        @Body llmChatRequest: LLMChatRequest
+    ) : Response<ApiResponse<LLMProcess>>
 }
