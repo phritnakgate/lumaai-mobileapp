@@ -1,8 +1,6 @@
 package org.bkkz.lumaapp.presentation.main.task.view_task
 
-import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import android.widget.ImageView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -29,8 +27,6 @@ class ViewTaskActivity : AppCompatActivity() {
     private lateinit var tabLayout : TabLayout
     private lateinit var taskView : ViewPager2
     private lateinit var loadingDialog : LoadingDialog
-
-    private lateinit var sharedPref : SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

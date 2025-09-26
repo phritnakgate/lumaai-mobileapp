@@ -101,11 +101,12 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerview_daily_task"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            app:layout_constraintTop_toBottomOf="@id/constraintlayout_daily_task_add"
+            android:layout_height="0dp"
+            android:layout_marginVertical="12dp"
+            app:layout_constraintTop_toBottomOf="@+id/txtview_daily_task_events"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
 
             />
         <ImageView
