@@ -71,7 +71,7 @@
     <!--========== HOME PAGE ==========-->
     <string name="home_talk_with_luma">Talk\nwith LUMA</string>
     <string name="home_task">Your Task</string>
-    <string name="home_fill_form">Form</string>
+    <string name="home_report">Report</string>
     <string name="home_history_title">History</string>
     <string name="home_history_see_all">See All</string>
     <string name="home_history_recent">Recent</string>
@@ -122,4 +122,9 @@
     <string name="chat_confirm_edit">Confirm Editing</string>
     <string name="chat_confirm_delete">Confirm Deletion</string>
     <string name="chat_web_readall"><u>Read All…</u></string>
+
+    <!--========== REPORT PAGES ==========-->
+    <string name="create_report_title">Create Report</string>
+    <string name="your_report_title">Your Reports</string>
+    <string name="report_type_0">Monthly Task Report</string>
 </resources>

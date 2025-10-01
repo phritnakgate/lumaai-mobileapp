@@ -18,12 +18,15 @@
         android:theme="@style/Theme.LumaAIApp"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".presentation.main.report.ReportActivity"
+            android:exported="false" />
+        <activity
             android:name=".presentation.main.splash.SplashActivity"
             android:exported="true"
-            android:theme="@style/Theme.App.Starting"
-            >
+            android:theme="@style/Theme.App.Starting">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -51,13 +54,13 @@
             android:exported="false" />
         <activity
             android:name=".presentation.main.home.HomeActivity"
-            android:exported="false"/>
+            android:exported="false" />
         <activity
             android:name=".presentation.auth.login.LoginActivity"
             android:exported="false" />
         <activity
             android:name=".presentation.auth.LandingActivity"
-            android:exported="false"/>
+            android:exported="false" />
         <activity
             android:name=".MyApplication"
             android:exported="false" />

@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
-data class UserChat(
+data class UserChatEntity(
     @PrimaryKey(autoGenerate = true) val id : Int = 0,
     val flag : Int,
     val message : String? = null,

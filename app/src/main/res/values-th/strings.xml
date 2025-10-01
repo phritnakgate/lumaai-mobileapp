@@ -50,7 +50,7 @@
     <string name="register_have_account_btn"><u>มีบัญชีอยู่แล้ว</u></string>
     <string name="home_talk_with_luma">คุยกับ LUMA</string>
     <string name="home_task">งานของคุณ</string>
-    <string name="home_fill_form">ฟอร์ม</string>
+    <string name="home_report">รายงาน</string>
     <string name="home_history_title">ประวัติการคุย</string>
     <string name="home_history_see_all">ดูทั้งหมด</string>
     <string name="home_history_recent">ล่าสุด</string>

@@ -4,7 +4,7 @@ import androidx.room.Room
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.bkkz.lumaapp.data.local.TokenManager
-import org.bkkz.lumaapp.data.local.UserChatDatabase
+import org.bkkz.lumaapp.data.local.AppDatabase
 import org.bkkz.lumaapp.data.Repository
 import org.bkkz.lumaapp.data.remote.AuthInterceptor
 import org.bkkz.lumaapp.data.remote.LumaApi
@@ -15,18 +15,21 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 val dataModules = module {
-    single { Repository(get(), get(), get()) }
+    single { Repository(get(), get(), get(), get()) }
     single { TokenManager(androidContext()) }
 
     //RoomDB
     single {
         Room.databaseBuilder(
             androidContext(),
-            UserChatDatabase::class.java, "userChat"
+            AppDatabase::class.java, "AppDatabase"
         ).build()
     }
     single {
-        get<UserChatDatabase>().userChatDao()
+        get<AppDatabase>().userChatDao()
+    }
+    single{
+        get<AppDatabase>().userReportDao()
     }
 
     //OkHttp & Retrofit & Interceptor
@@ -35,6 +38,8 @@ val dataModules = module {
         .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
         .connectTimeout(1, TimeUnit.MINUTES)
         .readTimeout(1, TimeUnit.MINUTES)
+        .followRedirects(false)
+        .followSslRedirects(false)
         .build()
     }
     single {

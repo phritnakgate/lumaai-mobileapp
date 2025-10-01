@@ -158,7 +158,7 @@
                     android:id="@+id/txtview_home_form"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/home_fill_form"
+                    android:text="@string/home_report"
                     android:textColor="@color/white"
                     app:layout_constraintHorizontal_chainStyle="spread_inside"
                     android:textAppearance="@style/LumaAI.TextAppearance.Heading1.Eng"

@@ -21,6 +21,7 @@ import org.bkkz.lumaapp.presentation.auth.LandingActivity
 import org.bkkz.lumaapp.presentation.main.chat.ChatActivity
 import org.bkkz.lumaapp.presentation.main.chat_history.ChatHistoryActivity
 import org.bkkz.lumaapp.presentation.main.home.state.HomeEvent
+import org.bkkz.lumaapp.presentation.main.report.ReportActivity
 import org.bkkz.lumaapp.presentation.main.task.view_task.ViewTaskActivity
 import org.bkkz.lumaapp.util.component.chat_history.ChatHistoryListAdapter
 import org.bkkz.lumaapp.util.component.chat_history.ChatHistoryListDecoration
@@ -119,6 +120,9 @@ class HomeActivity : AppCompatActivity(), ChatHistoryListAdapter.OnChatHistoryLi
         }
         talkBtn.setOnClickListener {
             startActivity(Intent(this@HomeActivity, ChatActivity::class.java))
+        }
+        formBtn.setOnClickListener {
+            startActivity(Intent(this@HomeActivity, ReportActivity::class.java))
         }
     }
 

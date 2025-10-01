@@ -15,4 +15,14 @@
         <item name="postSplashScreenTheme">@style/Theme.LumaAIApp</item>
     </style>
 
+    <style name="Theme.PdfView.SelectedTheme" parent="@style/Theme.PdfView.Dark">
+        <item name="pdfView_backIcon">@drawable/ic_back_white</item>
+        <item name="pdfView_showToolbar">true</item>
+        <item name="pdfView_backgroundColor">@color/background_primary</item>
+        <item name="pdfView_toolbarColor">@color/primary</item>
+        <item name="pdfView_titleTextStyle">@style/LumaAI.TextAppearance.Heading4.Eng</item>
+        <item name="pdfView_downloadIcon">@drawable/ic_download</item>
+        <item name="pdfView_downloadIconTint">@color/white</item>
+    </style>
+
 </resources>

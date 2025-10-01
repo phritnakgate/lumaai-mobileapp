@@ -18,12 +18,16 @@ import org.bkkz.lumaapp.data.entity.task.CreateTaskRequest
 import org.bkkz.lumaapp.data.entity.task.EditTaskRequest
 import org.bkkz.lumaapp.data.entity.task.Task
 import org.bkkz.lumaapp.data.local.TokenManager
-import org.bkkz.lumaapp.data.local.UserChat
+import org.bkkz.lumaapp.data.local.UserChatEntity
 import org.bkkz.lumaapp.data.local.UserChatDao
+import org.bkkz.lumaapp.data.local.UserReportDao
+import org.bkkz.lumaapp.data.local.UserReportEntity
 import org.bkkz.lumaapp.data.remote.ApiResponse
 import org.bkkz.lumaapp.data.remote.ApiResult
 import org.bkkz.lumaapp.data.remote.LumaApi
 import retrofit2.HttpException
+import java.io.File
+import java.net.URL
 import java.nio.charset.StandardCharsets
 import java.security.MessageDigest
 import java.security.SecureRandom
@@ -33,16 +37,18 @@ import java.util.Base64
 class Repository(
     private val lumaApi: LumaApi,
     private val tokenManager: TokenManager,
-    private val userChatDao: UserChatDao) {
+    private val userChatDao: UserChatDao,
+    private val userReportDao : UserReportDao
+) {
 
     /*===========LOCAL DATA SOURCES===========*/
-    fun getAllChats(): List<UserChat> {
+    fun getAllChats(): List<UserChatEntity> {
         return userChatDao.getAllUserChat()
     }
 
-    suspend fun insertChat(userChat: UserChat){
+    suspend fun insertChat(userChatEntity: UserChatEntity){
         withContext(Dispatchers.IO){
-            userChatDao.insertUserChat(userChat)
+            userChatDao.insertUserChat(userChatEntity)
         }
     }
 
@@ -61,6 +67,18 @@ class Repository(
     suspend fun confirmAllAction(){
         withContext(Dispatchers.IO){
             userChatDao.confirmActionAll()
+        }
+    }
+
+    suspend fun insertUserReport(userReportEntity: UserReportEntity){
+        withContext(Dispatchers.IO){
+            userReportDao.insertUserReport(userReportEntity)
+        }
+    }
+
+    suspend fun deleteAllCachedUserReport(){
+        withContext(Dispatchers.IO){
+            userReportDao.deleteAllUserReport()
         }
     }
 
@@ -120,6 +138,7 @@ class Repository(
         val refreshToken = tokenManager.getRefreshToken()
         Log.d("AuthRepository", "Logout with $refreshToken")
         tokenManager.clearTokens()
+        deleteAllCachedUserReport()
         try {
             val response = lumaApi.logout(LogoutRequest(refreshToken!!))
             if (!response.isSuccessful) throw Exception("Failed to logout")
@@ -273,5 +292,24 @@ class Repository(
                 Log.e("Repository","Failed to chat with luma bc ${e.message}")
                 ApiResult.Error(Exception(e.message))
             }
+    }
+
+    suspend fun generateMisTaskReport(reportYrM: String) : ApiResult<String> = withContext(Dispatchers.IO){
+        try{
+            val response = lumaApi.generateMISReport(reportYrM)
+            if(response.code() == 302){
+                val downloadUrl = response.headers()["Location"]
+                if(downloadUrl == null){
+                    return@withContext ApiResult.Error(Exception("Download URL is null"))
+                }
+                ApiResult.Success(downloadUrl)
+            }else{
+                ApiResult.Error(Exception("Cannot generate report"))
+            }
+
+        }catch (e: Exception){
+            Log.e("Repository","Failed to generate MIS task report bc ${e.message}")
+            ApiResult.Error(Exception(e.message))
+        }
     }
 }

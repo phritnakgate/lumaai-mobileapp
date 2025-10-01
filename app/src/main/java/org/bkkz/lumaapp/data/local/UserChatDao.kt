@@ -7,18 +7,18 @@ import androidx.room.Query
 @Dao
 interface UserChatDao {
 
-    @Query("SELECT * FROM userchat")
-    fun getAllUserChat() : List<UserChat>
+    @Query("SELECT * FROM userchatentity")
+    fun getAllUserChat() : List<UserChatEntity>
 
     @Insert
-    suspend fun insertUserChat(userChat: UserChat)
+    suspend fun insertUserChat(userChatEntity: UserChatEntity)
 
-    @Query("DELETE FROM userchat")
+    @Query("DELETE FROM userchatentity")
     suspend fun deleteAllUserChat()
 
-    @Query("UPDATE userchat SET isTaskActionCompleted = 1")
+    @Query("UPDATE userchatentity SET isTaskActionCompleted = 1")
     suspend fun confirmActionAll()
 
-    @Query("UPDATE userchat SET isTaskActionCompleted = 1 WHERE id = :dbId")
+    @Query("UPDATE userchatentity SET isTaskActionCompleted = 1 WHERE id = :dbId")
     suspend fun confirmAction(dbId: Int)
 }

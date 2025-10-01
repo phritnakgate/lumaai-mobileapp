@@ -5,14 +5,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.bkkz.lumaapp.data.Repository
 import org.bkkz.lumaapp.data.entity.task.CreateTaskRequest
 import org.bkkz.lumaapp.data.entity.task.EditTaskRequest
 import org.bkkz.lumaapp.data.entity.task.Task
-import org.bkkz.lumaapp.data.local.UserChat
+import org.bkkz.lumaapp.data.local.UserChatEntity
 import org.bkkz.lumaapp.data.remote.ApiResult
 import org.bkkz.lumaapp.util.component.chat.ChatItem
 import org.bkkz.lumaapp.util.enums.LLMIntent
@@ -34,9 +33,9 @@ class ChatViewModel(private val repository: Repository) : ViewModel() {
     private fun loadChatsData(){
         viewModelScope.launch(Dispatchers.IO) {
             repository.confirmAllAction()
-            val userChats: List<UserChat> = repository.getAllChats()
+            val userChatEntities: List<UserChatEntity> = repository.getAllChats()
 
-            val mappedItems = userChats.map { userChat ->
+            val mappedItems = userChatEntities.map { userChat ->
                 when (userChat.flag) {
                     LocalChatFlag.CHAT_USER.flag -> ChatItem.ChatUser(userChat.message ?: "")
                     LocalChatFlag.CHAT_MODEL.flag -> ChatItem.ChatResponse(userChat.message ?: "")
@@ -83,26 +82,18 @@ class ChatViewModel(private val repository: Repository) : ViewModel() {
 
     fun insertNewChat(flag: Int, message: String? = null, task: Task? = null, url: String?=null) {
         viewModelScope.launch(Dispatchers.IO) {
-            var newChat : UserChat? = null
+            var newChat : UserChatEntity? = null
             when(flag) {
-                LocalChatFlag.CHAT_USER.flag -> newChat = UserChat(flag = flag, message = message)
-                LocalChatFlag.CHAT_MODEL.flag -> newChat = UserChat(flag = flag, message = message)
-                LocalChatFlag.CHAT_VIEW_TASK.flag -> newChat = UserChat(
+                LocalChatFlag.CHAT_USER.flag -> newChat = UserChatEntity(flag = flag, message = message)
+                LocalChatFlag.CHAT_MODEL.flag -> newChat = UserChatEntity(flag = flag, message = message)
+                LocalChatFlag.CHAT_VIEW_TASK.flag -> newChat = UserChatEntity(
                     flag = flag,
                     taskId = task?.id,
                     taskName = task?.name,
                     taskDesc = task?.description,
                     taskDateTime = task?.dateTime,
                 )
-                LocalChatFlag.CHAT_ADD_TASK.flag -> newChat = UserChat(
-                    flag = flag,
-                    taskId = task?.id,
-                    taskName = task?.name,
-                    taskDesc = task?.description,
-                    taskDateTime = task?.dateTime,
-                    isTaskActionCompleted = false
-                )
-                LocalChatFlag.CHAT_EDIT_TASK.flag -> newChat = UserChat(
+                LocalChatFlag.CHAT_ADD_TASK.flag -> newChat = UserChatEntity(
                     flag = flag,
                     taskId = task?.id,
                     taskName = task?.name,
@@ -110,7 +101,7 @@ class ChatViewModel(private val repository: Repository) : ViewModel() {
                     taskDateTime = task?.dateTime,
                     isTaskActionCompleted = false
                 )
-                LocalChatFlag.CHAT_DELETE_TASK.flag -> newChat = UserChat(
+                LocalChatFlag.CHAT_EDIT_TASK.flag -> newChat = UserChatEntity(
                     flag = flag,
                     taskId = task?.id,
                     taskName = task?.name,
@@ -118,7 +109,15 @@ class ChatViewModel(private val repository: Repository) : ViewModel() {
                     taskDateTime = task?.dateTime,
                     isTaskActionCompleted = false
                 )
-                LocalChatFlag.CHAT_WEB.flag -> newChat = UserChat(flag = flag, searchUrl = url)
+                LocalChatFlag.CHAT_DELETE_TASK.flag -> newChat = UserChatEntity(
+                    flag = flag,
+                    taskId = task?.id,
+                    taskName = task?.name,
+                    taskDesc = task?.description,
+                    taskDateTime = task?.dateTime,
+                    isTaskActionCompleted = false
+                )
+                LocalChatFlag.CHAT_WEB.flag -> newChat = UserChatEntity(flag = flag, searchUrl = url)
 
             }
 

@@ -85,4 +85,10 @@ interface LumaApi {
     suspend fun chatWithLuma(
         @Body llmChatRequest: LLMChatRequest
     ) : Response<ApiResponse<LLMProcess>>
+
+    /*=========== FORM API ===========*/
+    @POST("form/generate-monthly-task-report")
+    suspend fun generateMISReport(
+        @Query(value = "reportYearMonth") reportYearMonth : String
+    ) : Response<Void>
 }
