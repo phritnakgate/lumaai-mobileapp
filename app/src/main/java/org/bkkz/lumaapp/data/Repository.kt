@@ -14,6 +14,7 @@ import org.bkkz.lumaapp.data.entity.auth.TokenRequest
 import org.bkkz.lumaapp.data.entity.chat.LLMChatRequest
 import org.bkkz.lumaapp.data.entity.chat.LLMProcess
 import org.bkkz.lumaapp.data.entity.chat_history.ChatHistory
+import org.bkkz.lumaapp.data.entity.report_history.ReportHistory
 import org.bkkz.lumaapp.data.entity.task.CreateTaskRequest
 import org.bkkz.lumaapp.data.entity.task.EditTaskRequest
 import org.bkkz.lumaapp.data.entity.task.Task
@@ -79,6 +80,13 @@ class Repository(
     suspend fun deleteAllCachedUserReport(){
         withContext(Dispatchers.IO){
             userReportDao.deleteAllUserReport()
+        }
+    }
+
+    suspend fun isReportCached(fileName: String) : Boolean{
+        return withContext(Dispatchers.IO){
+            val report = userReportDao.getUserReportByFileName(fileName)
+            report != null
         }
     }
 
@@ -311,5 +319,20 @@ class Repository(
             Log.e("Repository","Failed to generate MIS task report bc ${e.message}")
             ApiResult.Error(Exception(e.message))
         }
+    }
+
+    suspend fun getReportHistory(formType: String) : ApiResult<ApiResponse<ReportHistory>> = withContext(
+        Dispatchers.IO){
+            try {
+                val response = lumaApi.getReports(formType)
+                if(response.isSuccessful){
+                    ApiResult.Success(response.body()!!)
+                }else{
+                    ApiResult.Error(Exception(response.body()?.error))
+                }
+            }catch (e : Exception){
+                Log.e("Repository","Failed to get report history bc ${e.message}")
+                ApiResult.Error(Exception(e.message))
+            }
     }
 }

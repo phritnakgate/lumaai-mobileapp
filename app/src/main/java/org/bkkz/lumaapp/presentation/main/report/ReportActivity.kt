@@ -1,22 +1,29 @@
 package org.bkkz.lumaapp.presentation.main.report
 
+import android.app.Activity
 import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.NumberPicker
+import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.rajat.pdfviewer.PdfViewerActivity
 import com.rajat.pdfviewer.PdfViewerActivity.Companion.ENABLE_FILE_DOWNLOAD
 import com.rajat.pdfviewer.util.saveTo
 import kotlinx.coroutines.launch
 import org.bkkz.lumaapp.R
+import org.bkkz.lumaapp.presentation.main.report.adapter.ReportListAdapter
 import org.bkkz.lumaapp.presentation.main.report.state.ReportActivityEvent
 import org.bkkz.lumaapp.util.dialog.LoadingDialog
 import org.bkkz.lumaapp.util.dialog.OneActionDialog
@@ -32,13 +39,23 @@ class ReportActivity : AppCompatActivity() {
     //UI
     private lateinit var createMonthlyReportBtn : ConstraintLayout
     private lateinit var reportHistories : RecyclerView
+    private lateinit var imgViewNoReport : ImageView
+    private lateinit var txtViewNoReport : TextView
+
     private lateinit var loadingDialog: LoadingDialog
+
+    val pdfLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == RESULT_CANCELED) {
+            viewModel.onEvent(ReportActivityEvent.LoadReportHistory(this@ReportActivity))
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_report)
 
+        setupData()
         findView()
         setupViews()
         setupEvents()
@@ -50,12 +67,21 @@ class ReportActivity : AppCompatActivity() {
         }
     }
 
+    private fun setupData(){
+        viewModel.onEvent(ReportActivityEvent.LoadReportHistory(this@ReportActivity))
+    }
+
     private fun findView() {
         createMonthlyReportBtn = findViewById(R.id.constraintlayout_report_create_monthly)
         reportHistories = findViewById(R.id.recyclerview_report_history)
+        imgViewNoReport = findViewById(R.id.imgview_report_no)
+        txtViewNoReport = findViewById(R.id.txtview_report_no)
         loadingDialog = LoadingDialog(this@ReportActivity)
     }
     private fun setupViews() {
+
+        reportHistories.layoutManager = LinearLayoutManager(this@ReportActivity, LinearLayoutManager.VERTICAL, false)
+
         lifecycleScope.launch {
             viewModel.state.collect { state ->
                 if(loadingDialog.isShowing){ loadingDialog.dismiss()}
@@ -63,7 +89,17 @@ class ReportActivity : AppCompatActivity() {
                     ServiceState.LOADING -> {
                         loadingDialog.show()
                     }
-                    ServiceState.IDLE -> {}
+                    ServiceState.IDLE -> {
+                        if(state.reportList != null && state.reportList.isNotEmpty()){
+                            imgViewNoReport.visibility = View.GONE
+                            txtViewNoReport.visibility = View.GONE
+                            val adapter = ReportListAdapter(viewModel, state.reportList)
+                            reportHistories.adapter = adapter
+                        }else{
+                            imgViewNoReport.visibility = View.VISIBLE
+                            txtViewNoReport.visibility = View.VISIBLE
+                        }
+                    }
                     ServiceState.SUCCESS -> {
                         val pdfViewerActivity = PdfViewerActivity.launchPdfFromPath(
                             context = this@ReportActivity,
@@ -73,7 +109,8 @@ class ReportActivity : AppCompatActivity() {
                             fromAssets = false
                         )
                         pdfViewerActivity.putExtra(ENABLE_FILE_DOWNLOAD, true)
-                        startActivity(pdfViewerActivity)
+
+                        pdfLauncher.launch(pdfViewerActivity)
 
                     }
                     ServiceState.FAILED -> {

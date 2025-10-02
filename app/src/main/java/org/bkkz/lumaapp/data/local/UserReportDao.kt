@@ -16,4 +16,7 @@ interface UserReportDao {
 
     @Query("DELETE FROM userreportentity")
     suspend fun deleteAllUserReport()
+
+    @Query("SELECT * FROM userreportentity WHERE fileNameKey = :fileName LIMIT 1")
+    suspend fun getUserReportByFileName(fileName: String) : UserReportEntity?
 }

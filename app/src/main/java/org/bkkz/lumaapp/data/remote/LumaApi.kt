@@ -11,6 +11,7 @@ import org.bkkz.lumaapp.data.entity.auth.TokenResponse
 import org.bkkz.lumaapp.data.entity.chat.LLMChatRequest
 import org.bkkz.lumaapp.data.entity.chat.LLMProcess
 import org.bkkz.lumaapp.data.entity.chat_history.ChatHistory
+import org.bkkz.lumaapp.data.entity.report_history.ReportHistory
 import org.bkkz.lumaapp.data.entity.task.CreateTaskRequest
 import org.bkkz.lumaapp.data.entity.task.EditTaskRequest
 import org.bkkz.lumaapp.data.entity.task.Task
@@ -91,4 +92,9 @@ interface LumaApi {
     suspend fun generateMISReport(
         @Query(value = "reportYearMonth") reportYearMonth : String
     ) : Response<Void>
+
+    @GET("form/forms")
+    suspend fun getReports(
+        @Query(value = "formType") formType : String
+    ) : Response<ApiResponse<ReportHistory>>
 }
