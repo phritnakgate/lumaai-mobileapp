@@ -103,7 +103,6 @@ dependencies {
 
     //Third-Party LIB
     implementation("io.github.afreakyelf:Pdf-Viewer:2.3.7")
-    //implementation("com.github.dewinjm:monthyear-picker:1.0.2") :ERROR
 
     //=== Test Implementation ===\\
     testImplementation(libs.junit)
