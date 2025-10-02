@@ -97,4 +97,10 @@ interface LumaApi {
     suspend fun getReports(
         @Query(value = "formType") formType : String
     ) : Response<ApiResponse<ReportHistory>>
+
+    @DELETE("form/delete-form")
+    suspend fun deleteReport(
+        @Query(value = "formType") formType : String,
+        @Query(value = "fileName") fileName : String
+    ) : Response<ApiResponse<Any>>
 }

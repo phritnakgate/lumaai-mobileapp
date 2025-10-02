@@ -37,6 +37,9 @@ class ReportViewModel(private val repository: Repository) : ViewModel() {
                 _state.update { it.copy(serviceState = ServiceState.LOADING) }
                 getReportList("monthly_task_report")
             }
+            is ReportActivityEvent.OnDeleteModeToggle -> {
+                _state.update { it.copy(isDeleteMode = !it.isDeleteMode) }
+            }
         }
     }
 
@@ -148,4 +151,25 @@ class ReportViewModel(private val repository: Repository) : ViewModel() {
 
         file.path
     }
+
+    fun deleteReportFile(formType: String, fileName: String) {
+        _state.update { it.copy(serviceState = ServiceState.LOADING) }
+        viewModelScope.launch {
+            try{
+                val response = repository.deleteReport(formType, fileName)
+                when(response){
+                    is ApiResult.Success -> {
+                        getReportList(formType)
+                    }
+                    is ApiResult.Error -> {
+                        _state.update { it.copy(serviceState = ServiceState.FAILED) }
+                    }
+                }
+            }catch (e: Exception){
+                _state.update { it.copy(serviceState = ServiceState.FAILED) }
+            }
+        }
+
+    }
+
 }

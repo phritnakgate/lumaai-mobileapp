@@ -1,6 +1,5 @@
 package org.bkkz.lumaapp.presentation.main.report
 
-import android.app.Activity
 import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -37,10 +36,12 @@ class ReportActivity : AppCompatActivity() {
     //ViewModel
     private val viewModel : ReportViewModel by viewModel()
     //UI
+    private lateinit var backBtn : ImageView
     private lateinit var createMonthlyReportBtn : ConstraintLayout
     private lateinit var reportHistories : RecyclerView
     private lateinit var imgViewNoReport : ImageView
     private lateinit var txtViewNoReport : TextView
+    private lateinit var deleteReportBtn : TextView
 
     private lateinit var loadingDialog: LoadingDialog
 
@@ -72,10 +73,12 @@ class ReportActivity : AppCompatActivity() {
     }
 
     private fun findView() {
+        backBtn = findViewById(R.id.imgview_report_back)
         createMonthlyReportBtn = findViewById(R.id.constraintlayout_report_create_monthly)
         reportHistories = findViewById(R.id.recyclerview_report_history)
         imgViewNoReport = findViewById(R.id.imgview_report_no)
         txtViewNoReport = findViewById(R.id.txtview_report_no)
+        deleteReportBtn = findViewById(R.id.txtview_report_delete)
         loadingDialog = LoadingDialog(this@ReportActivity)
     }
     private fun setupViews() {
@@ -85,6 +88,11 @@ class ReportActivity : AppCompatActivity() {
         lifecycleScope.launch {
             viewModel.state.collect { state ->
                 if(loadingDialog.isShowing){ loadingDialog.dismiss()}
+                if(state.isDeleteMode){
+                    deleteReportBtn.text = getString(R.string.report_delete_report_title_cancel)
+                }else{
+                    deleteReportBtn.text = getString(R.string.report_delete_report_title)
+                }
                 when(state.serviceState){
                     ServiceState.LOADING -> {
                         loadingDialog.show()
@@ -126,8 +134,16 @@ class ReportActivity : AppCompatActivity() {
         }
     }
     private fun setupEvents() {
+
+        backBtn.setOnClickListener {
+            finish()
+        }
+
         createMonthlyReportBtn.setOnClickListener {
             selectMonthYearDialog()
+        }
+        deleteReportBtn.setOnClickListener {
+            viewModel.onEvent(ReportActivityEvent.OnDeleteModeToggle)
         }
     }
 

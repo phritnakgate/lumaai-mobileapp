@@ -19,16 +19,14 @@ import org.bkkz.lumaapp.data.entity.task.CreateTaskRequest
 import org.bkkz.lumaapp.data.entity.task.EditTaskRequest
 import org.bkkz.lumaapp.data.entity.task.Task
 import org.bkkz.lumaapp.data.local.TokenManager
-import org.bkkz.lumaapp.data.local.UserChatEntity
 import org.bkkz.lumaapp.data.local.UserChatDao
+import org.bkkz.lumaapp.data.local.UserChatEntity
 import org.bkkz.lumaapp.data.local.UserReportDao
 import org.bkkz.lumaapp.data.local.UserReportEntity
 import org.bkkz.lumaapp.data.remote.ApiResponse
 import org.bkkz.lumaapp.data.remote.ApiResult
 import org.bkkz.lumaapp.data.remote.LumaApi
 import retrofit2.HttpException
-import java.io.File
-import java.net.URL
 import java.nio.charset.StandardCharsets
 import java.security.MessageDigest
 import java.security.SecureRandom
@@ -334,5 +332,20 @@ class Repository(
                 Log.e("Repository","Failed to get report history bc ${e.message}")
                 ApiResult.Error(Exception(e.message))
             }
+    }
+
+    suspend fun deleteReport(formType: String, fileName: String) : ApiResult<Any> = withContext(
+        Dispatchers.IO){
+        try{
+            val response = lumaApi.deleteReport(formType, fileName)
+            if(response.isSuccessful){
+                ApiResult.Success(response)
+            }else{
+                ApiResult.Error(Exception())
+            }
+        }catch (e: Exception){
+            Log.e("Repository","Failed to delete report bc ${e.message}")
+            ApiResult.Error(Exception(e.message))
+        }
     }
 }

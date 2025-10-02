@@ -19,6 +19,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         />
     <ImageView
+        android:id="@+id/imgview_recycler_report_list_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_forward"
