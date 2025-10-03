@@ -109,9 +109,11 @@
     <string name="chat_history_task">Task</string>
     <string name="chat_history_search">Search</string>
     <string name="chat_history_plan">Plan</string>
+    <string name="chat_history_report">Report</string>
     <string name="chat_history_search_hint">Search</string>
     <string name="chat_history_empty">No Chat Found</string>
     <string name="chat_history_readall">Read All</string>
+    <string name="chat_history_pdf">View File</string>
     <string name="read_all_bottomsheet_title">Search Results</string>
 
     <!--========== CHAT PAGES ==========-->

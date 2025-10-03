@@ -52,6 +52,7 @@ class ChatHistoryViewModel(private val repository: Repository) : ViewModel(){
             val taskChatHistory = repository.getChatLogs(intent = "Task", date = state.value.queriedDate, keyword=state.value.queriedKeyword)
             val searchChatHistory = repository.getChatLogs(intent = "Search", date = state.value.queriedDate, keyword=state.value.queriedKeyword)
             val planChatHistory = repository.getChatLogs(intent = "Plan", date = state.value.queriedDate, keyword=state.value.queriedKeyword)
+            val genFormChatHistory = repository.getChatLogs(intent = "GenForm", date = state.value.queriedDate, keyword=state.value.queriedKeyword)
             when(taskChatHistory){
                 is ApiResult.Success -> {
                     _state.update { it.copy(
@@ -82,6 +83,19 @@ class ChatHistoryViewModel(private val repository: Repository) : ViewModel(){
                 is ApiResult.Success -> {
                     _state.update { it.copy(
                         chatHistoryPlan = planChatHistory.data ?: emptyList()
+                    ) }
+                }
+                is ApiResult.Error -> {
+                    _state.update { it.copy(
+                        serviceState = ServiceState.FAILED
+                    ) }
+                    return@launch
+                }
+            }
+            when(genFormChatHistory){
+                is ApiResult.Success -> {
+                    _state.update { it.copy(
+                        chatHistoryGenForm = genFormChatHistory.data ?: emptyList()
                     ) }
                 }
                 is ApiResult.Error -> {

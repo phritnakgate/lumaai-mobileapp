@@ -42,6 +42,7 @@ class ChatHistoryActivity : AppCompatActivity(), ChatHistoryAdapter.OnHistoryInt
     private lateinit var selectTask: TextView
     private lateinit var selectSearch: TextView
     private lateinit var selectPlan: TextView
+    private lateinit var selectGenForm: TextView
     private lateinit var edtSearch: EditText
     private lateinit var dateSearchBtn: ImageView
     private lateinit var recyclerChat: RecyclerView
@@ -73,6 +74,7 @@ class ChatHistoryActivity : AppCompatActivity(), ChatHistoryAdapter.OnHistoryInt
         selectTask = findViewById(R.id.txtview_chat_history_task)
         selectSearch = findViewById(R.id.txtview_chat_history_search)
         selectPlan = findViewById(R.id.txtview_chat_history_plan)
+        selectGenForm = findViewById(R.id.txtview_chat_history_genform)
         edtSearch = findViewById(R.id.edttxt_chat_history_search)
         dateSearchBtn = findViewById(R.id.imgview_chat_history_date)
         recyclerChat = findViewById(R.id.recyclerview_chat_history)
@@ -83,7 +85,8 @@ class ChatHistoryActivity : AppCompatActivity(), ChatHistoryAdapter.OnHistoryInt
         categoryViews = mapOf(
             CATEGORY_TASK to selectTask,
             CATEGORY_SEARCH to selectSearch,
-            CATEGORY_PLAN to selectPlan
+            CATEGORY_PLAN to selectPlan,
+            CATEGORY_GENFORM to selectGenForm
         )
     }
 
@@ -164,6 +167,11 @@ class ChatHistoryActivity : AppCompatActivity(), ChatHistoryAdapter.OnHistoryInt
                 recyclerChat.adapter = ChatHistoryAdapter(recyclerData, this@ChatHistoryActivity)
                 updateNoHistoryView(recyclerData.isEmpty())
             }
+            CATEGORY_GENFORM -> {
+                val recyclerData = groupHistoryForAdapter(category, viewModel.state.value.chatHistoryGenForm)
+                recyclerChat.adapter = ChatHistoryAdapter(recyclerData, this@ChatHistoryActivity)
+                updateNoHistoryView(recyclerData.isEmpty())
+            }
         }
 
     }
@@ -234,5 +242,6 @@ class ChatHistoryActivity : AppCompatActivity(), ChatHistoryAdapter.OnHistoryInt
         private const val CATEGORY_TASK = "Task"
         private const val CATEGORY_SEARCH = "Search"
         private const val CATEGORY_PLAN = "Plan"
+        private const val CATEGORY_GENFORM = "GenForm"
     }
 }

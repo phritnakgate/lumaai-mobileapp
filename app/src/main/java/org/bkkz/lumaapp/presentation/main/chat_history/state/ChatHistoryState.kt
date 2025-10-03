@@ -8,7 +8,8 @@ data class ChatHistoryState(
     val chatHistoryTask : List<ChatHistory> = emptyList(),
     val chatHistorySearch : List<ChatHistory> = emptyList(),
     val chatHistoryPlan : List<ChatHistory> = emptyList(),
+    val chatHistoryGenForm : List<ChatHistory> = emptyList(),
     val queriedDate : String? = null,
     val queriedKeyword : String? = null,
-    val currentChatHistoryPage : String = "Task" // Task, Search, Plan
+    val currentChatHistoryPage : String = "Task" // Task, Search, Plan, GenForm
 )
