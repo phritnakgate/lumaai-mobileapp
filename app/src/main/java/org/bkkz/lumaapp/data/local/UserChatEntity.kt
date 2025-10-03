@@ -13,5 +13,6 @@ data class UserChatEntity(
     val taskDesc : String? = null,
     val taskDateTime : String? = null,
     val isTaskActionCompleted : Boolean? = null,
-    val searchUrl : String? = null
+    val searchUrl : String? = null,
+    val generatedFormUrl : String? = null
 )

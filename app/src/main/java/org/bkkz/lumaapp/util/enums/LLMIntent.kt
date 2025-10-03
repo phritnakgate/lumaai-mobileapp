@@ -7,4 +7,5 @@ enum class LLMIntent(val intent: String) {
     DELETE("DELETE"),
     SEARCH("SEARCH"),
     GOOGLESEARCH("GOOGLESEARCH"),
+    GENFORM("GENFORM")
 }

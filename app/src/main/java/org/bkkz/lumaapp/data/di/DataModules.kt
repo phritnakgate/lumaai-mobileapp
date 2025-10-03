@@ -23,7 +23,9 @@ val dataModules = module {
         Room.databaseBuilder(
             androidContext(),
             AppDatabase::class.java, "AppDatabase"
-        ).build()
+        )
+            .fallbackToDestructiveMigration(true)
+            .build()
     }
     single {
         get<AppDatabase>().userChatDao()

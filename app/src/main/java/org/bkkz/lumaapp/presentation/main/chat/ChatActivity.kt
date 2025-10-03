@@ -1,5 +1,6 @@
 package org.bkkz.lumaapp.presentation.main.chat
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -44,7 +45,7 @@ class ChatActivity : AppCompatActivity() {
             val spokenText = data?.getStringExtra(VoiceChatActivity.VOICE_RESULT)
 
             if (spokenText != null) {
-                sendChats(spokenText)
+                sendChats(this@ChatActivity, spokenText)
             }
         } else {
             Toast.makeText(this@ChatActivity, "Failed to Recognize Speech", Toast.LENGTH_SHORT).show()
@@ -137,16 +138,16 @@ class ChatActivity : AppCompatActivity() {
             )
         }
         btnSend.setOnClickListener {
-            sendChats(edtChat.text.toString())
+            sendChats(this@ChatActivity, edtChat.text.toString())
         }
         newChatBtn.setOnClickListener {
             viewModel.clearAllChats()
         }
     }
 
-    private fun sendChats(message: String){
+    private fun sendChats(context: Context, message: String){
         lifecycleScope.launch {
-            viewModel.chatWithLuma(message)
+            viewModel.chatWithLuma(context, message)
         }
         edtChat.text.clear()
         edtChat.clearFocus()
