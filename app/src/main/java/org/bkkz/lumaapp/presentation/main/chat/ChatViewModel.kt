@@ -37,7 +37,6 @@ class ChatViewModel(private val repository: Repository) : ViewModel() {
 
     private fun loadChatsData(){
         viewModelScope.launch(Dispatchers.IO) {
-            repository.confirmAllAction()
             val userChatEntities: List<UserChatEntity> = repository.getAllChats()
 
             val mappedItems = userChatEntities.map { userChat ->
@@ -191,6 +190,9 @@ class ChatViewModel(private val repository: Repository) : ViewModel() {
                                 if(it.intent == LLMIntent.CHECK.intent && response.results[nextInd].intent !in listOf(LLMIntent.ADD.intent, LLMIntent.EDIT.intent, LLMIntent.DELETE.intent)){
                                     val task = it.output
                                     task?.forEach { taskData ->
+                                        if(taskData.id == "-1"){
+                                            return@forEach
+                                        }
                                         insertNewChat(LocalChatFlag.CHAT_VIEW_TASK.flag, task = taskData)
                                     }
                                 }
@@ -231,7 +233,7 @@ class ChatViewModel(private val repository: Repository) : ViewModel() {
                                             val size = it.output.size
                                             requiredTask = it.output[0]
 
-                                            for(i in 1 until size - 1){
+                                            for(i in 1 until size){
                                                 insertNewChat(LocalChatFlag.CHAT_VIEW_TASK.flag, task = it.output[i])
                                             }
                                             insertNewChat(LocalChatFlag.CHAT_ADD_TASK.flag, task = it.output[size - 1])
@@ -240,11 +242,11 @@ class ChatViewModel(private val repository: Repository) : ViewModel() {
                                         "EDIT" -> {
                                             val size = it.output.size
                                             requiredTask = it.output[0]
-                                            for(i in 1 until size - 1){
+                                            for(i in 1 until size){
                                                 insertNewChat(LocalChatFlag.CHAT_EDIT_TASK.flag, task = it.output[i])
                                             }
                                         }
-                                        "DELETE" -> {
+                                        "REMOVE" -> {
                                             it.output.forEach { taskData ->
                                                 insertNewChat(LocalChatFlag.CHAT_DELETE_TASK.flag, task = taskData)
                                             }
@@ -266,5 +268,11 @@ class ChatViewModel(private val repository: Repository) : ViewModel() {
             }
         }
 
+    }
+
+    fun onViewDestroy() {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.confirmAllAction()
+        }
     }
 }

@@ -77,6 +77,11 @@ class ChatActivity : AppCompatActivity() {
         }
     }
 
+    override fun onStop() {
+        super.onStop()
+        viewModel.onViewDestroy()
+    }
+
     private fun setupData() {
         viewModel.chatItems.observe(this@ChatActivity){ userChats ->
             if (userChats.isNullOrEmpty()) {
