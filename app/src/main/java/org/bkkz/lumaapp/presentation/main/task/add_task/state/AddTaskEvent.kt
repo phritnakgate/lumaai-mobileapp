@@ -6,5 +6,7 @@ sealed class AddTaskEvent {
     data class OnCheckTimeSpecified(val chk : Boolean) : AddTaskEvent()
     data class OnSelectedDate(val date : String) : AddTaskEvent()
     data class OnSelectedTime(val time : String) : AddTaskEvent()
+    data class OnSelectedCategory(val category : Int) : AddTaskEvent()
+    data class OnSelectedPriority(val priority : Int) : AddTaskEvent()
     data object OnCreateTask : AddTaskEvent()
 }

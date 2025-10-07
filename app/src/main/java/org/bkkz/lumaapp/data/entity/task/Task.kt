@@ -17,5 +17,9 @@ data class Task(
     @SerializedName("isFinished")
     val isFinished: Boolean,
     @SerializedName("userId")
-    val userId: String
+    val userId: String,
+    @SerializedName("category")
+    val category: Int,
+    @SerializedName("priority")
+    val priority: Int
 ) : Parcelable

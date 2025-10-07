@@ -10,5 +10,9 @@ data class CreateTaskRequest(
     @SerializedName("dueDate")
     val dueDate: String,
     @SerializedName("dueTime")
-    val dueTime: String
+    val dueTime: String,
+    @SerializedName("category")
+    val category: Int,
+    @SerializedName("priority")
+    val priority: Int
 )

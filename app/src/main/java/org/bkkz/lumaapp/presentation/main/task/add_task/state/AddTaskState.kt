@@ -8,6 +8,8 @@ data class AddTaskState(
     val isTimeSpecify: Boolean = false,
     val taskDate: String? = null,
     val taskTime: String? = null,
+    val category: Int = 0,
+    val priority: Int = 0,
     val errorField : Map<RequiredFormField, Boolean?> = emptyMap(),
     val serviceState: ServiceState = ServiceState.IDLE
 ) {

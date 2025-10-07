@@ -83,6 +83,13 @@ class AddTaskViewModel(private val repository: Repository) : ViewModel() {
                 }
             }
 
+            is AddTaskEvent.OnSelectedCategory -> {
+                _state.update { it.copy(category = event.category) }
+            }
+            is AddTaskEvent.OnSelectedPriority -> {
+                _state.update { it.copy(priority = event.priority) }
+            }
+
             is AddTaskEvent.OnCreateTask -> {
 
                 if (isValidForm()) {
@@ -106,6 +113,8 @@ class AddTaskViewModel(private val repository: Repository) : ViewModel() {
             description = state.value.description ?: "",
             dueDate = state.value.taskDate ?: "",
             dueTime = state.value.taskTime ?: "",
+            category = state.value.category,
+            priority = state.value.priority
         )
         val response = repository.createTask(requestBody)
         when (response) {

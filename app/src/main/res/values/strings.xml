@@ -92,6 +92,8 @@
     <string name="form_task_chkbox">Time Specified</string>
     <string name="form_task_date">Task Date</string>
     <string name="form_task_time">Task Time</string>
+    <string name="form_task_category">Task Category</string>
+    <string name="form_task_priority">Task Priority</string>
     <string name="add_task_button">Create Task</string>
     <string name="edit_task_title">Edit Your Task</string>
     <string name="edit_task_button">Edit Task</string>

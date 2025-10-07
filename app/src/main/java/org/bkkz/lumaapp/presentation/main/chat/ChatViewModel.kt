@@ -61,7 +61,9 @@ class ChatViewModel(private val repository: Repository) : ViewModel() {
                         taskName = userChat.taskName ?: "",
                         taskDesc = userChat.taskDesc ?: "",
                         taskDateTime = userChat.taskDateTime ?: "",
-                        actionCompleted = userChat.isTaskActionCompleted ?: false
+                        actionCompleted = userChat.isTaskActionCompleted ?: false,
+                        taskCategory = userChat.taskCategory ?: 0,
+                        taskPriority = userChat.taskPriority ?: 0
                     )
                     LocalChatFlag.CHAT_DELETE_TASK.flag -> ChatItem.ChatDeleteTask(
                         roomDbId = userChat.id,
@@ -69,7 +71,9 @@ class ChatViewModel(private val repository: Repository) : ViewModel() {
                         taskName = userChat.taskName ?: "",
                         taskDesc = userChat.taskDesc ?: "",
                         taskDateTime = userChat.taskDateTime ?: "",
-                        actionCompleted = userChat.isTaskActionCompleted ?: false
+                        actionCompleted = userChat.isTaskActionCompleted ?: false,
+                        taskCategory = userChat.taskCategory ?: 0,
+                        taskPriority = userChat.taskPriority ?: 0
                     )
                     LocalChatFlag.CHAT_WEB.flag -> ChatItem.ChatWebSearch(
                         url = userChat.searchUrl ?: ""
@@ -153,7 +157,9 @@ class ChatViewModel(private val repository: Repository) : ViewModel() {
                         name = requiredTask!!.name,
                         description = requiredTask!!.description,
                         dueDate = OffsetDateTime.parse(requiredTask!!.dateTime).format(outputDateFormatter),
-                        dueTime = OffsetDateTime.parse(requiredTask!!.dateTime).format(outputTimeFormatter)
+                        dueTime = OffsetDateTime.parse(requiredTask!!.dateTime).format(outputTimeFormatter),
+                        category = 0,
+                        priority = 0
                     )
                     repository.createTask(createTaskRequest)
                 }

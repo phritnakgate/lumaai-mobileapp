@@ -1,9 +1,14 @@
 package org.bkkz.lumaapp.presentation.main.task.add_task
 
 import android.os.Bundle
+import android.util.Log
+import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.Spinner
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
@@ -23,6 +28,8 @@ import org.bkkz.lumaapp.util.LabelEditText
 import org.bkkz.lumaapp.util.dialog.LoadingDialog
 import org.bkkz.lumaapp.util.dialog.OneActionDialog
 import org.bkkz.lumaapp.util.enums.ServiceState
+import org.bkkz.lumaapp.util.enums.TaskCategory
+import org.bkkz.lumaapp.util.enums.TaskPriority
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -42,6 +49,8 @@ class AddTaskActivity : AppCompatActivity() {
     private lateinit var edtDate : EditText
     private lateinit var edtTime : EditText
     private lateinit var backBtn : ImageView
+    private lateinit var categorySelector : Spinner
+    private lateinit var prioritySelector : Spinner
     private lateinit var createTaskBtn : AppCompatButton
     private lateinit var loadingDialog: LoadingDialog
 
@@ -68,10 +77,14 @@ class AddTaskActivity : AppCompatActivity() {
         edtDate = findViewById(R.id.edttxt_add_task_date)
         edtTime = findViewById(R.id.edttxt_add_task_time)
         backBtn = findViewById(R.id.imgview_add_task_back)
+        categorySelector = findViewById(R.id.spinner_add_task_category)
+        prioritySelector = findViewById(R.id.spinner_add_task_priority)
         createTaskBtn = findViewById(R.id.compatbtn_add_task)
         loadingDialog = LoadingDialog(this@AddTaskActivity)
     }
     private fun setupView(){
+        setupCategorySelector()
+        setupPrioritySelector()
         lifecycleScope.launch {
             viewModel.state.collect { state ->
                 setupName(state.errorField[AddTaskState.RequiredFormField.TASK_NAME])
@@ -116,6 +129,52 @@ class AddTaskActivity : AppCompatActivity() {
         }
         createTaskBtn.setOnClickListener {
             viewModel.onEvent(AddTaskEvent.OnCreateTask)
+        }
+    }
+
+    private fun setupCategorySelector(){
+        val categories = TaskCategory.entries.map { it.displayName }
+        val categoryAdapter = ArrayAdapter(this@AddTaskActivity, R.layout.spinner_layout, categories)
+        categoryAdapter.setDropDownViewResource(R.layout.spinner_item)
+        categorySelector.adapter = categoryAdapter
+        categorySelector.setSelection(0)
+        categorySelector.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                p0: AdapterView<*>?,
+                p1: View?,
+                p2: Int,
+                p3: Long
+            ) {
+                val selectedCategory = TaskCategory.fromInt(p2) ?: TaskCategory.OTHERS
+                Log.d("AddTaskActivity", "Selected category: ${selectedCategory.displayName} (${selectedCategory.value})")
+                viewModel.onEvent(AddTaskEvent.OnSelectedCategory(selectedCategory.value))
+            }
+
+            override fun onNothingSelected(p0: AdapterView<*>?) {}
+
+        }
+    }
+
+    private fun setupPrioritySelector(){
+        val priorities = TaskPriority.entries.map { it.displayName }
+        val priorityAdapter = ArrayAdapter(this@AddTaskActivity, R.layout.spinner_layout, priorities)
+        priorityAdapter.setDropDownViewResource(R.layout.spinner_item)
+        prioritySelector.adapter = priorityAdapter
+        prioritySelector.setSelection(0)
+        prioritySelector.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                p0: AdapterView<*>?,
+                p1: View?,
+                p2: Int,
+                p3: Long
+            ) {
+                val selectedPriority = TaskPriority.fromInt(p2) ?: TaskPriority.HIGH
+                Log.d("AddTaskActivity", "Selected priority: ${selectedPriority.displayName} (${selectedPriority.value})")
+                viewModel.onEvent(AddTaskEvent.OnSelectedPriority(selectedPriority.value))
+            }
+
+            override fun onNothingSelected(p0: AdapterView<*>?) {}
+
         }
     }
 

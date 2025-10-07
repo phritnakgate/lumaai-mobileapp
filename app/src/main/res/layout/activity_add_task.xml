@@ -167,6 +167,52 @@
             tools:text="10:00"
             />
 
+        <TextView
+            android:id="@+id/txtview_add_task_category"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/form_task_category"
+            android:paddingTop="12dp"
+            android:textAppearance="@style/LumaAI.TextAppearance.BodyLarge.Eng"
+            app:layout_constraintTop_toBottomOf="@+id/edttxt_add_task_date"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/txtview_add_task_priority"
+            />
+        <TextView
+            android:id="@+id/txtview_add_task_priority"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/form_task_priority"
+            android:layout_marginStart="6dp"
+            android:paddingTop="12dp"
+            android:textAppearance="@style/LumaAI.TextAppearance.BodyLarge.Eng"
+            app:layout_constraintTop_toBottomOf="@+id/edttxt_add_task_time"
+            app:layout_constraintStart_toEndOf="@+id/txtview_add_task_category"
+            app:layout_constraintEnd_toEndOf="parent"
+            />
+        <Spinner
+            android:id="@+id/spinner_add_task_category"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="6dp"
+            android:background="@drawable/dialog_bg"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/spinner_add_task_priority"
+            app:layout_constraintTop_toBottomOf="@+id/txtview_add_task_category"
+            />
+        <Spinner
+            android:id="@+id/spinner_add_task_priority"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="6dp"
+            android:background="@drawable/dialog_bg"
+            app:layout_constraintStart_toEndOf="@+id/spinner_add_task_category"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txtview_add_task_priority"
+            />
+
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/compatbtn_add_task"
             android:layout_width="match_parent"
@@ -177,7 +223,7 @@
             android:textAppearance="@style/LumaAI.TextAppearance.Heading4.Eng"
             android:textColor="@color/white"
             android:background="@drawable/rect_danger_btn"
-            app:layout_constraintTop_toBottomOf="@+id/edttxt_add_task_date"
+            app:layout_constraintTop_toBottomOf="@+id/spinner_add_task_category"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             />

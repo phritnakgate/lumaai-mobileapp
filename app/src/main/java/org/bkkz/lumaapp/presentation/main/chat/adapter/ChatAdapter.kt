@@ -94,7 +94,9 @@ class ChatAdapter(
                     description=task.taskDesc,
                     dateTime=task.taskDateTime,
                     isFinished = false,
-                    userId = ""
+                    userId = "",
+                    category = 0,
+                    priority = 0
                 ))
             }
         }
@@ -130,7 +132,9 @@ class ChatAdapter(
                     description=task.taskDesc,
                     dateTime=task.taskDateTime,
                     isFinished = false,
-                    userId = ""
+                    userId = "",
+                    category = task.taskCategory,
+                    priority = task.taskPriority
                 ))
             }
         }
@@ -165,7 +169,9 @@ class ChatAdapter(
                     description=task.taskDesc,
                     dateTime=task.taskDateTime,
                     isFinished = false,
-                    userId = ""
+                    userId = "",
+                    category = task.taskCategory,
+                    priority = task.taskPriority
                 ))
             }
         }

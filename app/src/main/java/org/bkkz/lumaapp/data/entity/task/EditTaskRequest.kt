@@ -10,5 +10,9 @@ data class EditTaskRequest(
     @SerializedName("dateTime")
     val dateTime: String? = null,
     @SerializedName("isFinished")
-    val isFinished: Boolean? = null
+    val isFinished: Boolean? = null,
+    @SerializedName("category")
+    val category: Int? = null,
+    @SerializedName("priority")
+    val priority: Int? = null
 )
