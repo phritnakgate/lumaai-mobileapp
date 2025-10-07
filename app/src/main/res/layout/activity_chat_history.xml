@@ -82,6 +82,21 @@
                 android:textAppearance="@style/LumaAI.TextAppearance.BodyMedium.Eng"
                 android:background="@drawable/rect_bdcolor"
                 />
+            <Space
+                android:layout_width="12dp"
+                android:layout_height="wrap_content"/>
+            <TextView
+                android:id="@+id/txtview_chat_history_genform"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/chat_history_report"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="5dp"
+                android:textAppearance="@style/LumaAI.TextAppearance.BodyMedium.Eng"
+                android:background="@drawable/rect_bdcolor"
+                />
         </LinearLayout>
         <EditText
             android:id="@+id/edttxt_chat_history_search"
