@@ -1,5 +1,6 @@
 package org.bkkz.lumaapp.presentation.main.chat
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -12,10 +13,14 @@ import org.bkkz.lumaapp.data.entity.task.CreateTaskRequest
 import org.bkkz.lumaapp.data.entity.task.EditTaskRequest
 import org.bkkz.lumaapp.data.entity.task.Task
 import org.bkkz.lumaapp.data.local.UserChatEntity
+import org.bkkz.lumaapp.data.local.UserReportEntity
 import org.bkkz.lumaapp.data.remote.ApiResult
 import org.bkkz.lumaapp.util.component.chat.ChatItem
 import org.bkkz.lumaapp.util.enums.LLMIntent
 import org.bkkz.lumaapp.util.enums.LocalChatFlag
+import java.io.File
+import java.io.FileOutputStream
+import java.net.URL
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 
@@ -70,6 +75,9 @@ class ChatViewModel(private val repository: Repository) : ViewModel() {
                     LocalChatFlag.CHAT_WEB.flag -> ChatItem.ChatWebSearch(
                         url = userChat.searchUrl ?: ""
                     )
+                    LocalChatFlag.CHAT_GENFORM.flag -> ChatItem.ChatGenForm(
+                        url = userChat.generatedFormUrl ?: ""
+                    )
                     else -> throw IllegalArgumentException("Unknown chat flag: ${userChat.flag}")
                 }
             }
@@ -118,6 +126,7 @@ class ChatViewModel(private val repository: Repository) : ViewModel() {
                     isTaskActionCompleted = false
                 )
                 LocalChatFlag.CHAT_WEB.flag -> newChat = UserChatEntity(flag = flag, searchUrl = url)
+                LocalChatFlag.CHAT_GENFORM.flag -> newChat = UserChatEntity(flag = flag, generatedFormUrl = url)
 
             }
 
@@ -164,9 +173,10 @@ class ChatViewModel(private val repository: Repository) : ViewModel() {
         }
     }
 
-    fun chatWithLuma(message: String) {
+    fun chatWithLuma(context: Context, message: String) {
         viewModelScope.launch(Dispatchers.IO) {
             insertNewChat(LocalChatFlag.CHAT_USER.flag, message)
+            insertNewChat(LocalChatFlag.CHAT_MODEL.flag, "LUMA กำลังคิด...")
             try {
                 val response = repository.chatWithLuma(message)
                 when(response){
@@ -186,6 +196,27 @@ class ChatViewModel(private val repository: Repository) : ViewModel() {
                                 }
                                 if(it.intent == LLMIntent.GOOGLESEARCH.intent){
                                     insertNewChat(LocalChatFlag.CHAT_WEB.flag, url = it.message)
+                                }
+                                if(it.intent == LLMIntent.GENFORM.intent){
+                                    val fileName = File(URL(it.message).path).name
+                                    val file = File(context.cacheDir, fileName)
+
+                                    val connection = URL(it.message).openConnection()
+                                    connection.connect()
+                                    val inputStream = connection.getInputStream()
+
+                                    FileOutputStream(file).use { outputStream ->
+                                        inputStream.use { inputStream ->
+                                            inputStream.copyTo(outputStream)
+                                        }
+                                    }
+
+                                    repository.insertUserReport(UserReportEntity(
+                                        fileNameKey = fileName,
+                                        localFilePath = file.path,
+                                        downloadedTimeStamp = System.currentTimeMillis()
+                                    ))
+                                    insertNewChat(LocalChatFlag.CHAT_GENFORM.flag, url = file.path)
                                 }
                                 curInd += 1
                             }

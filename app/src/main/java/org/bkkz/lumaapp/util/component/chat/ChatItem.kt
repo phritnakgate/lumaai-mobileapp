@@ -8,4 +8,5 @@ sealed class ChatItem {
     data class ChatEditTask(val roomDbId : Int, val taskId: String, val taskName : String, val taskDesc: String, val taskDateTime: String, val actionCompleted: Boolean) : ChatItem()
     data class ChatDeleteTask(val roomDbId : Int, val taskId: String, val taskName : String, val taskDesc: String, val taskDateTime: String, val actionCompleted: Boolean) : ChatItem()
     data class ChatWebSearch(val url: String) : ChatItem()
+    data class ChatGenForm(val url: String) : ChatItem()
 }

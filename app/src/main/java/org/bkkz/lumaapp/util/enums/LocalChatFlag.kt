@@ -7,5 +7,6 @@ enum class LocalChatFlag(val flag: Int, val serviceResponseIntent : String? = nu
     CHAT_ADD_TASK(3, "ADD"),
     CHAT_EDIT_TASK(4, "EDIT"),
     CHAT_DELETE_TASK(5, "DELETE"),
-    CHAT_WEB(6, "GOOGLESEARCH")
+    CHAT_WEB(6, "GOOGLESEARCH"),
+    CHAT_GENFORM(7)
 }

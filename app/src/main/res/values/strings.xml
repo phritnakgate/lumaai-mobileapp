@@ -122,6 +122,7 @@
     <string name="chat_confirm_edit">Confirm Editing</string>
     <string name="chat_confirm_delete">Confirm Deletion</string>
     <string name="chat_web_readall"><u>Read All…</u></string>
+    <string name="chat_form_readall"><u>View Form…</u></string>
 
     <!--========== REPORT PAGES ==========-->
     <string name="report_create_report_title">Create Report</string>

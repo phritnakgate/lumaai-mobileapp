@@ -49,12 +49,18 @@ class ReportViewModel(private val repository: Repository) : ViewModel() {
                 val result = repository.generateMisTaskReport(reportYM)
                 when(result){
                     is ApiResult.Success -> {
-                        val filePath = downloadReportFile(context, "monthly_task_report_$reportYM", result.data)
-                        _state.update {
-                            it.copy(
-                                serviceState = ServiceState.SUCCESS,
-                                recentGeneratedFilePath = filePath
-                            )
+                        try{
+                            val filePath = downloadReportFile(context, "monthly_task_report_$reportYM", result.data)
+                            _state.update {
+                                it.copy(
+                                    serviceState = ServiceState.SUCCESS,
+                                    recentGeneratedFilePath = filePath
+                                )
+                            }
+                        }catch (e: Exception){
+                            e.printStackTrace()
+                            _state.update { it.copy(serviceState = ServiceState.FAILED) }
+
                         }
                     }
                     is ApiResult.Error -> {
