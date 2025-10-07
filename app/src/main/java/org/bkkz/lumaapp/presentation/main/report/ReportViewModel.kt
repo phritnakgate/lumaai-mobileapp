@@ -139,11 +139,16 @@ class ReportViewModel(private val repository: Repository) : ViewModel() {
     }
 
     private suspend fun downloadReportFile(context: Context, fileName: String ,url: String) : String = withContext(Dispatchers.IO) {
+        Log.d("ReportViewModel", "downloadReportFile: Downloading $fileName from $url")
         val connection = URL(url).openConnection()
         connection.connect()
         val inputStream = connection.getInputStream()
 
         val file = File(context.cacheDir, fileName)
+
+        if(file.exists()){
+            file.delete()
+        }
 
         FileOutputStream(file).use { outputStream ->
             inputStream.use { it.copyTo(outputStream) }

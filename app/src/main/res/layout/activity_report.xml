@@ -106,8 +106,8 @@
             android:paddingHorizontal="12dp"
             android:paddingVertical="6dp"
             android:textColor="@color/white"
-            app:layout_constraintTop_toBottomOf="@+id/view_report_divider"
-            app:layout_constraintBottom_toTopOf="@+id/recyclerview_report_history"
+            app:layout_constraintTop_toTopOf="@+id/txtview_report_your_report"
+            app:layout_constraintBottom_toBottomOf="@+id/txtview_report_your_report"
             app:layout_constraintEnd_toEndOf="parent"
 
             />
