@@ -10,6 +10,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.rajat.pdfviewer.PdfViewerActivity
 import com.rajat.pdfviewer.PdfViewerActivity.Companion.ENABLE_FILE_DOWNLOAD
+import com.rajat.pdfviewer.util.CacheStrategy
 import com.rajat.pdfviewer.util.saveTo
 import org.bkkz.lumaapp.R
 import org.bkkz.lumaapp.data.entity.report_history.ReportHistory
@@ -74,12 +75,14 @@ class ReportListAdapter(
 
             }else{
                 if(items[position].isCached){
+                    Log.d("ReportListAdapter", "onBindViewHolder: Open cached report ${holder.itemView.context.cacheDir}/${items[position].fileName}.pdf")
                     val pdfViewerActivity = PdfViewerActivity.launchPdfFromPath(
                         context = holder.itemView.context,
-                        path = "${holder.itemView.context.cacheDir}/${items[position].fileName}.pdf",
+                        path = "${holder.itemView.context.cacheDir}/${items[position].fileName}",
                         pdfTitle = decoratedFileName,
                         saveTo = saveTo.ASK_EVERYTIME,
-                        fromAssets = false
+                        fromAssets = false,
+                        cacheStrategy = CacheStrategy.DISABLE_CACHE
                     )
                     pdfViewerActivity.putExtra(ENABLE_FILE_DOWNLOAD, true)
                     holder.itemView.context.startActivity(pdfViewerActivity)

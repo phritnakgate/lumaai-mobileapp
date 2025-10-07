@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.rajat.pdfviewer.PdfViewerActivity
 import com.rajat.pdfviewer.PdfViewerActivity.Companion.ENABLE_FILE_DOWNLOAD
+import com.rajat.pdfviewer.util.CacheStrategy
 import com.rajat.pdfviewer.util.saveTo
 import kotlinx.coroutines.launch
 import org.bkkz.lumaapp.R
@@ -103,7 +104,9 @@ class ReportActivity : AppCompatActivity() {
                             txtViewNoReport.visibility = View.GONE
                             val adapter = ReportListAdapter(viewModel, state.reportList)
                             reportHistories.adapter = adapter
+                            reportHistories.visibility = View.VISIBLE
                         }else{
+                            reportHistories.visibility = View.GONE
                             imgViewNoReport.visibility = View.VISIBLE
                             txtViewNoReport.visibility = View.VISIBLE
                         }
@@ -114,7 +117,8 @@ class ReportActivity : AppCompatActivity() {
                             path = state.recentGeneratedFilePath!!,
                             pdfTitle = getString(R.string.report_type_0),
                             saveTo = saveTo.ASK_EVERYTIME,
-                            fromAssets = false
+                            fromAssets = false,
+                            cacheStrategy = CacheStrategy.DISABLE_CACHE
                         )
                         pdfViewerActivity.putExtra(ENABLE_FILE_DOWNLOAD, true)
 
