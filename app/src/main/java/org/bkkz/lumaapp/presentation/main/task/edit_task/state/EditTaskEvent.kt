@@ -10,6 +10,8 @@ sealed class EditTaskEvent {
     data class OnCheckTimeSpecified(val chk : Boolean) : EditTaskEvent()
     data class OnSelectedDate(val date : String) : EditTaskEvent()
     data class OnSelectedTime(val time : String) : EditTaskEvent()
+    data class OnSelectedPriority(val priority : Int) : EditTaskEvent()
+    data class OnSelectedCategory(val category : Int) : EditTaskEvent()
     data object OnEditTask : EditTaskEvent()
     data object OnDeleteTask : EditTaskEvent()
 }

@@ -29,13 +29,13 @@ class ChatViewModel(private val repository: Repository) : ViewModel() {
     private val _chatItems = MutableLiveData<List<ChatItem>>()
     val chatItems: LiveData<List<ChatItem>> = _chatItems
 
-    private var requiredTask : Task? = null
+    private var requiredTask: Task? = null
 
     init {
         loadChatsData()
     }
 
-    private fun loadChatsData(){
+    private fun loadChatsData() {
         viewModelScope.launch(Dispatchers.IO) {
             val userChatEntities: List<UserChatEntity> = repository.getAllChats()
 
@@ -48,6 +48,7 @@ class ChatViewModel(private val repository: Repository) : ViewModel() {
                         taskDesc = userChat.taskDesc ?: "",
                         taskDateTime = userChat.taskDateTime ?: ""
                     )
+
                     LocalChatFlag.CHAT_ADD_TASK.flag -> ChatItem.ChatAddTask(
                         roomDbId = userChat.id,
                         taskName = userChat.taskName ?: "",
@@ -55,6 +56,7 @@ class ChatViewModel(private val repository: Repository) : ViewModel() {
                         taskDateTime = userChat.taskDateTime ?: "",
                         actionCompleted = userChat.isTaskActionCompleted ?: false
                     )
+
                     LocalChatFlag.CHAT_EDIT_TASK.flag -> ChatItem.ChatEditTask(
                         roomDbId = userChat.id,
                         taskId = userChat.taskId ?: "",
@@ -65,6 +67,7 @@ class ChatViewModel(private val repository: Repository) : ViewModel() {
                         taskCategory = userChat.taskCategory ?: 0,
                         taskPriority = userChat.taskPriority ?: 0
                     )
+
                     LocalChatFlag.CHAT_DELETE_TASK.flag -> ChatItem.ChatDeleteTask(
                         roomDbId = userChat.id,
                         taskId = userChat.taskId ?: "",
@@ -75,12 +78,15 @@ class ChatViewModel(private val repository: Repository) : ViewModel() {
                         taskCategory = userChat.taskCategory ?: 0,
                         taskPriority = userChat.taskPriority ?: 0
                     )
+
                     LocalChatFlag.CHAT_WEB.flag -> ChatItem.ChatWebSearch(
                         url = userChat.searchUrl ?: ""
                     )
+
                     LocalChatFlag.CHAT_GENFORM.flag -> ChatItem.ChatGenForm(
                         url = userChat.generatedFormUrl ?: ""
                     )
+
                     else -> throw IllegalArgumentException("Unknown chat flag: ${userChat.flag}")
                 }
             }
@@ -91,51 +97,63 @@ class ChatViewModel(private val repository: Repository) : ViewModel() {
         }
     }
 
-    fun insertNewChat(flag: Int, message: String? = null, task: Task? = null, url: String?=null) {
-        viewModelScope.launch(Dispatchers.IO) {
-            var newChat : UserChatEntity? = null
-            when(flag) {
-                LocalChatFlag.CHAT_USER.flag -> newChat = UserChatEntity(flag = flag, message = message)
-                LocalChatFlag.CHAT_MODEL.flag -> newChat = UserChatEntity(flag = flag, message = message)
-                LocalChatFlag.CHAT_VIEW_TASK.flag -> newChat = UserChatEntity(
-                    flag = flag,
-                    taskId = task?.id,
-                    taskName = task?.name,
-                    taskDesc = task?.description,
-                    taskDateTime = task?.dateTime,
-                )
-                LocalChatFlag.CHAT_ADD_TASK.flag -> newChat = UserChatEntity(
-                    flag = flag,
-                    taskId = task?.id,
-                    taskName = task?.name,
-                    taskDesc = task?.description,
-                    taskDateTime = task?.dateTime,
-                    isTaskActionCompleted = false
-                )
-                LocalChatFlag.CHAT_EDIT_TASK.flag -> newChat = UserChatEntity(
-                    flag = flag,
-                    taskId = task?.id,
-                    taskName = task?.name,
-                    taskDesc = task?.description,
-                    taskDateTime = task?.dateTime,
-                    isTaskActionCompleted = false
-                )
-                LocalChatFlag.CHAT_DELETE_TASK.flag -> newChat = UserChatEntity(
-                    flag = flag,
-                    taskId = task?.id,
-                    taskName = task?.name,
-                    taskDesc = task?.description,
-                    taskDateTime = task?.dateTime,
-                    isTaskActionCompleted = false
-                )
-                LocalChatFlag.CHAT_WEB.flag -> newChat = UserChatEntity(flag = flag, searchUrl = url)
-                LocalChatFlag.CHAT_GENFORM.flag -> newChat = UserChatEntity(flag = flag, generatedFormUrl = url)
+    suspend fun insertNewChat(
+        flag: Int,
+        message: String? = null,
+        task: Task? = null,
+        url: String? = null
+    ) {
 
-            }
+        var newChat: UserChatEntity? = null
+        when (flag) {
+            LocalChatFlag.CHAT_USER.flag -> newChat = UserChatEntity(flag = flag, message = message)
+            LocalChatFlag.CHAT_MODEL.flag -> newChat =
+                UserChatEntity(flag = flag, message = message)
 
-            repository.insertChat(newChat!!)
-            loadChatsData()
+            LocalChatFlag.CHAT_VIEW_TASK.flag -> newChat = UserChatEntity(
+                flag = flag,
+                taskId = task?.id,
+                taskName = task?.name,
+                taskDesc = task?.description,
+                taskDateTime = task?.dateTime,
+            )
+
+            LocalChatFlag.CHAT_ADD_TASK.flag -> newChat = UserChatEntity(
+                flag = flag,
+                taskId = task?.id,
+                taskName = task?.name,
+                taskDesc = task?.description,
+                taskDateTime = task?.dateTime,
+                isTaskActionCompleted = false
+            )
+
+            LocalChatFlag.CHAT_EDIT_TASK.flag -> newChat = UserChatEntity(
+                flag = flag,
+                taskId = task?.id,
+                taskName = task?.name,
+                taskDesc = task?.description,
+                taskDateTime = task?.dateTime,
+                isTaskActionCompleted = false
+            )
+
+            LocalChatFlag.CHAT_DELETE_TASK.flag -> newChat = UserChatEntity(
+                flag = flag,
+                taskId = task?.id,
+                taskName = task?.name,
+                taskDesc = task?.description,
+                taskDateTime = task?.dateTime,
+                isTaskActionCompleted = false
+            )
+
+            LocalChatFlag.CHAT_WEB.flag -> newChat = UserChatEntity(flag = flag, searchUrl = url)
+            LocalChatFlag.CHAT_GENFORM.flag -> newChat =
+                UserChatEntity(flag = flag, generatedFormUrl = url)
+
         }
+
+        repository.insertChat(newChat!!)
+        loadChatsData()
+
     }
 
     fun clearAllChats() {
@@ -145,24 +163,27 @@ class ChatViewModel(private val repository: Repository) : ViewModel() {
         }
     }
 
-    fun confirmTaskAction(dbId : Int,flag: Int, task: Task){
+    fun confirmTaskAction(dbId: Int, flag: Int, task: Task) {
         viewModelScope.launch(Dispatchers.IO) {
             repository.confirmAction(dbId)
             val outputDateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
             val outputTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")
 
-            when(flag){
+            when (flag) {
                 LocalChatFlag.CHAT_ADD_TASK.flag -> {
                     val createTaskRequest = CreateTaskRequest(
                         name = requiredTask!!.name,
                         description = requiredTask!!.description,
-                        dueDate = OffsetDateTime.parse(requiredTask!!.dateTime).format(outputDateFormatter),
-                        dueTime = OffsetDateTime.parse(requiredTask!!.dateTime).format(outputTimeFormatter),
+                        dueDate = OffsetDateTime.parse(requiredTask!!.dateTime)
+                            .format(outputDateFormatter),
+                        dueTime = OffsetDateTime.parse(requiredTask!!.dateTime)
+                            .format(outputTimeFormatter),
                         category = 0,
                         priority = 0
                     )
                     repository.createTask(createTaskRequest)
                 }
+
                 LocalChatFlag.CHAT_EDIT_TASK.flag -> {
 
                     val editTaskRequest = EditTaskRequest(
@@ -171,6 +192,7 @@ class ChatViewModel(private val repository: Repository) : ViewModel() {
                     )
                     repository.editTask(task.id, editTaskRequest)
                 }
+
                 LocalChatFlag.CHAT_DELETE_TASK.flag -> {
                     repository.deleteTask(task.id)
                 }
@@ -184,28 +206,36 @@ class ChatViewModel(private val repository: Repository) : ViewModel() {
             insertNewChat(LocalChatFlag.CHAT_MODEL.flag, "LUMA กำลังคิด...")
             try {
                 val response = repository.chatWithLuma(message)
-                when(response){
+                when (response) {
                     is ApiResult.Success -> {
                         val response = response.data
-                        if(response?.errors.isNullOrEmpty()){
+                        if (response?.errors.isNullOrEmpty()) {
                             insertNewChat(LocalChatFlag.CHAT_MODEL.flag, response?.result)
                             var curInd = 0
                             response?.results?.forEach {
                                 val isLast = curInd == (response.results.size - 1)
-                                val nextInd = if(!isLast) curInd + 1 else curInd
-                                if(it.intent == LLMIntent.CHECK.intent && response.results[nextInd].intent !in listOf(LLMIntent.ADD.intent, LLMIntent.EDIT.intent, LLMIntent.DELETE.intent)){
+                                val nextInd = if (!isLast) curInd + 1 else curInd
+                                if (it.intent == LLMIntent.CHECK.intent && response.results[nextInd].intent !in listOf(
+                                        LLMIntent.ADD.intent,
+                                        LLMIntent.EDIT.intent,
+                                        LLMIntent.DELETE.intent
+                                    )
+                                ) {
                                     val task = it.output
                                     task?.forEach { taskData ->
-                                        if(taskData.id == "-1"){
+                                        if (taskData.id == "-1") {
                                             return@forEach
                                         }
-                                        insertNewChat(LocalChatFlag.CHAT_VIEW_TASK.flag, task = taskData)
+                                        insertNewChat(
+                                            LocalChatFlag.CHAT_VIEW_TASK.flag,
+                                            task = taskData
+                                        )
                                     }
                                 }
-                                if(it.intent == LLMIntent.GOOGLESEARCH.intent){
+                                if (it.intent == LLMIntent.GOOGLESEARCH.intent) {
                                     insertNewChat(LocalChatFlag.CHAT_WEB.flag, url = it.message)
                                 }
-                                if(it.intent == LLMIntent.GENFORM.intent){
+                                if (it.intent == LLMIntent.GENFORM.intent) {
                                     val fileName = File(URL(it.message).path).name
                                     val file = File(context.cacheDir, fileName)
 
@@ -219,42 +249,58 @@ class ChatViewModel(private val repository: Repository) : ViewModel() {
                                         }
                                     }
 
-                                    repository.insertUserReport(UserReportEntity(
-                                        fileNameKey = fileName,
-                                        localFilePath = file.path,
-                                        downloadedTimeStamp = System.currentTimeMillis()
-                                    ))
+                                    repository.insertUserReport(
+                                        UserReportEntity(
+                                            fileNameKey = fileName,
+                                            localFilePath = file.path,
+                                            downloadedTimeStamp = System.currentTimeMillis()
+                                        )
+                                    )
                                     insertNewChat(LocalChatFlag.CHAT_GENFORM.flag, url = file.path)
                                 }
                                 curInd += 1
                             }
 
 
-                        }else{
+                        } else {
                             response.errors.forEach {
                                 insertNewChat(LocalChatFlag.CHAT_MODEL.flag, it.message)
-                                if(!it.output.isNullOrEmpty()){
-                                    when(it.intent){
+                                if (!it.output.isNullOrEmpty()) {
+                                    when (it.intent) {
                                         "ADD" -> {
                                             val size = it.output.size
                                             requiredTask = it.output[0]
 
-                                            for(i in 1 until size){
-                                                insertNewChat(LocalChatFlag.CHAT_VIEW_TASK.flag, task = it.output[i])
+                                            for (i in 1 until size) {
+                                                insertNewChat(
+                                                    LocalChatFlag.CHAT_VIEW_TASK.flag,
+                                                    task = it.output[i]
+                                                )
                                             }
-                                            insertNewChat(LocalChatFlag.CHAT_ADD_TASK.flag, task = it.output[size - 1])
+                                            insertNewChat(
+                                                LocalChatFlag.CHAT_ADD_TASK.flag,
+                                                task = it.output[size - 1]
+                                            )
 
                                         }
+
                                         "EDIT" -> {
                                             val size = it.output.size
                                             requiredTask = it.output[0]
-                                            for(i in 1 until size){
-                                                insertNewChat(LocalChatFlag.CHAT_EDIT_TASK.flag, task = it.output[i])
+                                            for (i in 1 until size) {
+                                                insertNewChat(
+                                                    LocalChatFlag.CHAT_EDIT_TASK.flag,
+                                                    task = it.output[i]
+                                                )
                                             }
                                         }
+
                                         "REMOVE" -> {
                                             it.output.forEach { taskData ->
-                                                insertNewChat(LocalChatFlag.CHAT_DELETE_TASK.flag, task = taskData)
+                                                insertNewChat(
+                                                    LocalChatFlag.CHAT_DELETE_TASK.flag,
+                                                    task = taskData
+                                                )
                                             }
                                         }
                                     }
@@ -264,12 +310,16 @@ class ChatViewModel(private val repository: Repository) : ViewModel() {
 
 
                     }
+
                     is ApiResult.Error -> {
-                        insertNewChat(LocalChatFlag.CHAT_MODEL.flag, "ขออภัยครับ มีบางอย่างผิดพลาด ลองใหม่อีกครั้ง")
+                        insertNewChat(
+                            LocalChatFlag.CHAT_MODEL.flag,
+                            "ขออภัยครับ มีบางอย่างผิดพลาด ลองใหม่อีกครั้ง"
+                        )
                     }
                 }
 
-            }catch (e : Exception){
+            } catch (e: Exception) {
                 e.printStackTrace()
             }
         }

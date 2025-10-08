@@ -2,9 +2,14 @@ package org.bkkz.lumaapp.presentation.main.task.edit_task
 
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
+import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.Spinner
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
@@ -18,6 +23,7 @@ import com.google.android.material.timepicker.TimeFormat
 import kotlinx.coroutines.launch
 import org.bkkz.lumaapp.R
 import org.bkkz.lumaapp.data.entity.task.Task
+import org.bkkz.lumaapp.presentation.main.task.add_task.state.AddTaskEvent
 import org.bkkz.lumaapp.presentation.main.task.edit_task.state.EditTaskEvent
 import org.bkkz.lumaapp.presentation.main.task.edit_task.state.EditTaskState
 import org.bkkz.lumaapp.util.LabelEditText
@@ -25,6 +31,8 @@ import org.bkkz.lumaapp.util.dialog.LoadingDialog
 import org.bkkz.lumaapp.util.dialog.OneActionDialog
 import org.bkkz.lumaapp.util.dialog.TwoActionDialog
 import org.bkkz.lumaapp.util.enums.ServiceState
+import org.bkkz.lumaapp.util.enums.TaskCategory
+import org.bkkz.lumaapp.util.enums.TaskPriority
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -43,6 +51,8 @@ class EditTaskActivity : AppCompatActivity() {
     private lateinit var edtDate : EditText
     private lateinit var edtTime : EditText
     private lateinit var backBtn : ImageView
+    private lateinit var categorySelector : Spinner
+    private lateinit var prioritySelector : Spinner
     private lateinit var loadingDialog: LoadingDialog
     private lateinit var editTaskBtn : AppCompatButton
     private lateinit var deleteTaskBtn : AppCompatButton
@@ -85,6 +95,8 @@ class EditTaskActivity : AppCompatActivity() {
         edtDate = findViewById(R.id.edttxt_edit_task_date)
         edtTime = findViewById(R.id.edttxt_edit_task_time)
         backBtn = findViewById(R.id.imgview_edit_task_back)
+        categorySelector = findViewById(R.id.spinner_edit_task_category)
+        prioritySelector = findViewById(R.id.spinner_edit_task_priority)
         editTaskBtn = findViewById(R.id.compatbtn_edit_task)
         deleteTaskBtn = findViewById(R.id.compatbtn_delete_task)
         loadingDialog = LoadingDialog(this@EditTaskActivity)
@@ -115,6 +127,9 @@ class EditTaskActivity : AppCompatActivity() {
                     edtDate.setText(state.taskDate)
                     edtTime.setText(state.taskTime)
                 }
+                Log.d("EditTaskActivity","Cat: ${state.category} Pr: ${state.priority}")
+                setupCategorySelector(state.category ?: TaskCategory.OTHERS.value)
+                setupPrioritySelector(state.priority ?: TaskPriority.HIGH.value)
                 if(loadingDialog.isShowing){ loadingDialog.dismiss() }
                 when(state.serviceState){
                     ServiceState.IDLE -> {}
@@ -211,5 +226,51 @@ class EditTaskActivity : AppCompatActivity() {
             viewModel.onEvent(EditTaskEvent.OnSelectedTime("${timePicker.hour.toString().padStart(2,'0')}:${timePicker.minute.toString().padStart(2,'0')}"))
         }
         timePicker.show(supportFragmentManager, "MATERIAL_TIME_PICKER")
+    }
+
+    private fun setupCategorySelector(id : Int){
+        val categories = TaskCategory.entries.map { it.displayName }
+        val categoryAdapter = ArrayAdapter(this@EditTaskActivity, R.layout.spinner_layout, categories)
+        categoryAdapter.setDropDownViewResource(R.layout.spinner_item)
+        categorySelector.adapter = categoryAdapter
+        categorySelector.setSelection(id)
+        categorySelector.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                p0: AdapterView<*>?,
+                p1: View?,
+                p2: Int,
+                p3: Long
+            ) {
+                val selectedCategory = TaskCategory.fromInt(p2) ?: TaskCategory.OTHERS
+                Log.d("EditTaskActivity", "Selected category: ${selectedCategory.displayName} (${selectedCategory.value})")
+                viewModel.onEvent(EditTaskEvent.OnSelectedCategory(selectedCategory.value))
+            }
+
+            override fun onNothingSelected(p0: AdapterView<*>?) {}
+
+        }
+    }
+
+    private fun setupPrioritySelector(id : Int){
+        val priorities = TaskPriority.entries.map { it.displayName }
+        val priorityAdapter = ArrayAdapter(this@EditTaskActivity, R.layout.spinner_layout, priorities)
+        priorityAdapter.setDropDownViewResource(R.layout.spinner_item)
+        prioritySelector.adapter = priorityAdapter
+        prioritySelector.setSelection(id)
+        prioritySelector.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                p0: AdapterView<*>?,
+                p1: View?,
+                p2: Int,
+                p3: Long
+            ) {
+                val selectedPriority = TaskPriority.fromInt(p2) ?: TaskPriority.HIGH
+                Log.d("EditTaskActivity", "Selected priority: ${selectedPriority.displayName} (${selectedPriority.value})")
+                viewModel.onEvent(EditTaskEvent.OnSelectedPriority(selectedPriority.value))
+            }
+
+            override fun onNothingSelected(p0: AdapterView<*>?) {}
+
+        }
     }
 }

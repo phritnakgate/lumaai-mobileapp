@@ -9,6 +9,8 @@ data class EditTaskState(
     val isTimeSpecify: Boolean = false,
     val taskDate: String? = null,
     val taskTime: String? = null,
+    val priority: Int? = null,
+    val category: Int? = null,
     val errorField : Map<RequiredFormField, Boolean?> = emptyMap(),
     val serviceState: ServiceState = ServiceState.IDLE
 ) {

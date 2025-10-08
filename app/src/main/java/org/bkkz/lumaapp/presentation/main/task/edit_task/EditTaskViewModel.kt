@@ -37,7 +37,9 @@ class EditTaskViewModel(private val repository: Repository) : ViewModel() {
                         description = event.task.description,
                         isTimeSpecify = !event.task.dateTime.isEmpty(),
                         taskDate = if (event.task.dateTime.isEmpty()) "" else event.task.dateTime.substring(0, 10),
-                        taskTime = if (event.task.dateTime.isEmpty()) "" else event.task.dateTime.substring(11, 16)
+                        taskTime = if (event.task.dateTime.isEmpty()) "" else event.task.dateTime.substring(11, 16),
+                        priority = event.task.priority,
+                        category = event.task.category,
                     )
                 }
             }
@@ -108,6 +110,13 @@ class EditTaskViewModel(private val repository: Repository) : ViewModel() {
                 }
             }
 
+            is EditTaskEvent.OnSelectedPriority -> {
+                _state.update { it.copy(priority = event.priority) }
+            }
+            is EditTaskEvent.OnSelectedCategory -> {
+                _state.update { it.copy(category = event.category) }
+            }
+
             is EditTaskEvent.OnEditTask -> {
                 if (isValidForm()) {
                     viewModelScope.launch {
@@ -135,7 +144,9 @@ class EditTaskViewModel(private val repository: Repository) : ViewModel() {
             dateTime = if (!state.value.taskDate.isNullOrEmpty() && !state.value.taskTime.isNullOrEmpty()) {
                 "${state.value.taskDate}T${state.value.taskTime}:00+07:00"
             } else DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(LocalDate.now().atTime(LocalTime.now().truncatedTo(
-                ChronoUnit.SECONDS)).atZone(ZoneId.systemDefault()))
+                ChronoUnit.SECONDS)).atZone(ZoneId.systemDefault())),
+            priority = state.value.priority,
+            category = state.value.category
         )
         val response = repository.editTask(state.value.id!!, request)
         when (response) {
