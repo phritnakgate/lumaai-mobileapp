@@ -32,6 +32,8 @@ import org.bkkz.lumaapp.data.entity.task.Task
 import org.bkkz.lumaapp.presentation.main.task.edit_task.EditTaskActivity
 import org.bkkz.lumaapp.util.component.monthly_task_recycler.TimelineItem
 import org.bkkz.lumaapp.util.dialog.OneActionDialog
+import org.bkkz.lumaapp.util.enums.TaskCategory
+import org.bkkz.lumaapp.util.enums.TaskPriority
 import java.text.SimpleDateFormat
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
@@ -67,6 +69,8 @@ class MonthlyViewFragmentAdapter(
         val taskName: TextView = itemView.findViewById(R.id.txtview_recycler_task_name)
         val taskTime: TextView = itemView.findViewById(R.id.txtview_recycler_task_time)
         val taskDesc: TextView = itemView.findViewById(R.id.txtview_recycler_task_desc)
+        val taskCategory: TextView = itemView.findViewById(R.id.txtview_recycler_task_category)
+        val taskPriority: TextView = itemView.findViewById(R.id.txtview_recycler_task_priority)
         val taskEdit : ImageView = itemView.findViewById(R.id.imgview_recycler_task_edit)
         val ggCalendar: ImageView = itemView.findViewById(R.id.imgview_recycler_task_ggcalendar)
         fun bind(header: TimelineItem.TaskHeader) {
@@ -100,6 +104,32 @@ class MonthlyViewFragmentAdapter(
                     taskCheck.setImageResource(R.drawable.circ_white)
                 }
             }
+            val category = header.task.category
+            val categoryColorRes = when (category) {
+                0 -> R.color.category_color_0
+                1 -> R.color.category_color_1
+                2 -> R.color.category_color_2
+                3 -> R.color.category_color_3
+                4 -> R.color.category_color_4
+                else -> R.color.category_color_0
+            }
+            taskCategory.text = TaskCategory.fromInt(category)?.displayName
+            taskCategory.backgroundTintList = ContextCompat.getColorStateList(
+                itemView.context,
+                categoryColorRes
+            )
+            val priority = header.task.priority
+            val priorityColorRes = when (priority) {
+                0 -> R.color.danger
+                1 -> R.color.secondary
+                2 -> R.color.primary
+                else -> R.color.primary
+            }
+            taskPriority.text = TaskPriority.fromInt(priority)?.displayName
+            taskPriority.backgroundTintList = ContextCompat.getColorStateList(
+                itemView.context,
+                priorityColorRes
+            )
             ggCalendar.setOnClickListener {
                 createGoogleCalendarEvent(itemView.context, userEmail, header.task)
             }
@@ -112,6 +142,8 @@ class MonthlyViewFragmentAdapter(
         val taskName: TextView = itemView.findViewById(R.id.txtview_recycler_task_name)
         val taskTime: TextView = itemView.findViewById(R.id.txtview_recycler_task_time)
         val taskDesc: TextView = itemView.findViewById(R.id.txtview_recycler_task_desc)
+        val taskCategory: TextView = itemView.findViewById(R.id.txtview_recycler_task_category)
+        val taskPriority: TextView = itemView.findViewById(R.id.txtview_recycler_task_priority)
         val taskEdit : ImageView = itemView.findViewById(R.id.imgview_recycler_task_edit)
         val ggCalendar: ImageView = itemView.findViewById(R.id.imgview_recycler_task_ggcalendar)
         fun bind(data: TimelineItem.TaskBody) {
@@ -146,6 +178,32 @@ class MonthlyViewFragmentAdapter(
             ggCalendar.setOnClickListener {
                 createGoogleCalendarEvent(itemView.context, userEmail, data.task)
             }
+            val category = data.task.category
+            val categoryColorRes = when (category) {
+                0 -> R.color.category_color_0
+                1 -> R.color.category_color_1
+                2 -> R.color.category_color_2
+                3 -> R.color.category_color_3
+                4 -> R.color.category_color_4
+                else -> R.color.category_color_0
+            }
+            taskCategory.text = TaskCategory.fromInt(category)?.displayName
+            taskCategory.backgroundTintList = ContextCompat.getColorStateList(
+                itemView.context,
+                categoryColorRes
+            )
+            val priority = data.task.priority
+            val priorityColorRes = when (priority) {
+                0 -> R.color.danger
+                1 -> R.color.secondary
+                2 -> R.color.primary
+                else -> R.color.primary
+            }
+            taskPriority.text = TaskPriority.fromInt(priority)?.displayName
+            taskPriority.backgroundTintList = ContextCompat.getColorStateList(
+                itemView.context,
+                priorityColorRes
+            )
         }
     }
     inner class TaskFooterViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -155,6 +213,8 @@ class MonthlyViewFragmentAdapter(
         val taskName: TextView = itemView.findViewById(R.id.txtview_recycler_task_name)
         val taskTime: TextView = itemView.findViewById(R.id.txtview_recycler_task_time)
         val taskDesc: TextView = itemView.findViewById(R.id.txtview_recycler_task_desc)
+        val taskCategory: TextView = itemView.findViewById(R.id.txtview_recycler_task_category)
+        val taskPriority: TextView = itemView.findViewById(R.id.txtview_recycler_task_priority)
         val taskEdit : ImageView = itemView.findViewById(R.id.imgview_recycler_task_edit)
         val ggCalendar: ImageView = itemView.findViewById(R.id.imgview_recycler_task_ggcalendar)
         fun bind(data: TimelineItem.TaskFooter) {
@@ -186,6 +246,32 @@ class MonthlyViewFragmentAdapter(
                     taskCheck.setImageResource(R.drawable.circ_white)
                 }
             }
+            val category = data.task.category
+            val categoryColorRes = when (category) {
+                0 -> R.color.category_color_0
+                1 -> R.color.category_color_1
+                2 -> R.color.category_color_2
+                3 -> R.color.category_color_3
+                4 -> R.color.category_color_4
+                else -> R.color.category_color_0
+            }
+            taskCategory.text = TaskCategory.fromInt(category)?.displayName
+            taskCategory.backgroundTintList = ContextCompat.getColorStateList(
+                itemView.context,
+                categoryColorRes
+            )
+            val priority = data.task.priority
+            val priorityColorRes = when (priority) {
+                0 -> R.color.danger
+                1 -> R.color.secondary
+                2 -> R.color.primary
+                else -> R.color.primary
+            }
+            taskPriority.text = TaskPriority.fromInt(priority)?.displayName
+            taskPriority.backgroundTintList = ContextCompat.getColorStateList(
+                itemView.context,
+                priorityColorRes
+            )
             ggCalendar.setOnClickListener {
                 createGoogleCalendarEvent(itemView.context, userEmail, data.task)
             }
