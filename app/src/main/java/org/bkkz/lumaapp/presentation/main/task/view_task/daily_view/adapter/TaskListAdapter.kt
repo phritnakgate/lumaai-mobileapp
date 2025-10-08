@@ -30,6 +30,8 @@ import org.bkkz.lumaapp.R
 import org.bkkz.lumaapp.data.entity.task.Task
 import org.bkkz.lumaapp.presentation.main.task.edit_task.EditTaskActivity
 import org.bkkz.lumaapp.util.dialog.OneActionDialog
+import org.bkkz.lumaapp.util.enums.TaskCategory
+import org.bkkz.lumaapp.util.enums.TaskPriority
 import java.text.SimpleDateFormat
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
@@ -57,6 +59,8 @@ class TaskListAdapter(
         val taskName: TextView = view.findViewById(R.id.txtview_recycler_task_name)
         val taskTime: TextView = view.findViewById(R.id.txtview_recycler_task_time)
         val taskDesc: TextView = view.findViewById(R.id.txtview_recycler_task_desc)
+        val taskCategory: TextView = view.findViewById(R.id.txtview_recycler_task_category)
+        val taskPriority: TextView = view.findViewById(R.id.txtview_recycler_task_priority)
         val taskEdit: ImageView = view.findViewById(R.id.imgview_recycler_task_edit)
         val ggCalendar: ImageView = view.findViewById(R.id.imgview_recycler_task_ggcalendar)
     }
@@ -179,6 +183,32 @@ class TaskListAdapter(
             }
 
         }
+        val category = items[position].category
+        val categoryColorRes = when (category) {
+            0 -> R.color.category_color_0
+            1 -> R.color.category_color_1
+            2 -> R.color.category_color_2
+            3 -> R.color.category_color_3
+            4 -> R.color.category_color_4
+            else -> R.color.category_color_0
+        }
+        holder.taskCategory.text = TaskCategory.fromInt(category)?.displayName
+        holder.taskCategory.backgroundTintList = ContextCompat.getColorStateList(
+            holder.itemView.context,
+            categoryColorRes
+        )
+        val priority = items[position].priority
+        val priorityColorRes = when (priority) {
+            0 -> R.color.danger
+            1 -> R.color.secondary
+            2 -> R.color.primary
+            else -> R.color.primary
+        }
+        holder.taskPriority.text = TaskPriority.fromInt(priority)?.displayName
+        holder.taskPriority.backgroundTintList = ContextCompat.getColorStateList(
+            holder.itemView.context,
+            priorityColorRes
+        )
     }
 
     override fun getItemCount() = items.size

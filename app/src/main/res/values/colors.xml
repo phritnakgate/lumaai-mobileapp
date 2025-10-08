@@ -13,4 +13,9 @@
     <color name="llm_response_color">#FFEFE634</color>
     <color name="llm_request_color">#FFFFA6CB</color>
     <color name="dialog_bg_color">#80000000</color>
+    <color name="category_color_0">#FF8979FF</color>
+    <color name="category_color_1">#FFFF928A</color>
+    <color name="category_color_2">#FF3CC3DF</color>
+    <color name="category_color_3">#FFFFAE4C</color>
+    <color name="category_color_4">#FF537FF1</color>
 </resources>
