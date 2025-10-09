@@ -37,7 +37,6 @@ class ViewTaskActivity : AppCompatActivity() {
         setupView()
         setupEvents()
 
-
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.view_task)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)

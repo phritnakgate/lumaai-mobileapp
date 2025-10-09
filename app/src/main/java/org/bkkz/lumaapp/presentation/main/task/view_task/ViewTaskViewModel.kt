@@ -19,23 +19,32 @@ import java.time.LocalDate
 import java.time.ZonedDateTime
 
 class ViewTaskViewModel(private val repository: Repository) : ViewModel() {
-    private val _state : MutableStateFlow<ViewTaskState> = MutableStateFlow(ViewTaskState())
+    private val _state: MutableStateFlow<ViewTaskState> = MutableStateFlow(ViewTaskState())
     val state: StateFlow<ViewTaskState> = _state.asStateFlow()
 
-    fun onEvent(event: ViewTaskEvent){
-        when(event){
+    fun onEvent(event: ViewTaskEvent) {
+        when (event) {
             is ViewTaskEvent.LoadFirstTimeTasks -> {
                 viewModelScope.launch {
                     _state.update { it.copy(isLoading = true) }
-                    getAllMonthlyUserTask("${state.value.selectedMonth.year}-${state.value.selectedMonth.monthValue.toString().padStart(2,'0')}")
+                    getAllMonthlyUserTask(
+                        "${state.value.selectedMonth.year}-${
+                            state.value.selectedMonth.monthValue.toString().padStart(2, '0')
+                        }"
+                    )
                     getAllDailyUserTask(state.value.selectedDate)
                     _state.update { it.copy(isLoading = false) }
                 }
             }
+
             is ViewTaskEvent.OnUserSelectedMonth -> {
                 viewModelScope.launch {
                     _state.update { it.copy(isLoading = true) }
-                    getAllMonthlyUserTask("${event.selectedMonth.year}-${event.selectedMonth.monthValue.toString().padStart(2,'0')}")
+                    getAllMonthlyUserTask(
+                        "${event.selectedMonth.year}-${
+                            event.selectedMonth.monthValue.toString().padStart(2, '0')
+                        }"
+                    )
                     _state.update {
                         it.copy(
                             selectedMonthPosition = event.position,
@@ -45,6 +54,7 @@ class ViewTaskViewModel(private val repository: Repository) : ViewModel() {
                     }
                 }
             }
+
             is ViewTaskEvent.OnUserSelectedDate -> {
                 viewModelScope.launch {
                     _state.update { it.copy(isLoading = true) }
@@ -55,17 +65,18 @@ class ViewTaskViewModel(private val repository: Repository) : ViewModel() {
         }
     }
 
-    suspend fun getAllMonthlyUserTask(date: String) = coroutineScope{
+    suspend fun getAllMonthlyUserTask(date: String) = coroutineScope {
         val monthlyTaskApi = repository.getAllUserTasks(date)
         var monthlyTasksResult: List<Task>? = null
 
-        when(monthlyTaskApi){
+        when (monthlyTaskApi) {
             is ApiResult.Success -> {
                 monthlyTasksResult = monthlyTaskApi.data
-                Log.d("ViewTaskViewModel",dateContainEvents(monthlyTasksResult).toString())
+                Log.d("ViewTaskViewModel", dateContainEvents(monthlyTasksResult).toString())
             }
+
             is ApiResult.Error -> {
-                Log.e("ViewTaskViewModel","Can't get monthly task on $date")
+                Log.e("ViewTaskViewModel", "Can't get monthly task on $date")
             }
         }
 
@@ -76,15 +87,17 @@ class ViewTaskViewModel(private val repository: Repository) : ViewModel() {
             )
         }
     }
-    suspend fun getAllDailyUserTask(date: String) = coroutineScope{
+
+    suspend fun getAllDailyUserTask(date: String) = coroutineScope {
         var dailyTasksResult: List<Task>? = null
         val dailyTaskApi = repository.getAllUserTasks(date)
-        when(dailyTaskApi){
+        when (dailyTaskApi) {
             is ApiResult.Success -> {
                 dailyTasksResult = dailyTaskApi.data
             }
+
             is ApiResult.Error -> {
-                Log.e("ViewTaskViewModel","Can't get daily task on $date")
+                Log.e("ViewTaskViewModel", "Can't get daily task on $date")
             }
         }
 
@@ -108,13 +121,18 @@ class ViewTaskViewModel(private val repository: Repository) : ViewModel() {
             .toSet()
     }
 
-    suspend fun markCompleted(taskId : String, editTaskRequest: EditTaskRequest) = coroutineScope{
+    suspend fun markCompleted(taskId: String, editTaskRequest: EditTaskRequest) = coroutineScope {
         val response = repository.editTask(taskId, editTaskRequest)
-        when(response){
+        when (response) {
             is ApiResult.Success -> {
                 getAllDailyUserTask(state.value.selectedDate)
-                getAllMonthlyUserTask("${state.value.selectedMonth.year}-${state.value.selectedMonth.monthValue.toString().padStart(2,'0')}")
+                getAllMonthlyUserTask(
+                    "${state.value.selectedMonth.year}-${
+                        state.value.selectedMonth.monthValue.toString().padStart(2, '0')
+                    }"
+                )
             }
+
             is ApiResult.Error -> {}
         }
     }

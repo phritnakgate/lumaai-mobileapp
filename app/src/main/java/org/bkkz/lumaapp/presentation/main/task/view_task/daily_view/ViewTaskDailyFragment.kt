@@ -2,9 +2,7 @@ package org.bkkz.lumaapp.presentation.main.task.view_task.daily_view
 
 import android.app.Activity.RESULT_OK
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,7 +15,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import org.bkkz.lumaapp.R
 import org.bkkz.lumaapp.data.entity.task.EditTaskRequest

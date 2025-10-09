@@ -1,5 +1,6 @@
 package org.bkkz.lumaapp.presentation.main.task.view_task.state
 
+import com.google.api.services.calendar.Calendar
 import org.bkkz.lumaapp.data.entity.task.Task
 import org.bkkz.lumaapp.presentation.main.task.view_task.daily_view.calendar.CalendarViewPagerAdapter
 import java.text.SimpleDateFormat
@@ -15,5 +16,6 @@ data class ViewTaskState(
     val selectedDate : String = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date()),
     val allMonthlyUserTasks : List<Task>? = null,
     val allDailyUserTasks : List<Task>? = null,
-    val allMonthlyEventsDate : Set<LocalDate> = emptySet()
+    val allMonthlyEventsDate : Set<LocalDate> = emptySet(),
+    val calendarService : Calendar? = null,
 )

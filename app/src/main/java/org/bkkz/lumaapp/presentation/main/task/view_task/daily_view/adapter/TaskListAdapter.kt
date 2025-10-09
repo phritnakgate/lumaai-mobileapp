@@ -63,6 +63,7 @@ class TaskListAdapter(
         val taskPriority: TextView = view.findViewById(R.id.txtview_recycler_task_priority)
         val taskEdit: ImageView = view.findViewById(R.id.imgview_recycler_task_edit)
         val ggCalendar: ImageView = view.findViewById(R.id.imgview_recycler_task_ggcalendar)
+        val ggCalendarText : TextView = view.findViewById(R.id.txtview_recycler_task_ggcalendar)
     }
 
     override fun onCreateViewHolder(
@@ -209,6 +210,14 @@ class TaskListAdapter(
             holder.itemView.context,
             priorityColorRes
         )
+        if(items[position].isGoogleCalendarTask){
+            holder.taskPriority.visibility = View.GONE
+            holder.taskCategory.visibility = View.GONE
+            holder.ggCalendar.visibility = View.GONE
+            holder.ggCalendarText.visibility = View.GONE
+            holder.taskEdit.setImageResource(R.drawable.ic_google_calendar)
+            holder.taskEdit.setOnClickListener { null }
+        }
     }
 
     override fun getItemCount() = items.size

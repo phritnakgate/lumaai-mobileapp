@@ -6,6 +6,8 @@ import android.util.Log
 import android.util.Patterns
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.IntentSenderRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -17,9 +19,15 @@ import androidx.credentials.exceptions.GetCredentialException
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.google.android.gms.auth.api.identity.AuthorizationRequest
+import com.google.android.gms.auth.api.identity.Identity
+import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.common.api.CommonStatusCodes
+import com.google.android.gms.common.api.Scope
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
+import com.google.api.services.calendar.CalendarScopes
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
@@ -51,6 +59,32 @@ class LoginActivity : AppCompatActivity() {
     //Google Auth
     private lateinit var auth : FirebaseAuth
     private lateinit var credentialManager : CredentialManager
+
+
+    private val requestCalendarPermissionForResult = registerForActivityResult(
+        ActivityResultContracts.StartIntentSenderForResult()
+    ){ result ->
+        try {
+            val authorizationResult = Identity.getAuthorizationClient(this@LoginActivity)
+                .getAuthorizationResultFromIntent(result.data)
+            val authCode = authorizationResult.serverAuthCode
+            if(authCode != null){
+                viewModel.saveCalendarRefreshToken(authCode)
+                Log.d("LoginActivity", "Google Calendar authorization success: $authCode")
+                val intent = Intent(this@LoginActivity, HomeActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                startActivity(intent)
+                finish()
+
+            }else{
+                Log.e("LoginActivity", "Google Calendar authorization failed: authCode is null")
+
+            }
+
+        } catch (e : ApiException) {
+            Log.e("LoginActivity", "Google Calendar authorization failed", e)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -104,10 +138,11 @@ class LoginActivity : AppCompatActivity() {
                                 putString("email", state.email)
                                 apply()
                             }
-                            val intent = Intent(this@LoginActivity, HomeActivity::class.java)
-                            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                            startActivity(intent)
-                            finish()
+
+//                            val intent = Intent(this@LoginActivity, HomeActivity::class.java)
+//                            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+//                            startActivity(intent)
+//                            finish()
                         }
                     }
                 }
@@ -196,6 +231,7 @@ class LoginActivity : AppCompatActivity() {
                                             Log.d("LoginActivity", "Got Firebase ID Token: $firebaseIdToken")
                                             if(firebaseIdToken != null){
                                                 viewModel.loginWithGoogle(currentUser.email!!, firebaseIdToken)
+                                                requestCalendarPermission()
                                             }
                                         }
                                     }
@@ -249,4 +285,40 @@ class LoginActivity : AppCompatActivity() {
             }
         }
     }
+
+
+    private fun requestCalendarPermission() {
+        val authorizationRequest = AuthorizationRequest.builder()
+            .requestOfflineAccess(BuildConfig.FIREBASE_WEB_CLIENT_ID)
+            .setRequestedScopes(mutableListOf(Scope(CalendarScopes.CALENDAR_READONLY), Scope(CalendarScopes.CALENDAR)))
+            .build()
+
+        lifecycleScope.launch {
+            try{
+                Identity.getAuthorizationClient(this@LoginActivity)
+                    .authorize(authorizationRequest)
+                    .addOnSuccessListener { result ->
+                        if(result.pendingIntent == null){
+                            val intent = Intent(this@LoginActivity, HomeActivity::class.java)
+                            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            startActivity(intent)
+                            finish()
+                        }else{
+                            requestCalendarPermissionForResult.launch(IntentSenderRequest.Builder(result.pendingIntent!!.intentSender).build())
+                        }
+
+                    }
+                    .addOnFailureListener { e ->
+                        Log.e("LoginActivity", "Google Calendar authorization failed", e)
+                    }
+
+
+            }catch (e: Exception){
+                Log.e("LoginActivity", "Google Calendar authorization failed", e)
+            }
+
+        }
+
+    }
+
 }

@@ -96,7 +96,8 @@ class ChatAdapter(
                     isFinished = false,
                     userId = "",
                     category = 0,
-                    priority = 0
+                    priority = 0,
+                    isGoogleCalendarTask = false
                 ))
             }
         }
@@ -134,7 +135,8 @@ class ChatAdapter(
                     isFinished = false,
                     userId = "",
                     category = task.taskCategory,
-                    priority = task.taskPriority
+                    priority = task.taskPriority,
+                    isGoogleCalendarTask = false
                 ))
             }
         }
@@ -171,7 +173,8 @@ class ChatAdapter(
                     isFinished = false,
                     userId = "",
                     category = task.taskCategory,
-                    priority = task.taskPriority
+                    priority = task.taskPriority,
+                    isGoogleCalendarTask = false
                 ))
             }
         }

@@ -100,6 +100,7 @@ dependencies {
         exclude(group = "org.apache.httpcomponents")
         exclude(group = "com.google.guava", module = "guava-jdk5")
     }
+    implementation("com.google.android.gms:play-services-auth:21.4.0")
 
     //Third-Party LIB
     implementation("io.github.afreakyelf:Pdf-Viewer:2.3.7")

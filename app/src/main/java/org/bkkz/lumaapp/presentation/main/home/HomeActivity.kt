@@ -11,10 +11,14 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.edit
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.credentials.ClearCredentialStateRequest
+import androidx.credentials.CredentialManager
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieAnimationView
+import com.google.android.gms.auth.api.identity.ClearTokenRequest
+import com.google.android.gms.auth.api.identity.Identity
 import kotlinx.coroutines.launch
 import org.bkkz.lumaapp.R
 import org.bkkz.lumaapp.presentation.auth.LandingActivity
@@ -132,6 +136,10 @@ class HomeActivity : AppCompatActivity(), ChatHistoryListAdapter.OnChatHistoryLi
                 viewModel.logout()
                 val sharedPrefs = getSharedPreferences("userSession", MODE_PRIVATE)
                 sharedPrefs.edit { clear() }
+
+                val credentialManager = CredentialManager.create(this@HomeActivity)
+                credentialManager.clearCredentialState(ClearCredentialStateRequest())
+
                 val intent = Intent(this@HomeActivity, LandingActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 startActivity(intent)

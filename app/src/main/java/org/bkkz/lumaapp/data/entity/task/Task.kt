@@ -21,5 +21,7 @@ data class Task(
     @SerializedName("category")
     val category: Int,
     @SerializedName("priority")
-    val priority: Int
+    val priority: Int,
+    @SerializedName("isGoogleCalendarTask")
+    val isGoogleCalendarTask: Boolean
 ) : Parcelable

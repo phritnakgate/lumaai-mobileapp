@@ -11,6 +11,7 @@ import org.bkkz.lumaapp.data.entity.auth.TokenResponse
 import org.bkkz.lumaapp.data.entity.chat.LLMChatRequest
 import org.bkkz.lumaapp.data.entity.chat.LLMProcess
 import org.bkkz.lumaapp.data.entity.chat_history.ChatHistory
+import org.bkkz.lumaapp.data.entity.google_calendar.GoogleAuthRequest
 import org.bkkz.lumaapp.data.entity.report_history.ReportHistory
 import org.bkkz.lumaapp.data.entity.task.CreateTaskRequest
 import org.bkkz.lumaapp.data.entity.task.EditTaskRequest
@@ -103,4 +104,13 @@ interface LumaApi {
         @Query(value = "formType") formType : String,
         @Query(value = "fileName") fileName : String
     ) : Response<ApiResponse<Any>>
+
+    /*=========== GOOGLE CALENDAR API ===========*/
+    @POST("google-calendar/auth")
+    suspend fun authenticateGoogleCalendar(
+        @Body googleAuthRequest: GoogleAuthRequest
+    ): Response<Void>
+
+    @GET("google-calendar/sync")
+    suspend fun syncGoogleCalendar(): Response<Void>
 }

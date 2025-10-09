@@ -14,6 +14,7 @@ import org.bkkz.lumaapp.data.entity.auth.TokenRequest
 import org.bkkz.lumaapp.data.entity.chat.LLMChatRequest
 import org.bkkz.lumaapp.data.entity.chat.LLMProcess
 import org.bkkz.lumaapp.data.entity.chat_history.ChatHistory
+import org.bkkz.lumaapp.data.entity.google_calendar.GoogleAuthRequest
 import org.bkkz.lumaapp.data.entity.report_history.ReportHistory
 import org.bkkz.lumaapp.data.entity.task.CreateTaskRequest
 import org.bkkz.lumaapp.data.entity.task.EditTaskRequest
@@ -345,6 +346,31 @@ class Repository(
             }
         }catch (e: Exception){
             Log.e("Repository","Failed to delete report bc ${e.message}")
+            ApiResult.Error(Exception(e.message))
+        }
+    }
+
+    suspend fun authToCalendarService(authCode : String) : ApiResult<Unit> = withContext(Dispatchers.IO){
+        try{
+            val response = lumaApi.authenticateGoogleCalendar(GoogleAuthRequest(authCode))
+            if(response.isSuccessful){
+                ApiResult.Success(Unit)
+            }else{
+                ApiResult.Error(Exception("Cannot authenticate to google service"))
+            }
+
+        }catch (e: Exception){
+            Log.e("Repository","Failed to auth to google service bc ${e.message}")
+            ApiResult.Error(Exception(e.message))
+        }
+    }
+
+    suspend fun syncGoogleCalendarTasks() : ApiResult<Unit> = withContext(Dispatchers.IO){
+        try{
+            lumaApi.syncGoogleCalendar()
+            ApiResult.Success(Unit)
+        }catch (e: Exception){
+            Log.e("Repository","Failed to sync google calendar tasks bc ${e.message}")
             ApiResult.Error(Exception(e.message))
         }
     }

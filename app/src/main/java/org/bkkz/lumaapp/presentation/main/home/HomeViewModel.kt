@@ -23,6 +23,7 @@ class HomeViewModel(private val repository: Repository) : ViewModel() {
             is HomeEvent.OnLoadRecent -> {
                 _state.update { it.copy(serviceState = ServiceState.LOADING) }
                 loadRecentChats()
+                syncGoogleCalendar()
             }
         }
     }
@@ -58,6 +59,12 @@ class HomeViewModel(private val repository: Repository) : ViewModel() {
                     _state.update { it.copy(serviceState = ServiceState.FAILED) }
                 }
             }
+        }
+    }
+
+    private fun syncGoogleCalendar() {
+        viewModelScope.launch {
+            repository.syncGoogleCalendarTasks()
         }
     }
 
