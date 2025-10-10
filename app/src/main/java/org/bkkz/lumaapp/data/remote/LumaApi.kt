@@ -16,6 +16,7 @@ import org.bkkz.lumaapp.data.entity.report_history.ReportHistory
 import org.bkkz.lumaapp.data.entity.task.CreateTaskRequest
 import org.bkkz.lumaapp.data.entity.task.EditTaskRequest
 import org.bkkz.lumaapp.data.entity.task.Task
+import org.bkkz.lumaapp.data.entity.user.UserInfo
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -113,4 +114,14 @@ interface LumaApi {
 
     @GET("google-calendar/sync")
     suspend fun syncGoogleCalendar(): Response<Void>
+
+    @GET("google-calendar/connection")
+    suspend fun getCalendarConnectionStatus(): Response<ApiResponse<Any>>
+
+    @DELETE("google-calendar/connection")
+    suspend fun revokeGoogleCalendarAccess(): Response<ApiResponse<Any>>
+
+    /*=========== USER ===========*/
+    @GET("user/")
+    suspend fun getUserInfo(): Response<ApiResponse<UserInfo>>
 }

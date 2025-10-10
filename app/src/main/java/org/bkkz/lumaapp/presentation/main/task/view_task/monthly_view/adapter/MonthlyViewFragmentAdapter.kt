@@ -73,9 +73,10 @@ class MonthlyViewFragmentAdapter(
         val taskPriority: TextView = itemView.findViewById(R.id.txtview_recycler_task_priority)
         val taskEdit : ImageView = itemView.findViewById(R.id.imgview_recycler_task_edit)
         val ggCalendar: ImageView = itemView.findViewById(R.id.imgview_recycler_task_ggcalendar)
+        val ggCalendarText : TextView = itemView.findViewById(R.id.txtview_recycler_task_ggcalendar)
         fun bind(header: TimelineItem.TaskHeader) {
             val sharedPref = itemView.context.getSharedPreferences("userSession", MODE_PRIVATE)
-            val userEmail = sharedPref.getString("email", null)
+            val userEmail = sharedPref.getString("googleCalendarEmail", null)
 
             var isFinished : Boolean = header.task.isFinished
             dateTextView.text = header.date
@@ -131,7 +132,24 @@ class MonthlyViewFragmentAdapter(
                 priorityColorRes
             )
             ggCalendar.setOnClickListener {
+                if(userEmail == null){
+                    OneActionDialog(itemView.context).show(
+                        drawable = R.drawable.ic_dialog_no,
+                        title = "Error",
+                        message = "Please connect to Google Calendar first!",
+                        onConfirmClickListener = {}
+                    )
+                    return@setOnClickListener
+                }
                 createGoogleCalendarEvent(itemView.context, userEmail, header.task)
+            }
+            if(header.task.isGoogleCalendarTask){
+                taskPriority.visibility = View.GONE
+                taskCategory.visibility = View.GONE
+                ggCalendar.visibility = View.GONE
+                ggCalendarText.visibility = View.GONE
+                taskEdit.setImageResource(R.drawable.ic_google_calendar)
+                taskEdit.setOnClickListener { null }
             }
         }
     }
@@ -146,9 +164,10 @@ class MonthlyViewFragmentAdapter(
         val taskPriority: TextView = itemView.findViewById(R.id.txtview_recycler_task_priority)
         val taskEdit : ImageView = itemView.findViewById(R.id.imgview_recycler_task_edit)
         val ggCalendar: ImageView = itemView.findViewById(R.id.imgview_recycler_task_ggcalendar)
+        val ggCalendarText : TextView = itemView.findViewById(R.id.txtview_recycler_task_ggcalendar)
         fun bind(data: TimelineItem.TaskBody) {
             val sharedPref = itemView.context.getSharedPreferences("userSession", MODE_PRIVATE)
-            val userEmail = sharedPref.getString("email", null)
+            val userEmail = sharedPref.getString("googleCalendarEmail", null)
 
             var isFinished : Boolean = data.task.isFinished
             if(isFinished){
@@ -176,6 +195,15 @@ class MonthlyViewFragmentAdapter(
                 }
             }
             ggCalendar.setOnClickListener {
+                if(userEmail == null){
+                    OneActionDialog(itemView.context).show(
+                        drawable = R.drawable.ic_dialog_no,
+                        title = "Error",
+                        message = "Please connect to Google Calendar first!",
+                        onConfirmClickListener = {}
+                    )
+                    return@setOnClickListener
+                }
                 createGoogleCalendarEvent(itemView.context, userEmail, data.task)
             }
             val category = data.task.category
@@ -204,6 +232,14 @@ class MonthlyViewFragmentAdapter(
                 itemView.context,
                 priorityColorRes
             )
+            if(data.task.isGoogleCalendarTask){
+                taskPriority.visibility = View.GONE
+                taskCategory.visibility = View.GONE
+                ggCalendar.visibility = View.GONE
+                ggCalendarText.visibility = View.GONE
+                taskEdit.setImageResource(R.drawable.ic_google_calendar)
+                taskEdit.setOnClickListener { null }
+            }
         }
     }
     inner class TaskFooterViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -217,9 +253,10 @@ class MonthlyViewFragmentAdapter(
         val taskPriority: TextView = itemView.findViewById(R.id.txtview_recycler_task_priority)
         val taskEdit : ImageView = itemView.findViewById(R.id.imgview_recycler_task_edit)
         val ggCalendar: ImageView = itemView.findViewById(R.id.imgview_recycler_task_ggcalendar)
+        val ggCalendarText : TextView = itemView.findViewById(R.id.txtview_recycler_task_ggcalendar)
         fun bind(data: TimelineItem.TaskFooter) {
             val sharedPref = itemView.context.getSharedPreferences("userSession", MODE_PRIVATE)
-            val userEmail = sharedPref.getString("email", null)
+            val userEmail = sharedPref.getString("googleCalendarEmail", null)
 
             var isFinished : Boolean = data.task.isFinished
             if(isFinished){
@@ -273,7 +310,24 @@ class MonthlyViewFragmentAdapter(
                 priorityColorRes
             )
             ggCalendar.setOnClickListener {
+                if(userEmail == null){
+                    OneActionDialog(itemView.context).show(
+                        drawable = R.drawable.ic_dialog_no,
+                        title = "Error",
+                        message = "Please connect to Google Calendar first!",
+                        onConfirmClickListener = {}
+                    )
+                    return@setOnClickListener
+                }
                 createGoogleCalendarEvent(itemView.context, userEmail, data.task)
+            }
+            if(data.task.isGoogleCalendarTask){
+                taskPriority.visibility = View.GONE
+                taskCategory.visibility = View.GONE
+                ggCalendar.visibility = View.GONE
+                ggCalendarText.visibility = View.GONE
+                taskEdit.setImageResource(R.drawable.ic_google_calendar)
+                taskEdit.setOnClickListener { null }
             }
         }
     }

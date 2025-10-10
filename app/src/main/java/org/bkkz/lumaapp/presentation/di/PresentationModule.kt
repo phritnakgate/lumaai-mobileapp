@@ -9,6 +9,7 @@ import org.bkkz.lumaapp.presentation.main.chat.ChatViewModel
 import org.bkkz.lumaapp.presentation.main.chat_history.ChatHistoryViewModel
 import org.bkkz.lumaapp.presentation.main.home.HomeViewModel
 import org.bkkz.lumaapp.presentation.main.report.ReportViewModel
+import org.bkkz.lumaapp.presentation.main.setting.SettingsViewModel
 import org.bkkz.lumaapp.presentation.main.task.add_task.AddTaskViewModel
 import org.bkkz.lumaapp.presentation.main.task.edit_task.EditTaskViewModel
 import org.bkkz.lumaapp.presentation.main.task.view_task.ViewTaskViewModel
@@ -23,4 +24,5 @@ val presentationModules = module {
     viewModel { ChatHistoryViewModel(get()) }
     viewModel { ChatViewModel(get()) }
     viewModel { ReportViewModel(get()) }
+    viewModel { SettingsViewModel(get()) }
 }

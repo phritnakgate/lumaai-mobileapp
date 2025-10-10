@@ -1,18 +1,11 @@
 package org.bkkz.lumaapp.presentation.auth.login
 
-import android.content.Context
-import android.content.Context.MODE_PRIVATE
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.android.gms.auth.api.identity.AuthorizationRequest
-import com.google.android.gms.auth.api.identity.Identity
-import com.google.android.gms.common.api.Scope
-import com.google.api.services.calendar.CalendarScopes
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import org.bkkz.lumaapp.BuildConfig
 import org.bkkz.lumaapp.data.Repository
 import org.bkkz.lumaapp.data.remote.ApiResult
 import org.bkkz.lumaapp.presentation.auth.login.state.LoginEvent
@@ -47,10 +40,9 @@ class LoginViewModel(private val repository: Repository) : ViewModel() {
         }
     }
 
-    fun saveCalendarRefreshToken(authCode : String){
+    fun saveCalendarRefreshToken(authCode : String, email: String){
         viewModelScope.launch {
-            repository.authToCalendarService(authCode)
-
+            repository.authToCalendarService(authCode, email)
         }
     }
 }

@@ -17,8 +17,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieAnimationView
-import com.google.android.gms.auth.api.identity.ClearTokenRequest
-import com.google.android.gms.auth.api.identity.Identity
 import kotlinx.coroutines.launch
 import org.bkkz.lumaapp.R
 import org.bkkz.lumaapp.presentation.auth.LandingActivity
@@ -26,6 +24,7 @@ import org.bkkz.lumaapp.presentation.main.chat.ChatActivity
 import org.bkkz.lumaapp.presentation.main.chat_history.ChatHistoryActivity
 import org.bkkz.lumaapp.presentation.main.home.state.HomeEvent
 import org.bkkz.lumaapp.presentation.main.report.ReportActivity
+import org.bkkz.lumaapp.presentation.main.setting.SettingsActivity
 import org.bkkz.lumaapp.presentation.main.task.view_task.ViewTaskActivity
 import org.bkkz.lumaapp.util.component.chat_history.ChatHistoryListAdapter
 import org.bkkz.lumaapp.util.component.chat_history.ChatHistoryListDecoration
@@ -39,6 +38,7 @@ class HomeActivity : AppCompatActivity(), ChatHistoryListAdapter.OnChatHistoryLi
     private val viewModel : HomeViewModel by viewModel()
 
     //UI
+    private lateinit var settingBtn : ImageView
     private lateinit var logoutBtn : ConstraintLayout
     private lateinit var talkBtn : ConstraintLayout
     private lateinit var taskBtn : ConstraintLayout
@@ -65,6 +65,7 @@ class HomeActivity : AppCompatActivity(), ChatHistoryListAdapter.OnChatHistoryLi
         }
     }
     private fun findViews(){
+        settingBtn = findViewById(R.id.imgview_home_setting)
         logoutBtn = findViewById(R.id.constraintlayout_home_logout_btn)
         talkBtn = findViewById(R.id.constraintlayout_home_chat_btn)
         taskBtn = findViewById(R.id.constraintlayout_home_task_btn)
@@ -116,6 +117,9 @@ class HomeActivity : AppCompatActivity(), ChatHistoryListAdapter.OnChatHistoryLi
     }
     private fun setupEvents(){
         setupLogoutBtn()
+        settingBtn.setOnClickListener {
+            startActivity(Intent(this@HomeActivity, SettingsActivity::class.java))
+        }
         taskBtn.setOnClickListener {
             startActivity(Intent(this@HomeActivity, ViewTaskActivity::class.java))
         }

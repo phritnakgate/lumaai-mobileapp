@@ -19,6 +19,7 @@ import org.bkkz.lumaapp.data.entity.report_history.ReportHistory
 import org.bkkz.lumaapp.data.entity.task.CreateTaskRequest
 import org.bkkz.lumaapp.data.entity.task.EditTaskRequest
 import org.bkkz.lumaapp.data.entity.task.Task
+import org.bkkz.lumaapp.data.entity.user.UserInfo
 import org.bkkz.lumaapp.data.local.TokenManager
 import org.bkkz.lumaapp.data.local.UserChatDao
 import org.bkkz.lumaapp.data.local.UserChatEntity
@@ -350,9 +351,9 @@ class Repository(
         }
     }
 
-    suspend fun authToCalendarService(authCode : String) : ApiResult<Unit> = withContext(Dispatchers.IO){
+    suspend fun authToCalendarService(authCode : String, email: String) : ApiResult<Unit> = withContext(Dispatchers.IO){
         try{
-            val response = lumaApi.authenticateGoogleCalendar(GoogleAuthRequest(authCode))
+            val response = lumaApi.authenticateGoogleCalendar(GoogleAuthRequest(authCode, email))
             if(response.isSuccessful){
                 ApiResult.Success(Unit)
             }else{
@@ -371,6 +372,57 @@ class Repository(
             ApiResult.Success(Unit)
         }catch (e: Exception){
             Log.e("Repository","Failed to sync google calendar tasks bc ${e.message}")
+            ApiResult.Error(Exception(e.message))
+        }
+    }
+
+    suspend fun checkGoogleCalendarAuth() : ApiResult<Boolean> = withContext(Dispatchers.IO){
+        try{
+            val response = lumaApi.getCalendarConnectionStatus()
+            if(response.isSuccessful){
+                val response = response.body()?.result
+                if(response == "true"){
+                    ApiResult.Success(true)
+                }else{
+                    ApiResult.Success(false)
+                }
+
+            }else{
+                ApiResult.Error(Exception("Cannot check google calendar authentication"))
+            }
+
+        }catch (e: Exception){
+            Log.e("Repository","Failed to check google calendar authentication bc ${e.message}")
+            ApiResult.Error(Exception(e.message))
+        }
+    }
+
+    suspend fun revokeGoogleCalendarAuth() : ApiResult<Unit> = withContext(Dispatchers.IO){
+        try{
+            val response = lumaApi.revokeGoogleCalendarAccess()
+            if(response.isSuccessful){
+                ApiResult.Success(Unit)
+            }else{
+                ApiResult.Error(Exception("Cannot revoke google calendar authentication"))
+            }
+
+        }catch (e: Exception){
+            Log.e("Repository","Failed to revoke google calendar authentication bc ${e.message}")
+            ApiResult.Error(Exception(e.message))
+        }
+    }
+
+    suspend fun getUserData() : ApiResult<UserInfo?> = withContext(Dispatchers.IO){
+        try{
+            val response = lumaApi.getUserInfo()
+            if(response.isSuccessful){
+                ApiResult.Success(response.body()?.results?.firstOrNull())
+            }else{
+                ApiResult.Error(Exception("Cannot get user data"))
+            }
+
+        }catch (e: Exception){
+            Log.e("Repository","Failed to get user data bc ${e.message}")
             ApiResult.Error(Exception(e.message))
         }
     }

@@ -22,7 +22,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.gms.auth.api.identity.AuthorizationRequest
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.common.api.ApiException
-import com.google.android.gms.common.api.CommonStatusCodes
 import com.google.android.gms.common.api.Scope
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
@@ -60,6 +59,7 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var auth : FirebaseAuth
     private lateinit var credentialManager : CredentialManager
 
+    var flag = ""
 
     private val requestCalendarPermissionForResult = registerForActivityResult(
         ActivityResultContracts.StartIntentSenderForResult()
@@ -68,9 +68,10 @@ class LoginActivity : AppCompatActivity() {
             val authorizationResult = Identity.getAuthorizationClient(this@LoginActivity)
                 .getAuthorizationResultFromIntent(result.data)
             val authCode = authorizationResult.serverAuthCode
+            val email = authorizationResult.toGoogleSignInAccount()?.email
             if(authCode != null){
-                viewModel.saveCalendarRefreshToken(authCode)
-                Log.d("LoginActivity", "Google Calendar authorization success: $authCode")
+                viewModel.saveCalendarRefreshToken(authCode, email!!)
+                Log.d("LoginActivity", "Google Calendar authorization success: $authCode with email $email")
                 val intent = Intent(this@LoginActivity, HomeActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 startActivity(intent)
@@ -134,15 +135,24 @@ class LoginActivity : AppCompatActivity() {
 
                         }
                         is LoginEvent.Success -> {
-                            sharedPref.edit().apply{
-                                putString("email", state.email)
-                                apply()
+                            if(flag == "email") {
+                                sharedPref.edit().apply{
+                                    putString("email", state.email)
+                                    putString("googleCalendarEmail", null)
+                                    apply()
+                                }
+                                val intent = Intent(this@LoginActivity, HomeActivity::class.java)
+                                intent.flags =
+                                    Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                startActivity(intent)
+                                finish()
+                            }else{
+                                sharedPref.edit().apply{
+                                    putString("email", state.email)
+                                    putString("googleCalendarEmail", state.email)
+                                    apply()
+                                }
                             }
-
-//                            val intent = Intent(this@LoginActivity, HomeActivity::class.java)
-//                            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-//                            startActivity(intent)
-//                            finish()
                         }
                     }
                 }
@@ -160,6 +170,7 @@ class LoginActivity : AppCompatActivity() {
 
     private fun setupEmailSignInBtn(){
         emailSignInBtn.setOnClickListener {
+            flag = "email"
             val email = edtEmail.text
             val password = edtPassword.text
             var errorFlag = false
@@ -181,6 +192,7 @@ class LoginActivity : AppCompatActivity() {
 
     private fun setupGoogleSignInBtn(){
         googleSignInBtn.setOnClickListener {
+            flag = "google"
             val googleIdOption: GetGoogleIdOption = GetGoogleIdOption.Builder()
                 .setFilterByAuthorizedAccounts(false)
                 .setServerClientId(BuildConfig.FIREBASE_WEB_CLIENT_ID) // local.properties

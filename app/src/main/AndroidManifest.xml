@@ -18,6 +18,9 @@
         android:theme="@style/Theme.LumaAIApp"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".presentation.main.setting.SettingsActivity"
+            android:exported="false" />
+        <activity
             android:name=".presentation.main.report.ReportActivity"
             android:exported="false" />
         <activity

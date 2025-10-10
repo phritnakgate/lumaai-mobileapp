@@ -78,7 +78,7 @@ class TaskListAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
         val sharedPref = holder.itemView.context.getSharedPreferences("userSession", MODE_PRIVATE)
-        val userEmail = sharedPref.getString("email", null)
+        val userEmail = sharedPref.getString("googleCalendarEmail", null)
 
         val taskTime: String = items[position].dateTime
         var isFinished: Boolean = items[position].isFinished
@@ -114,6 +114,15 @@ class TaskListAdapter(
             }
         }
         holder.ggCalendar.setOnClickListener {
+            if(userEmail == null){
+                OneActionDialog(holder.itemView.context).show(
+                    drawable = R.drawable.ic_dialog_no,
+                    title = "Error",
+                    message = "Please connect to Google Calendar first!",
+                    onConfirmClickListener = {}
+                )
+                return@setOnClickListener
+            }
             CoroutineScope(Dispatchers.IO).launch {
                 try {
                     val mCredential = GoogleAccountCredential.usingOAuth2(

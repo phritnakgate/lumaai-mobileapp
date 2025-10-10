@@ -139,4 +139,9 @@
     <string name="month_selector_dialog_title">Choose Year and Month</string>
     <string name="month_selector_month">Month</string>
     <string name="month_selector_year">Year</string>
+
+    <!--========== SETTING PAGES ==========-->
+    <string name="setting_title">Settings</string>
+    <string name="setting_google_calendar">Connect To Google Calendar</string>
+    <string name="setting_google_calendar_btn">Connect Google Account</string>
 </resources>
