@@ -1,5 +1,6 @@
 package org.bkkz.lumaapp.presentation.main.setting
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -34,6 +35,7 @@ class SettingsViewModel(private val repository: Repository) : ViewModel() {
                 is ApiResult.Success -> {
                     val userInfo = response.data
                     if(userInfo != null){
+                        Log.d("SettingsViewModel", "UserInfo: $userInfo")
                         _state.update { it.copy(
                             isConnectedToCalendar = !userInfo.googleRefreshToken.isNullOrEmpty(),
                             isLoginViaGoogle = userInfo.provider == 1,

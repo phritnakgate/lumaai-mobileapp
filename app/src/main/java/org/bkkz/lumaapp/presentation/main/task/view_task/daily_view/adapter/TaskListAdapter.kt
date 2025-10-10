@@ -29,6 +29,8 @@ import kotlinx.coroutines.withContext
 import org.bkkz.lumaapp.R
 import org.bkkz.lumaapp.data.entity.task.Task
 import org.bkkz.lumaapp.presentation.main.task.edit_task.EditTaskActivity
+import org.bkkz.lumaapp.presentation.main.task.view_task.ViewTaskViewModel
+import org.bkkz.lumaapp.presentation.main.task.view_task.state.ViewTaskEvent
 import org.bkkz.lumaapp.util.dialog.OneActionDialog
 import org.bkkz.lumaapp.util.enums.TaskCategory
 import org.bkkz.lumaapp.util.enums.TaskPriority
@@ -40,7 +42,8 @@ import java.util.TimeZone
 
 class TaskListAdapter(
     private val items: List<Task>,
-    private val onPermissionNeeded: (Intent) -> Unit) :
+    private val onPermissionNeeded: (Intent) -> Unit,
+    private val viewModel : ViewTaskViewModel) :
     RecyclerView.Adapter<TaskListAdapter.ViewHolder>() {
 
     interface OnTaskCheckedListener {
@@ -163,12 +166,16 @@ class TaskListAdapter(
                     Log.i("TaskListAdapter", "Event Name: ${event.summary}\nEvent Desc: ${event.description}\nEvent Date: ${event.start} ==> ${event.end}")
 
                     mService.events().insert("primary",event).execute()
+                    viewModel.deleteTask(items[position].id)
                     withContext(Dispatchers.Main) {
                         OneActionDialog(holder.itemView.context).show(
                             drawable = R.drawable.ic_dialog_success,
                             title = "Add to calendar Success!",
                             message = "",
-                            onConfirmClickListener = {}
+                            onConfirmClickListener = {
+                                viewModel.onEvent(ViewTaskEvent.OnUserSelectedDate(viewModel.state.value.selectedDate))
+                                viewModel.onEvent(ViewTaskEvent.OnUserSelectedMonth(viewModel.state.value.selectedMonthPosition,viewModel.state.value.selectedMonth))
+                            }
                         )
                     }
 
@@ -220,12 +227,7 @@ class TaskListAdapter(
             priorityColorRes
         )
         if(items[position].isGoogleCalendarTask){
-            holder.taskPriority.visibility = View.GONE
-            holder.taskCategory.visibility = View.GONE
-            holder.ggCalendar.visibility = View.GONE
             holder.ggCalendarText.visibility = View.GONE
-            holder.taskEdit.setImageResource(R.drawable.ic_google_calendar)
-            holder.taskEdit.setOnClickListener { null }
         }
     }
 

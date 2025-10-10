@@ -136,4 +136,8 @@ class ViewTaskViewModel(private val repository: Repository) : ViewModel() {
             is ApiResult.Error -> {}
         }
     }
+
+    suspend fun deleteTask(id: String) = coroutineScope {
+        repository.deleteTask(id)
+    }
 }

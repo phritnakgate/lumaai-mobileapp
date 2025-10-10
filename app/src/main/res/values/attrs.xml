@@ -6,6 +6,7 @@
         <attr name="isRequired" format="boolean"/>
         <attr name="isError" format="boolean"/>
         <attr name="isPasswordField" format="boolean"/>
+        <attr name="enabled" format="boolean"/>
     </declare-styleable>
 
 </resources>

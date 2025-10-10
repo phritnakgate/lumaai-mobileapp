@@ -14,14 +14,11 @@ import org.bkkz.lumaapp.data.remote.ApiResult
 import org.bkkz.lumaapp.presentation.main.task.edit_task.state.EditTaskEvent
 import org.bkkz.lumaapp.presentation.main.task.edit_task.state.EditTaskState
 import org.bkkz.lumaapp.util.enums.ServiceState
-import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
-import java.util.Date
-import java.util.Locale
 
 class EditTaskViewModel(private val repository: Repository) : ViewModel() {
     private val _state: MutableStateFlow<EditTaskState> = MutableStateFlow(EditTaskState())
@@ -40,6 +37,7 @@ class EditTaskViewModel(private val repository: Repository) : ViewModel() {
                         taskTime = if (event.task.dateTime.isEmpty()) "" else event.task.dateTime.substring(11, 16),
                         priority = event.task.priority,
                         category = event.task.category,
+                        isGoogleCalendarTask = event.task.isGoogleCalendarTask
                     )
                 }
             }

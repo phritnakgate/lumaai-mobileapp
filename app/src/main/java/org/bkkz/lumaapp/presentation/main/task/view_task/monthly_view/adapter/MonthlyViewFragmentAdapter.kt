@@ -30,6 +30,8 @@ import kotlinx.coroutines.withContext
 import org.bkkz.lumaapp.R
 import org.bkkz.lumaapp.data.entity.task.Task
 import org.bkkz.lumaapp.presentation.main.task.edit_task.EditTaskActivity
+import org.bkkz.lumaapp.presentation.main.task.view_task.ViewTaskViewModel
+import org.bkkz.lumaapp.presentation.main.task.view_task.state.ViewTaskEvent
 import org.bkkz.lumaapp.util.component.monthly_task_recycler.TimelineItem
 import org.bkkz.lumaapp.util.dialog.OneActionDialog
 import org.bkkz.lumaapp.util.enums.TaskCategory
@@ -42,7 +44,8 @@ import java.util.TimeZone
 
 class MonthlyViewFragmentAdapter(
     private val items: List<TimelineItem>,
-    private val onPermissionNeeded: (Intent) -> Unit
+    private val onPermissionNeeded: (Intent) -> Unit,
+    private val viewModel : ViewTaskViewModel
 )
     : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
 
@@ -144,12 +147,7 @@ class MonthlyViewFragmentAdapter(
                 createGoogleCalendarEvent(itemView.context, userEmail, header.task)
             }
             if(header.task.isGoogleCalendarTask){
-                taskPriority.visibility = View.GONE
-                taskCategory.visibility = View.GONE
-                ggCalendar.visibility = View.GONE
                 ggCalendarText.visibility = View.GONE
-                taskEdit.setImageResource(R.drawable.ic_google_calendar)
-                taskEdit.setOnClickListener { null }
             }
         }
     }
@@ -233,12 +231,7 @@ class MonthlyViewFragmentAdapter(
                 priorityColorRes
             )
             if(data.task.isGoogleCalendarTask){
-                taskPriority.visibility = View.GONE
-                taskCategory.visibility = View.GONE
-                ggCalendar.visibility = View.GONE
                 ggCalendarText.visibility = View.GONE
-                taskEdit.setImageResource(R.drawable.ic_google_calendar)
-                taskEdit.setOnClickListener { null }
             }
         }
     }
@@ -322,12 +315,7 @@ class MonthlyViewFragmentAdapter(
                 createGoogleCalendarEvent(itemView.context, userEmail, data.task)
             }
             if(data.task.isGoogleCalendarTask){
-                taskPriority.visibility = View.GONE
-                taskCategory.visibility = View.GONE
-                ggCalendar.visibility = View.GONE
                 ggCalendarText.visibility = View.GONE
-                taskEdit.setImageResource(R.drawable.ic_google_calendar)
-                taskEdit.setOnClickListener { null }
             }
         }
     }
@@ -424,12 +412,14 @@ class MonthlyViewFragmentAdapter(
                 Log.i("TaskListAdapter", "Event Name: ${event.summary}\nEvent Desc: ${event.description}\nEvent Date: ${event.start} ==> ${event.end}")
 
                 mService.events().insert("primary",event).execute()
+                viewModel.deleteTask(task.id)
                 withContext(Dispatchers.Main) {
                     OneActionDialog(context).show(
                         drawable = R.drawable.ic_dialog_success,
                         title = "Add to calendar Success!",
                         message = "",
-                        onConfirmClickListener = {}
+                        onConfirmClickListener = {
+                        }
                     )
                 }
 
@@ -446,7 +436,10 @@ class MonthlyViewFragmentAdapter(
                         drawable = R.drawable.ic_dialog_no,
                         title = "Error",
                         message = e.message.toString(),
-                        onConfirmClickListener = {}
+                        onConfirmClickListener = {
+                            viewModel.onEvent(ViewTaskEvent.OnUserSelectedDate(viewModel.state.value.selectedDate))
+                            viewModel.onEvent(ViewTaskEvent.OnUserSelectedMonth(viewModel.state.value.selectedMonthPosition,viewModel.state.value.selectedMonth))
+                        }
                     )
                 }
 

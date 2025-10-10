@@ -47,15 +47,32 @@ class LabelEditText @JvmOverloads constructor(
                 val hint = getString(R.styleable.LabelEditText_hintText) ?: ""
                 val isRequired = getBoolean(R.styleable.LabelEditText_isRequired, false)
                 val isPassword = getBoolean(R.styleable.LabelEditText_isPasswordField, false)
+                val isEnabled = getBoolean(R.styleable.LabelEditText_enabled, true)
 
                 setLabelText(label, isRequired)
                 setHintText(hint)
                 if (isPassword) {
                     setPasswordInput()
                 }
+                // ตั้งค่า isEnabled ที่อ่านมา
+                setEnabled(isEnabled)
             }
         }
     }
+
+    override fun setEnabled(enabled: Boolean) {
+        super.setEnabled(enabled)
+        editText.isEnabled = enabled
+
+        if (enabled) {
+            editText.background = ContextCompat.getDrawable(context, R.drawable.edit_text_bg)
+            editText.setTextColor(ContextCompat.getColor(context, R.color.black))
+        } else {
+            editText.background = ContextCompat.getDrawable(context, R.drawable.edit_text_bg_disabled)
+            editText.setTextColor(ContextCompat.getColor(context, R.color.white))
+        }
+    }
+
 
 
     private fun setLabelText(text: String, required: Boolean) {
@@ -78,6 +95,8 @@ class LabelEditText @JvmOverloads constructor(
     }
 
     fun setError(error: Boolean) {
+        if (!isEnabled) return
+
         if(error){
             editText.background = ContextCompat.getDrawable(context, R.drawable.edit_text_bg_danger)
             editText.setTextColor(context.getColor(R.color.danger))
@@ -89,7 +108,7 @@ class LabelEditText @JvmOverloads constructor(
     }
 
     private fun setPasswordInput(){
-        btnShowPassword.visibility = VISIBLE // แสดงไอคอน
+        btnShowPassword.visibility = VISIBLE
         editText.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
         editText.transformationMethod = PasswordTransformationMethod.getInstance()
         isPasswordVisible = false
@@ -98,11 +117,9 @@ class LabelEditText @JvmOverloads constructor(
         btnShowPassword.setOnClickListener {
             isPasswordVisible = !isPasswordVisible
             if (isPasswordVisible) {
-                // แสดงรหัสผ่าน
                 editText.transformationMethod = null
                 btnShowPassword.setImageResource(R.drawable.ic_eye)
             } else {
-                // ซ่อนรหัสผ่าน
                 editText.transformationMethod = PasswordTransformationMethod.getInstance()
                 btnShowPassword.setImageResource(R.drawable.ic_eye_hidden)
             }

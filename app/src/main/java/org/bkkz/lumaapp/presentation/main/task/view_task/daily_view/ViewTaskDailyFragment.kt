@@ -111,9 +111,11 @@ class ViewTaskDailyFragment : Fragment(), TaskListAdapter.OnTaskCheckedListener 
                     recyclerTaskLists.visibility = View.VISIBLE
                     imgViewNoTask.visibility = View.GONE
                     txtViewNoTask.visibility = View.GONE
-                    val adapter = TaskListAdapter(dailyTasks, onPermissionNeeded = {
-                        requestCalendarPermissionForResult.launch(it)
-                    })
+                    val adapter = TaskListAdapter(
+                        dailyTasks, onPermissionNeeded = {
+                            requestCalendarPermissionForResult.launch(it)
+                        }, viewModel
+                    )
                     adapter.setOnTaskCheckedListener(this@ViewTaskDailyFragment)
                     recyclerTaskLists.adapter = adapter
 

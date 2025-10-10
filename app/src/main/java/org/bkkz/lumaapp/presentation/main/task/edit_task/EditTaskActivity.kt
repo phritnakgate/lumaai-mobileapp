@@ -10,6 +10,7 @@ import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Spinner
+import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
@@ -23,7 +24,6 @@ import com.google.android.material.timepicker.TimeFormat
 import kotlinx.coroutines.launch
 import org.bkkz.lumaapp.R
 import org.bkkz.lumaapp.data.entity.task.Task
-import org.bkkz.lumaapp.presentation.main.task.add_task.state.AddTaskEvent
 import org.bkkz.lumaapp.presentation.main.task.edit_task.state.EditTaskEvent
 import org.bkkz.lumaapp.presentation.main.task.edit_task.state.EditTaskState
 import org.bkkz.lumaapp.util.LabelEditText
@@ -48,6 +48,7 @@ class EditTaskActivity : AppCompatActivity() {
     private lateinit var lbledtTaskName : LabelEditText
     private lateinit var lblTaskDesc : EditText
     private lateinit var chkboxTime : CheckBox
+    private lateinit var chkboxTimeText : TextView
     private lateinit var edtDate : EditText
     private lateinit var edtTime : EditText
     private lateinit var backBtn : ImageView
@@ -92,6 +93,7 @@ class EditTaskActivity : AppCompatActivity() {
         lbledtTaskName = findViewById(R.id.lbledt_edit_task_name)
         lblTaskDesc = findViewById(R.id.edttxt_edit_task_desc)
         chkboxTime = findViewById(R.id.chkbox_edit_task_chkbox)
+        chkboxTimeText = findViewById(R.id.txtview_edit_task_chkbox)
         edtDate = findViewById(R.id.edttxt_edit_task_date)
         edtTime = findViewById(R.id.edttxt_edit_task_time)
         backBtn = findViewById(R.id.imgview_edit_task_back)
@@ -104,6 +106,28 @@ class EditTaskActivity : AppCompatActivity() {
     private fun setupView(){
         lifecycleScope.launch {
             viewModel.state.collect { state ->
+
+                if(state.isGoogleCalendarTask){
+                    lbledtTaskName.isEnabled = false
+                    lblTaskDesc.setBackgroundResource(R.drawable.edit_text_bg_disabled)
+                    lblTaskDesc.isEnabled = false
+                    lblTaskDesc.setTextColor(this@EditTaskActivity.getColor(R.color.white))
+                    chkboxTime.visibility = View.GONE
+                    chkboxTimeText.visibility = View.GONE
+                    edtDate.setBackgroundResource(R.drawable.edit_text_bg_disabled)
+                    edtTime.setBackgroundResource(R.drawable.edit_text_bg_disabled)
+                    edtDate.setOnClickListener { null }
+                    edtTime.setOnClickListener { null }
+                    edtDate.setText(state.taskDate)
+                    edtTime.setText(state.taskTime)
+                    edtTime.setTextColor(this@EditTaskActivity.getColor(R.color.white))
+                    edtDate.setTextColor(this@EditTaskActivity.getColor(R.color.white))
+                    deleteTaskBtn.visibility = View.GONE
+                    setupCategorySelector(state.category ?: TaskCategory.OTHERS.value)
+                    setupPrioritySelector(state.priority ?: TaskPriority.HIGH.value)
+                    return@collect
+                }
+
                 setupName(state.errorField[EditTaskState.RequiredFormField.TASK_NAME])
                 setupDesc()
                 chkboxTime.isChecked = state.isTimeSpecify

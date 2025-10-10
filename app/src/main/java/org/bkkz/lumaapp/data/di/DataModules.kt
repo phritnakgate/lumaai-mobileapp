@@ -46,7 +46,7 @@ val dataModules = module {
     }
     single {
         Retrofit.Builder()
-            .baseUrl("https://lumaai-backend-672244117841.asia-southeast1.run.app/api/")
+            .baseUrl("https://lumaai-backend-672244117841.asia-southeast1.run.app/api/") // http://10.0.2.2:8080/api/
             .client(get())
             .addConverterFactory(GsonConverterFactory.create())
             .build()

@@ -85,6 +85,7 @@ class SettingsActivity : AppCompatActivity() {
         viewModel.onEvent(SettingsEvent.OnLoadServiceStatus)
         lifecycleScope.launch {
             viewModel.state.collect { state ->
+                Log.d("SettingsActivity", "State: ${state.serviceState}, isConnected: ${state.isConnectedToCalendar}, isLoginViaGoogle: ${state.isLoginViaGoogle}, email: ${state.googleCalendarEmail}")
                 if (loadingDialog.isShowing) loadingDialog.dismiss()
                 when (state.serviceState) {
                     ServiceState.IDLE -> {}

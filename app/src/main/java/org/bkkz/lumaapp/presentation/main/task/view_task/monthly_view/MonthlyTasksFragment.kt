@@ -78,7 +78,7 @@ class MonthlyTasksFragment : Fragment(), MonthlyViewFragmentAdapter.OnTaskChecke
 
                     val timelineItems = prepareTimelineData(tasks)
                     if (recyclerTaskLists.adapter == null) {
-                        val adapter = MonthlyViewFragmentAdapter(timelineItems, onPermissionNeeded = {requestCalendarPermissionForResult.launch(it)})
+                        val adapter = MonthlyViewFragmentAdapter(timelineItems, onPermissionNeeded = {requestCalendarPermissionForResult.launch(it)}, viewModel)
                         adapter.setOnTaskCheckedListener(this@MonthlyTasksFragment)
                         recyclerTaskLists.adapter = adapter
                         recyclerTaskLists.layoutManager = LinearLayoutManager(
@@ -86,7 +86,7 @@ class MonthlyTasksFragment : Fragment(), MonthlyViewFragmentAdapter.OnTaskChecke
                             RecyclerView.VERTICAL, false
                         )
                     } else {
-                        val adapter = MonthlyViewFragmentAdapter(timelineItems, onPermissionNeeded = {requestCalendarPermissionForResult.launch(it)})
+                        val adapter = MonthlyViewFragmentAdapter(timelineItems, onPermissionNeeded = {requestCalendarPermissionForResult.launch(it)}, viewModel)
                         adapter.setOnTaskCheckedListener(this@MonthlyTasksFragment)
                         recyclerTaskLists.adapter = adapter
                     }
