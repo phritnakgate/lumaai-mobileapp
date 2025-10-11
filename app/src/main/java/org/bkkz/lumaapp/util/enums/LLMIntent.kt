@@ -4,8 +4,9 @@ enum class LLMIntent(val intent: String) {
     CHECK("CHECK"),
     ADD("ADD"),
     EDIT("EDIT"),
-    DELETE("DELETE"),
+    DELETE("REMOVE"),
     SEARCH("SEARCH"),
     GOOGLESEARCH("GOOGLESEARCH"),
-    GENFORM("GENFORM")
+    GENFORM("GENFORM"),
+    EXIT("EXIT")
 }

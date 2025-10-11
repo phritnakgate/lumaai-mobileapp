@@ -21,4 +21,7 @@ interface UserChatDao {
 
     @Query("UPDATE userchatentity SET isTaskActionCompleted = 1 WHERE id = :dbId")
     suspend fun confirmAction(dbId: Int)
+
+    @Query("DELETE FROM userchatentity WHERE flag=-1")
+    suspend fun deleteThinkingChat()
 }

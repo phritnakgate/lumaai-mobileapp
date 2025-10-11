@@ -1,6 +1,7 @@
 package org.bkkz.lumaapp.util.enums
 
 enum class LocalChatFlag(val flag: Int, val serviceResponseIntent : String? = null) {
+    CHAT_THINKING(-1),
     CHAT_USER(0),
     CHAT_MODEL(1),
     CHAT_VIEW_TASK(2, "CHECK"),

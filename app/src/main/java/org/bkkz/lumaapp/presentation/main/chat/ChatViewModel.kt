@@ -87,6 +87,10 @@ class ChatViewModel(private val repository: Repository) : ViewModel() {
                         url = userChat.generatedFormUrl ?: ""
                     )
 
+                    LocalChatFlag.CHAT_THINKING.flag -> ChatItem.ChatResponse(
+                        userChat.message ?: ""
+                    )
+
                     else -> throw IllegalArgumentException("Unknown chat flag: ${userChat.flag}")
                 }
             }
@@ -149,6 +153,9 @@ class ChatViewModel(private val repository: Repository) : ViewModel() {
             LocalChatFlag.CHAT_GENFORM.flag -> newChat =
                 UserChatEntity(flag = flag, generatedFormUrl = url)
 
+            LocalChatFlag.CHAT_THINKING.flag -> newChat =
+                UserChatEntity(flag = flag, message = message)
+
         }
 
         repository.insertChat(newChat!!)
@@ -203,14 +210,14 @@ class ChatViewModel(private val repository: Repository) : ViewModel() {
     fun chatWithLuma(context: Context, message: String) {
         viewModelScope.launch(Dispatchers.IO) {
             insertNewChat(LocalChatFlag.CHAT_USER.flag, message)
-            insertNewChat(LocalChatFlag.CHAT_MODEL.flag, "LUMA กำลังคิด...")
+            insertNewChat(LocalChatFlag.CHAT_THINKING.flag, "LUMA กำลังคิด...")
             try {
                 val response = repository.chatWithLuma(message)
                 when (response) {
                     is ApiResult.Success -> {
+                        repository.deleteThinkingChat()
                         val response = response.data
                         if (response?.errors.isNullOrEmpty()) {
-                            insertNewChat(LocalChatFlag.CHAT_MODEL.flag, response?.result)
                             var curInd = 0
                             response?.results?.forEach {
                                 val isLast = curInd == (response.results.size - 1)
@@ -221,6 +228,10 @@ class ChatViewModel(private val repository: Repository) : ViewModel() {
                                         LLMIntent.DELETE.intent
                                     )
                                 ) {
+                                    insertNewChat(
+                                        LocalChatFlag.CHAT_MODEL.flag,
+                                        "นี่คืองานที่ฉันพบ"
+                                    )
                                     val task = it.output
                                     task?.forEach { taskData ->
                                         if (taskData.id == "-1") {
@@ -231,6 +242,33 @@ class ChatViewModel(private val repository: Repository) : ViewModel() {
                                             task = taskData
                                         )
                                     }
+                                }
+                                if (it.intent in listOf(
+                                        LLMIntent.ADD.intent,
+                                        LLMIntent.EDIT.intent,
+                                        LLMIntent.DELETE.intent
+                                    )
+                                ) {
+                                    when (it.intent) {
+                                        LLMIntent.ADD.intent -> insertNewChat(
+                                            LocalChatFlag.CHAT_MODEL.flag,
+                                            "เพิ่มงานให้คุณแล้วครับ :D"
+                                        )
+
+                                        LLMIntent.EDIT.intent -> insertNewChat(
+                                            LocalChatFlag.CHAT_MODEL.flag,
+                                            "แก้ไขงานให้คุณแล้วครับ :D"
+                                        )
+
+                                        LLMIntent.DELETE.intent -> insertNewChat(
+                                            LocalChatFlag.CHAT_MODEL.flag,
+                                            "ลบงานให้คุณแล้วครับ :D"
+                                        )
+                                    }
+                                }
+
+                                if (it.intent == LLMIntent.SEARCH.intent) {
+                                    insertNewChat(LocalChatFlag.CHAT_MODEL.flag, response.result)
                                 }
                                 if (it.intent == LLMIntent.GOOGLESEARCH.intent) {
                                     insertNewChat(LocalChatFlag.CHAT_WEB.flag, url = it.message)
@@ -257,6 +295,9 @@ class ChatViewModel(private val repository: Repository) : ViewModel() {
                                         )
                                     )
                                     insertNewChat(LocalChatFlag.CHAT_GENFORM.flag, url = file.path)
+                                }
+                                if( it.intent == LLMIntent.EXIT.intent){
+                                    insertNewChat(LocalChatFlag.CHAT_MODEL.flag, it.message)
                                 }
                                 curInd += 1
                             }
@@ -312,6 +353,7 @@ class ChatViewModel(private val repository: Repository) : ViewModel() {
                     }
 
                     is ApiResult.Error -> {
+                        repository.deleteThinkingChat()
                         insertNewChat(
                             LocalChatFlag.CHAT_MODEL.flag,
                             "ขออภัยครับ มีบางอย่างผิดพลาด ลองใหม่อีกครั้ง"

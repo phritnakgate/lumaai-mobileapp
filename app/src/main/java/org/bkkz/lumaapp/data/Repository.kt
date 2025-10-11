@@ -59,6 +59,12 @@ class Repository(
         }
     }
 
+    suspend fun deleteThinkingChat(){
+        withContext(Dispatchers.IO){
+            userChatDao.deleteThinkingChat()
+        }
+    }
+
     suspend fun confirmAction(dbId : Int){
         withContext(Dispatchers.IO){
             userChatDao.confirmAction(dbId)
