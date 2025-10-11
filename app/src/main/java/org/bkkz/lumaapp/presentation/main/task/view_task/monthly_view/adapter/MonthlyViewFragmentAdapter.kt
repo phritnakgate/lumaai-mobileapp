@@ -419,6 +419,8 @@ class MonthlyViewFragmentAdapter(
                         title = "Add to calendar Success!",
                         message = "",
                         onConfirmClickListener = {
+                            viewModel.onEvent(ViewTaskEvent.OnUserSelectedDate(viewModel.state.value.selectedDate))
+                            viewModel.onEvent(ViewTaskEvent.OnUserSelectedMonth(viewModel.state.value.selectedMonthPosition,viewModel.state.value.selectedMonth))
                         }
                     )
                 }
@@ -437,8 +439,6 @@ class MonthlyViewFragmentAdapter(
                         title = "Error",
                         message = e.message.toString(),
                         onConfirmClickListener = {
-                            viewModel.onEvent(ViewTaskEvent.OnUserSelectedDate(viewModel.state.value.selectedDate))
-                            viewModel.onEvent(ViewTaskEvent.OnUserSelectedMonth(viewModel.state.value.selectedMonthPosition,viewModel.state.value.selectedMonth))
                         }
                     )
                 }

@@ -125,35 +125,35 @@ class EditTaskActivity : AppCompatActivity() {
                     deleteTaskBtn.visibility = View.GONE
                     setupCategorySelector(state.category ?: TaskCategory.OTHERS.value)
                     setupPrioritySelector(state.priority ?: TaskPriority.HIGH.value)
-                    return@collect
-                }
-
-                setupName(state.errorField[EditTaskState.RequiredFormField.TASK_NAME])
-                setupDesc()
-                chkboxTime.isChecked = state.isTimeSpecify
-                if(state.isTimeSpecify){
-                    edtDate.setText(state.taskDate)
-
-                    edtDate.setBackgroundResource(
-                        if(state.errorField[EditTaskState.RequiredFormField.TASK_DATE] == true)
-                         R.drawable.edit_text_bg_danger else R.drawable.edit_text_bg)
-                    edtDate.setOnClickListener { showDatePicker() }
-                    edtTime.setText(state.taskTime)
-                    edtTime.setBackgroundResource(
-                        if(state.errorField[EditTaskState.RequiredFormField.TASK_TIME] == true)
-                            R.drawable.edit_text_bg_danger else R.drawable.edit_text_bg)
-                    edtTime.setOnClickListener { showTimePicker() }
                 }else{
-                    edtDate.setBackgroundResource(R.drawable.edit_text_bg_disabled)
-                    edtTime.setBackgroundResource(R.drawable.edit_text_bg_disabled)
-                    edtDate.setOnClickListener { null }
-                    edtTime.setOnClickListener { null }
-                    edtDate.setText(state.taskDate)
-                    edtTime.setText(state.taskTime)
+                    setupName(state.errorField[EditTaskState.RequiredFormField.TASK_NAME])
+                    setupDesc()
+                    chkboxTime.isChecked = state.isTimeSpecify
+                    if(state.isTimeSpecify){
+                        edtDate.setText(state.taskDate)
+
+                        edtDate.setBackgroundResource(
+                            if(state.errorField[EditTaskState.RequiredFormField.TASK_DATE] == true)
+                                R.drawable.edit_text_bg_danger else R.drawable.edit_text_bg)
+                        edtDate.setOnClickListener { showDatePicker() }
+                        edtTime.setText(state.taskTime)
+                        edtTime.setBackgroundResource(
+                            if(state.errorField[EditTaskState.RequiredFormField.TASK_TIME] == true)
+                                R.drawable.edit_text_bg_danger else R.drawable.edit_text_bg)
+                        edtTime.setOnClickListener { showTimePicker() }
+                    }else{
+                        edtDate.setBackgroundResource(R.drawable.edit_text_bg_disabled)
+                        edtTime.setBackgroundResource(R.drawable.edit_text_bg_disabled)
+                        edtDate.setOnClickListener { null }
+                        edtTime.setOnClickListener { null }
+                        edtDate.setText(state.taskDate)
+                        edtTime.setText(state.taskTime)
+                    }
+                    Log.d("EditTaskActivity","Cat: ${state.category} Pr: ${state.priority}")
+                    setupCategorySelector(state.category ?: TaskCategory.OTHERS.value)
+                    setupPrioritySelector(state.priority ?: TaskPriority.HIGH.value)
                 }
-                Log.d("EditTaskActivity","Cat: ${state.category} Pr: ${state.priority}")
-                setupCategorySelector(state.category ?: TaskCategory.OTHERS.value)
-                setupPrioritySelector(state.priority ?: TaskPriority.HIGH.value)
+
                 if(loadingDialog.isShowing){ loadingDialog.dismiss() }
                 when(state.serviceState){
                     ServiceState.IDLE -> {}
