@@ -84,8 +84,8 @@ class ViewTaskDailyFragment : Fragment(), TaskListAdapter.OnTaskCheckedListener 
 
     private fun setupView() {
         //Adapter for calendar
-        val adapter = CalendarViewPagerAdapter(requireActivity())
-        viewPagerCalendar.adapter = adapter
+        val vpCalendarAdapter = CalendarViewPagerAdapter(requireActivity())
+        viewPagerCalendar.adapter = vpCalendarAdapter
         viewPagerCalendar.setCurrentItem(viewModel.state.value.selectedMonthPosition, false)
         viewPagerCalendar.registerOnPageChangeCallback(object :
             ViewPager2.OnPageChangeCallback() {
@@ -95,13 +95,18 @@ class ViewTaskDailyFragment : Fragment(), TaskListAdapter.OnTaskCheckedListener 
                 viewModel.onEvent(ViewTaskEvent.OnUserSelectedMonth(position, ym))
             }
         })
+        recyclerTaskLists.layoutManager =
+            LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+        val taskListAdapter = TaskListAdapter(
+            onPermissionNeeded = {
+                requestCalendarPermissionForResult.launch(it)
+            }, viewModel
+        )
+        taskListAdapter.setOnTaskCheckedListener(this@ViewTaskDailyFragment)
+        recyclerTaskLists.adapter = taskListAdapter
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.state.collect { state ->
                 setMonthTitle(state.selectedMonth)
-                //Adapter for Task
-                recyclerTaskLists.layoutManager =
-                    LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-
                 val dailyTasks = state.allDailyUserTasks
                 if (dailyTasks.isNullOrEmpty()) {
                     recyclerTaskLists.visibility = View.GONE
@@ -111,14 +116,7 @@ class ViewTaskDailyFragment : Fragment(), TaskListAdapter.OnTaskCheckedListener 
                     recyclerTaskLists.visibility = View.VISIBLE
                     imgViewNoTask.visibility = View.GONE
                     txtViewNoTask.visibility = View.GONE
-                    val adapter = TaskListAdapter(
-                        dailyTasks, onPermissionNeeded = {
-                            requestCalendarPermissionForResult.launch(it)
-                        }, viewModel
-                    )
-                    adapter.setOnTaskCheckedListener(this@ViewTaskDailyFragment)
-                    recyclerTaskLists.adapter = adapter
-
+                    taskListAdapter.submitList(dailyTasks)
                 }
             }
         }

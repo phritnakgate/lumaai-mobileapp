@@ -85,6 +85,7 @@
     <string name="view_task_add">Add Task</string>
     <string name="view_task_add_to_calendar">Add To Google Calendar</string>
     <string name="view_task_no_task_today">No Task Today</string>
+    <string name="view_task_no_description">-</string>
     <!-- Form Task Page -->
     <string name="add_task_title">Create Your Task</string>
     <string name="form_task_name">Task Name</string>

@@ -11,6 +11,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.google.api.client.extensions.android.http.AndroidHttp
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
@@ -41,10 +43,9 @@ import java.util.Locale
 import java.util.TimeZone
 
 class TaskListAdapter(
-    private val items: List<Task>,
     private val onPermissionNeeded: (Intent) -> Unit,
     private val viewModel : ViewTaskViewModel) :
-    RecyclerView.Adapter<TaskListAdapter.ViewHolder>() {
+    ListAdapter<Task, TaskListAdapter.ViewHolder>(TaskListDiffCallback()) {
 
     interface OnTaskCheckedListener {
         fun onTaskChecked(item: Task)
@@ -83,27 +84,37 @@ class TaskListAdapter(
         val sharedPref = holder.itemView.context.getSharedPreferences("userSession", MODE_PRIVATE)
         val userEmail = sharedPref.getString("googleCalendarEmail", null)
 
-        val taskTime: String = items[position].dateTime
-        var isFinished: Boolean = items[position].isFinished
+        val taskTime: String = getItem(position).dateTime
+        var isFinished: Boolean = getItem(position).isFinished
 
         if (isFinished) {
             holder.taskHead.background =
                 ContextCompat.getDrawable(holder.itemView.context, R.drawable.rect_disabled_color)
             holder.taskCheck.setImageResource(R.drawable.ic_task_success)
+        }else {
+            holder.taskHead.background =
+                ContextCompat.getDrawable(holder.itemView.context, R.drawable.rect_secondary)
+            holder.taskCheck.setImageResource(R.drawable.circ_white)
         }
-        holder.taskName.text = items[position].name
+        holder.taskName.text = getItem(position).name
         holder.taskTime.text =
             OffsetDateTime.parse(taskTime).format(DateTimeFormatter.ofPattern("HH:mm"))
-        holder.taskDesc.text = items[position].description
+        if(getItem(position).description.isEmpty()){
+            holder.taskDesc.text = holder.itemView.context.getString(R.string.view_task_no_description)
+            holder.taskDesc.setTextColor(holder.itemView.context.getColor(R.color.disabled))
+        }else{
+            holder.taskDesc.text = getItem(position).description
+            holder.taskDesc.setTextColor(holder.itemView.context.getColor(R.color.black))
+        }
         holder.taskEdit.setOnClickListener {
             val context = holder.itemView.context
             val intent = Intent(context, EditTaskActivity::class.java)
-            intent.putExtra("TASK_DATA", items[position])
+            intent.putExtra("TASK_DATA", getItem(position))
             context.startActivity(intent)
         }
         holder.taskCheck.setOnClickListener {
             isFinished = !isFinished
-            onTaskCheckedListener?.onTaskChecked(items[position])
+            onTaskCheckedListener?.onTaskChecked(getItem(position))
             if (isFinished) {
                 holder.taskHead.background = ContextCompat.getDrawable(
                     holder.itemView.context,
@@ -143,7 +154,7 @@ class TaskListAdapter(
                     val mService = Calendar.Builder(transport, jsonFactory, mCredential)
                         .setApplicationName("MyFirstAndroidApp")
                         .build()
-                    val dateString = items[position].dateTime
+                    val dateString = getItem(position).dateTime
 
                     val utc = TimeZone.getTimeZone("UTC")
                     val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
@@ -158,15 +169,15 @@ class TaskListAdapter(
                     val endDate = DateTime(true, calendar.time.time, 0)
 
                     val event = Event()
-                        .setSummary(items[position].name)
-                        .setDescription(items[position].description)
+                        .setSummary(getItem(position).name)
+                        .setDescription(getItem(position).description)
                     event.start = EventDateTime().setDate(startDate)
                     event.end = EventDateTime().setDate(endDate)
 
                     Log.i("TaskListAdapter", "Event Name: ${event.summary}\nEvent Desc: ${event.description}\nEvent Date: ${event.start} ==> ${event.end}")
 
                     mService.events().insert("primary",event).execute()
-                    viewModel.deleteTask(items[position].id)
+                    viewModel.deleteTask(getItem(position).id)
                     withContext(Dispatchers.Main) {
                         OneActionDialog(holder.itemView.context).show(
                             drawable = R.drawable.ic_dialog_success,
@@ -200,7 +211,7 @@ class TaskListAdapter(
             }
 
         }
-        val category = items[position].category
+        val category = getItem(position).category
         val categoryColorRes = when (category) {
             0 -> R.color.category_color_0
             1 -> R.color.category_color_1
@@ -214,7 +225,7 @@ class TaskListAdapter(
             holder.itemView.context,
             categoryColorRes
         )
-        val priority = items[position].priority
+        val priority = getItem(position).priority
         val priorityColorRes = when (priority) {
             0 -> R.color.danger
             1 -> R.color.secondary
@@ -226,11 +237,21 @@ class TaskListAdapter(
             holder.itemView.context,
             priorityColorRes
         )
-        if(items[position].isGoogleCalendarTask){
+        if(getItem(position).isGoogleCalendarTask){
             holder.ggCalendarText.visibility = View.GONE
+        }else{
+            holder.ggCalendarText.visibility = View.VISIBLE
         }
     }
+    
+    class TaskListDiffCallback : DiffUtil.ItemCallback<Task>() {
+        override fun areItemsTheSame(oldItem: Task, newItem: Task): Boolean {
+            return oldItem.id == newItem.id
+        }
 
-    override fun getItemCount() = items.size
+        override fun areContentsTheSame(oldItem: Task, newItem: Task): Boolean {
+            return oldItem == newItem
+        }
+    }
 
 }

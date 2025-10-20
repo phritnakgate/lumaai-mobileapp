@@ -12,6 +12,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.google.api.client.extensions.android.http.AndroidHttp
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
@@ -43,11 +45,10 @@ import java.util.Locale
 import java.util.TimeZone
 
 class MonthlyViewFragmentAdapter(
-    private val items: List<TimelineItem>,
     private val onPermissionNeeded: (Intent) -> Unit,
     private val viewModel : ViewTaskViewModel
 )
-    : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
+    : ListAdapter<TimelineItem, RecyclerView.ViewHolder>(MonthlyTaskListDiffCallback()) {
 
     interface OnTaskCheckedListener{
         fun onTaskChecked(item: Task)
@@ -87,6 +88,9 @@ class MonthlyViewFragmentAdapter(
             if(isFinished){
                 taskHead.background = ContextCompat.getDrawable(itemView.context, R.drawable.rect_disabled_color)
                 taskCheck.setImageResource(R.drawable.ic_task_success)
+            }else{
+                taskHead.background = ContextCompat.getDrawable(itemView.context, R.drawable.rect_secondary)
+                taskCheck.setImageResource(R.drawable.circ_white)
             }
             taskName.text = header.task.name
             taskTime.text = OffsetDateTime.parse(header.task.dateTime).format(DateTimeFormatter.ofPattern("HH:mm"))
@@ -171,6 +175,9 @@ class MonthlyViewFragmentAdapter(
             if(isFinished){
                 taskHead.background = ContextCompat.getDrawable(itemView.context, R.drawable.rect_disabled_color)
                 taskCheck.setImageResource(R.drawable.ic_task_success)
+            }else{
+                taskHead.background = ContextCompat.getDrawable(itemView.context, R.drawable.rect_secondary)
+                taskCheck.setImageResource(R.drawable.circ_white)
             }
             taskName.text = data.task.name
             taskTime.text = OffsetDateTime.parse(data.task.dateTime).format(DateTimeFormatter.ofPattern("HH:mm"))
@@ -255,6 +262,9 @@ class MonthlyViewFragmentAdapter(
             if(isFinished){
                 taskHead.background = ContextCompat.getDrawable(itemView.context, R.drawable.rect_disabled_color)
                 taskCheck.setImageResource(R.drawable.ic_task_success)
+            }else{
+                taskHead.background = ContextCompat.getDrawable(itemView.context, R.drawable.rect_secondary)
+                taskCheck.setImageResource(R.drawable.circ_white)
             }
             taskName.text = data.task.name
             taskTime.text = OffsetDateTime.parse(data.task.dateTime).format(DateTimeFormatter.ofPattern("HH:mm"))
@@ -321,7 +331,7 @@ class MonthlyViewFragmentAdapter(
     }
 
     override fun getItemViewType(position: Int): Int {
-        return when (items[position]) {
+        return when (getItem(position)) {
             is TimelineItem.TaskHeader -> VIEW_TYPE_HEADER
             is TimelineItem.TaskBody -> VIEW_TYPE_BODY
             is TimelineItem.TaskFooter -> VIEW_TYPE_FOOTER
@@ -358,19 +368,17 @@ class MonthlyViewFragmentAdapter(
     ) {
         when (holder) {
             is HeaderViewHolder -> {
-                holder.bind(items[position] as TimelineItem.TaskHeader)
+                holder.bind(getItem(position) as TimelineItem.TaskHeader)
             }
             is TaskBodyViewHolder -> {
-                holder.bind(items[position] as TimelineItem.TaskBody)
+                holder.bind(getItem(position) as TimelineItem.TaskBody)
             }
             is TaskFooterViewHolder -> {
-                holder.bind(items[position] as TimelineItem.TaskFooter)
+                holder.bind(getItem(position) as TimelineItem.TaskFooter)
             }
         }
     }
-
-    override fun getItemCount(): Int = items.size
-
+    
     private fun createGoogleCalendarEvent(context: Context,userEmail : String?, task : Task){
         CoroutineScope(Dispatchers.IO).launch {
             try {
@@ -444,6 +452,23 @@ class MonthlyViewFragmentAdapter(
                 }
 
             }
+        }
+    }
+
+    class MonthlyTaskListDiffCallback : DiffUtil.ItemCallback<TimelineItem>() {
+        override fun areItemsTheSame(oldItem: TimelineItem, newItem: TimelineItem): Boolean {
+            if (oldItem::class != newItem::class) {
+                return false
+            }
+            return when (oldItem) {
+                is TimelineItem.TaskHeader -> oldItem.task.id == (newItem as TimelineItem.TaskHeader).task.id
+                is TimelineItem.TaskBody -> oldItem.task.id == (newItem as TimelineItem.TaskBody).task.id
+                is TimelineItem.TaskFooter -> oldItem.task.id == (newItem as TimelineItem.TaskFooter).task.id
+            }
+        }
+
+        override fun areContentsTheSame(oldItem: TimelineItem, newItem: TimelineItem): Boolean {
+            return oldItem == newItem
         }
     }
 

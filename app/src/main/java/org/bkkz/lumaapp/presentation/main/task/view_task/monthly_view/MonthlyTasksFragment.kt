@@ -64,6 +64,15 @@ class MonthlyTasksFragment : Fragment(), MonthlyViewFragmentAdapter.OnTaskChecke
         txtViewNotask = requireView().findViewById(R.id.txtview_monthly_task_no_task)
     }
     private fun setupView(){
+
+        val adapter = MonthlyViewFragmentAdapter(onPermissionNeeded = {requestCalendarPermissionForResult.launch(it)}, viewModel)
+        adapter.setOnTaskCheckedListener(this@MonthlyTasksFragment)
+        recyclerTaskLists.adapter = adapter
+        recyclerTaskLists.layoutManager = LinearLayoutManager(
+            requireContext(),
+            RecyclerView.VERTICAL, false
+        )
+
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.state.collect { state ->
                 val tasks = state.allMonthlyUserTasks
@@ -77,19 +86,7 @@ class MonthlyTasksFragment : Fragment(), MonthlyViewFragmentAdapter.OnTaskChecke
                     txtViewNotask.visibility = View.GONE
 
                     val timelineItems = prepareTimelineData(tasks)
-                    if (recyclerTaskLists.adapter == null) {
-                        val adapter = MonthlyViewFragmentAdapter(timelineItems, onPermissionNeeded = {requestCalendarPermissionForResult.launch(it)}, viewModel)
-                        adapter.setOnTaskCheckedListener(this@MonthlyTasksFragment)
-                        recyclerTaskLists.adapter = adapter
-                        recyclerTaskLists.layoutManager = LinearLayoutManager(
-                            requireContext(),
-                            RecyclerView.VERTICAL, false
-                        )
-                    } else {
-                        val adapter = MonthlyViewFragmentAdapter(timelineItems, onPermissionNeeded = {requestCalendarPermissionForResult.launch(it)}, viewModel)
-                        adapter.setOnTaskCheckedListener(this@MonthlyTasksFragment)
-                        recyclerTaskLists.adapter = adapter
-                    }
+                    adapter.submitList(timelineItems)
                 }
             }
         }
