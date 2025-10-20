@@ -25,6 +25,8 @@ import org.bkkz.lumaapp.data.local.UserChatDao
 import org.bkkz.lumaapp.data.local.UserChatEntity
 import org.bkkz.lumaapp.data.local.UserReportDao
 import org.bkkz.lumaapp.data.local.UserReportEntity
+import org.bkkz.lumaapp.data.local.UserTaskDao
+import org.bkkz.lumaapp.data.local.UserTaskEntity
 import org.bkkz.lumaapp.data.remote.ApiResponse
 import org.bkkz.lumaapp.data.remote.ApiResult
 import org.bkkz.lumaapp.data.remote.LumaApi
@@ -39,7 +41,8 @@ class Repository(
     private val lumaApi: LumaApi,
     private val tokenManager: TokenManager,
     private val userChatDao: UserChatDao,
-    private val userReportDao : UserReportDao
+    private val userReportDao : UserReportDao,
+    private val userTaskDao : UserTaskDao
 ) {
 
     /*===========LOCAL DATA SOURCES===========*/
@@ -100,6 +103,50 @@ class Repository(
         return withContext(Dispatchers.IO){
             val report = userReportDao.getUserReportByFileName(fileName)
             report != null
+        }
+    }
+
+    suspend fun getLocalUserTaskById(taskId : String) : UserTaskEntity? {
+        return withContext(Dispatchers.IO){
+            userTaskDao.getUserTaskById(taskId)
+        }
+    }
+
+    suspend fun insertLocalUserTask(userTaskEntity: UserTaskEntity){
+        withContext(Dispatchers.IO){
+            userTaskDao.insertUserTask(userTaskEntity)
+        }
+    }
+
+    suspend fun insertLocalUserTasks(userTaskEntities: List<UserTaskEntity>){
+        withContext(Dispatchers.IO){
+            for(task in userTaskEntities){
+                userTaskDao.insertUserTask(task)
+            }
+        }
+    }
+
+    suspend fun deleteLocalUserTaskById(taskId: String){
+        withContext(Dispatchers.IO){
+            userTaskDao.deleteUserTaskById(taskId)
+        }
+    }
+
+    suspend fun deleteAllLocalUserTasks(){
+        withContext(Dispatchers.IO){
+            userTaskDao.deleteAllUserTasks()
+        }
+    }
+
+    suspend fun updateLocalUserTaskStatus(taskId: String, isFinished: Boolean){
+        withContext(Dispatchers.IO){
+            userTaskDao.updateTaskStatus(taskId, isFinished)
+        }
+    }
+
+    suspend fun updateLocalUserTaskDetails(task: UserTaskEntity){
+        withContext(Dispatchers.IO){
+            userTaskDao.updateTask(task)
         }
     }
 
@@ -226,6 +273,24 @@ class Repository(
                 ApiResult.Success(taskList)
             }else{
                 val taskList = response.results
+                val taskListToEntity = mutableListOf<UserTaskEntity>()
+                if (taskList != null) {
+                    for(task in taskList){
+                        val taskEntity = UserTaskEntity(
+                            id = task.id,
+                            name = task.name,
+                            description = task.description,
+                            dateTime = task.dateTime,
+                            isFinished = task.isFinished,
+                            userId = task.userId,
+                            category = task.category,
+                            priority = task.priority,
+                            isGoogleCalendarTask = task.isGoogleCalendarTask
+                        )
+                        taskListToEntity.add(taskEntity)
+                    }
+                }
+                insertLocalUserTasks(taskListToEntity)
                 ApiResult.Success(taskList)
             }
 
@@ -255,6 +320,19 @@ class Repository(
         try{
             val response = lumaApi.editTask(taskId, editTaskRequest)
             if(response.isSuccessful){
+                val taskToBeEdited = getLocalUserTaskById(taskId)
+                if(taskToBeEdited != null){
+                    val updatedTask = taskToBeEdited.copy(
+                        name = editTaskRequest.name ?: taskToBeEdited.name,
+                        description = editTaskRequest.description ?: taskToBeEdited.description,
+                        dateTime = editTaskRequest.dateTime ?: taskToBeEdited.dateTime,
+                        isFinished = editTaskRequest.isFinished ?: taskToBeEdited.isFinished,
+                        category = editTaskRequest.category ?: taskToBeEdited.category,
+                        priority = editTaskRequest.priority ?: taskToBeEdited.priority
+                    )
+                    updateLocalUserTaskDetails(updatedTask)
+                }
+
                 ApiResult.Success(response.body()?.result!!)
             }else{
                 ApiResult.Error(Exception())
@@ -269,6 +347,7 @@ class Repository(
         try{
             val response = lumaApi.deleteTask(taskId)
             if(response.isSuccessful){
+                deleteLocalUserTaskById(taskId)
                 ApiResult.Success(response)
             }else{
                 ApiResult.Error(Exception())

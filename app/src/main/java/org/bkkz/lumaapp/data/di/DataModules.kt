@@ -15,7 +15,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 val dataModules = module {
-    single { Repository(get(), get(), get(), get()) }
+    single { Repository(get(), get(), get(), get(), get()) }
     single { TokenManager(androidContext()) }
 
     //RoomDB
@@ -32,6 +32,9 @@ val dataModules = module {
     }
     single{
         get<AppDatabase>().userReportDao()
+    }
+    single{
+        get<AppDatabase>().userTaskDao()
     }
 
     //OkHttp & Retrofit & Interceptor
