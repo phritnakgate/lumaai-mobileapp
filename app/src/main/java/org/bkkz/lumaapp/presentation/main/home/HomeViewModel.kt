@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.bkkz.lumaapp.data.Repository
 import org.bkkz.lumaapp.data.remote.ApiResult
+import org.bkkz.lumaapp.presentation.main.chat_history.ChatHistoryActivity
 import org.bkkz.lumaapp.presentation.main.home.state.HomeEvent
 import org.bkkz.lumaapp.presentation.main.home.state.HomeState
 import org.bkkz.lumaapp.util.enums.ServiceState
@@ -43,7 +44,8 @@ class HomeViewModel(private val repository: Repository) : ViewModel() {
                     } else {
                         val recentChats = mutableListOf<String>()
                         response.data.forEach {
-                            recentChats.add(it.modelResponse)
+                            val isGenFormChat = it.intent.contains(ChatHistoryActivity.Companion.CATEGORY_GENFORM)
+                            recentChats.add(if(isGenFormChat) "ทำการสร้างฟอร์มเรียบร้อย" else it.modelResponse)
                             recentChats.add(it.userText)
                         }
                         _state.update {

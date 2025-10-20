@@ -224,7 +224,7 @@ class ChatHistoryActivity : AppCompatActivity(), ChatHistoryAdapter.OnHistoryInt
                 lastDate = currentDate
             }
             val chatContent = listOf(
-                history.modelResponse,
+                if(intent == CATEGORY_GENFORM) "ทำการสร้างฟอร์มเรียบร้อย" else history.modelResponse,
                 history.userText
             )
             items.add(ChatHistoryItem.ChatHistoryLists(chatContent))
@@ -239,9 +239,9 @@ class ChatHistoryActivity : AppCompatActivity(), ChatHistoryAdapter.OnHistoryInt
     }
 
     companion object {
-        private const val CATEGORY_TASK = "Task"
-        private const val CATEGORY_SEARCH = "Search"
-        private const val CATEGORY_PLAN = "Plan"
-        private const val CATEGORY_GENFORM = "GenForm"
+        const val CATEGORY_TASK = "Task"
+        const val CATEGORY_SEARCH = "Search"
+        const val CATEGORY_PLAN = "Plan"
+        const val CATEGORY_GENFORM = "GenForm"
     }
 }
