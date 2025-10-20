@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/dialog_bg"
+    android:layout_marginHorizontal="32dp"
+    android:padding="22dp">
+
+    <ImageView
+        android:id="@+id/imgview_dialog_two_action"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@drawable/ic_dialog_no" />
+
+    <TextView
+        android:id="@+id/txtview_dialog_two_action_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:textAppearance="@style/LumaAI.TextAppearance.Heading3.Eng"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imgview_dialog_two_action"
+        tools:text="Authentication Failed !" />
+
+    <TextView
+        android:id="@+id/txtview_dialog_two_action_desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:textAppearance="@style/LumaAI.TextAppearance.BodyLarge.Eng"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtview_dialog_two_action_title"
+        tools:text="Email or Password Incorrect" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/compatbtn_dialog_two_action_left"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="5dp"
+        android:background="@drawable/rect_danger_btn"
+        android:paddingHorizontal="24dp"
+        android:paddingVertical="10dp"
+        android:text="@string/dialog_primary"
+        android:textAppearance="@style/LumaAI.TextAppearance.Heading4.Eng"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/compatbtn_dialog_two_action_right"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtview_dialog_two_action_desc" />
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/compatbtn_dialog_two_action_right"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_marginStart="5dp"
+        android:background="@drawable/rect_secondary_btn"
+        android:paddingHorizontal="24dp"
+        android:paddingVertical="10dp"
+        android:text="@string/dialog_secondary"
+        android:textAppearance="@style/LumaAI.TextAppearance.Heading4.Eng"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/compatbtn_dialog_two_action_left"
+        app:layout_constraintTop_toBottomOf="@+id/txtview_dialog_two_action_desc" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

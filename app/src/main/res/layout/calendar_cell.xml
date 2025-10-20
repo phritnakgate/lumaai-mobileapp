@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_gravity="center">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintlayout_calendar_cell"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginBottom="4dp"
+        tools:background="@drawable/circ_primary"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/txtview_calendar_cell"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1"
+            android:textColor="@color/black"
+            android:textAppearance="@style/LumaAI.TextAppearance.BodyMedium.Eng"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <View
+        android:id="@+id/view_calendar_cell_has_event"
+        android:layout_width="30dp"
+        android:layout_height="5dp"
+        android:layout_marginTop="3dp"
+        android:visibility="gone"
+        tools:visibility="visible"
+        android:background="@drawable/calendar_has_event"
+        app:layout_constraintStart_toStartOf="@id/constraintlayout_calendar_cell"
+        app:layout_constraintEnd_toEndOf="@id/constraintlayout_calendar_cell"
+        app:layout_constraintTop_toBottomOf="@id/constraintlayout_calendar_cell"
+        />
+</androidx.constraintlayout.widget.ConstraintLayout>

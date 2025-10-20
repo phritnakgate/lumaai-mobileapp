@@ -1,8 +1,147 @@
 <resources>
-    <string name="app_name" translatable="false">LumaAI-Mobile</string>
+    <!--========== STRING UTILS ==========-->
+    <string name="app_name" translatable="false">LumaAI</string>
+    <string name="month_1_full">January</string>
+    <string name="month_1_cut">Jan</string>
+    <string name="month_2_full">February</string>
+    <string name="month_2_cut">Feb</string>
+    <string name="month_3_full">March</string>
+    <string name="month_3_cut">Mar</string>
+    <string name="month_4_full">April</string>
+    <string name="month_4_cut">Apr</string>
+    <string name="month_5_full">May</string>
+    <string name="month_5_cut">May</string>
+    <string name="month_6_full">June</string>
+    <string name="month_6_cut">Jun</string>
+    <string name="month_7_full">July</string>
+    <string name="month_7_cut">Jul</string>
+    <string name="month_8_full">August</string>
+    <string name="month_8_cut">Aug</string>
+    <string name="month_9_full">September</string>
+    <string name="month_9_cut">Sep</string>
+    <string name="month_10_full">October</string>
+    <string name="month_10_cut">Oct</string>
+    <string name="month_11_full">November</string>
+    <string name="month_11_cut">Nov</string>
+    <string name="month_12_full">December</string>
+    <string name="month_12_cut">Dec</string>
+    <string name="sun">Sun</string>
+    <string name="mon">Mon</string>
+    <string name="tue">Tue</string>
+    <string name="wed">Wed</string>
+    <string name="thu">Thu</string>
+    <string name="fri">Fri</string>
+    <string name="sat">Sat</string>
+    <string name="select_date">Select Date</string>
+    <string name="select_time">Select Time</string>
+    <string name="dialog_primary">Confirm</string>
+    <string name="dialog_secondary">Abort</string>
 
-    <!--Landing Page-->
+    <!--========== LANDING PAGE ==========-->
     <string name="landing_heading">Meet LUMA !</string>
     <string name="landing_subheading">Your own AI Task Manager</string>
     <string name="landing_btn">Get Started</string>
+
+    <!--========== AUTHENTICATION PAGES ==========-->
+    <string name="auth_email_label">Email</string>
+    <string name="auth_email_hint" translatable="false">example@gmail.com</string>
+    <string name="auth_password_label">Password</string>
+    <string name="auth_password_hint" translatable="false">********</string>
+
+    <!--Login Page-->
+    <string name="login_welcome">Welcome Back !</string>
+    <string name="login_btn">Sign In</string>
+    <string name="login_or">OR</string>
+    <string name="login_google_btn">Continue with Google</string>
+    <string name="login_no_account_sentence">Don’t have an account?</string>
+    <string name="login_no_account_btn"><u>Sign Up</u></string>
+    <string name="login_failed_dialog_title">Login Failed</string>
+    <string name="login_failed_dialog_desc">Email or password incorrect!</string>
+
+    <!-- Register Page -->
+    <string name="register_title">Create Your Account</string>
+    <string name="register_confirm_password_label">Confirm Password</string>
+    <string name="register_name_label">Alias Name</string>
+    <string name="register_name_hint" translatable="false">Name</string>
+    <string name="register_btn">Sign Up</string>
+    <string name="register_have_account_btn"><u>I Already Have an Account</u></string>
+    <string name="register_failed_dialog_title">Registration Failed</string>
+    <string name="register_failed_dialog_desc">This email has already registered.</string>
+
+    <!--========== HOME PAGE ==========-->
+    <string name="home_talk_with_luma">Talk\nwith LUMA</string>
+    <string name="home_task">Your Task</string>
+    <string name="home_report">Report</string>
+    <string name="home_history_title">History</string>
+    <string name="home_history_see_all">See All</string>
+    <string name="home_history_recent">Recent</string>
+
+    <!--========== TASK PAGES ==========-->
+    <!-- View Task Page -->
+    <string name="view_task_title">Task</string>
+    <string name="view_task_menu_daily">Daily</string>
+    <string name="view_task_menu_monthly">Monthly</string>
+    <string name="view_task_events">Events</string>
+    <string name="view_task_add">Add Task</string>
+    <string name="view_task_add_to_calendar">Add To Google Calendar</string>
+    <string name="view_task_no_task_today">No Task Today</string>
+    <!-- Form Task Page -->
+    <string name="add_task_title">Create Your Task</string>
+    <string name="form_task_name">Task Name</string>
+    <string name="form_task_desc">Task Description</string>
+    <string name="form_task_chkbox">Time Specified</string>
+    <string name="form_task_date">Task Date</string>
+    <string name="form_task_time">Task Time</string>
+    <string name="form_task_category">Task Category</string>
+    <string name="form_task_priority">Task Priority</string>
+    <string name="add_task_button">Create Task</string>
+    <string name="edit_task_title">Edit Your Task</string>
+    <string name="edit_task_button">Edit Task</string>
+    <string name="delete_task_button">Delete Task</string>
+    <string name="create_task_success_dialog">Create Task Success!</string>
+    <string name="create_task_failed_dialog_title">Create Task Failed!</string>
+    <string name="create_task_failed_dialog_desc">Please input all required data.</string>
+    <string name="edit_task_success_dialog">Edit/Delete Task Success!</string>
+    <string name="edit_task_failed_dialog_title">Edit/Delete Task Failed!</string>
+    <string name="edit_task_failed_dialog_desc">Please input all required data.</string>
+    <string name="delete_task_confirm_dialog_title">Confirm Task Deletion?</string>
+
+    <!--========== HISTORY PAGES ==========-->
+    <string name="chat_history_title">History</string>
+    <string name="chat_history_task">Task</string>
+    <string name="chat_history_search">Search</string>
+    <string name="chat_history_plan">Plan</string>
+    <string name="chat_history_report">Report</string>
+    <string name="chat_history_search_hint">Search</string>
+    <string name="chat_history_empty">No Chat Found</string>
+    <string name="chat_history_readall">Read All</string>
+    <string name="chat_history_pdf">View File</string>
+    <string name="read_all_bottomsheet_title">Search Results</string>
+
+    <!--========== CHAT PAGES ==========-->
+    <string name="chat_title">Chat with LUMA</string>
+    <string name="chat_empty">What can I do for you today?</string>
+    <string name="chat_hint">Write your message here…</string>
+    <string name="chat_confirm_add">Confirm Adding</string>
+    <string name="chat_confirm_edit">Confirm Editing</string>
+    <string name="chat_confirm_delete">Confirm Deletion</string>
+    <string name="chat_web_readall"><u>Read All…</u></string>
+    <string name="chat_form_readall"><u>View Form…</u></string>
+
+    <!--========== REPORT PAGES ==========-->
+    <string name="report_create_report_title">Create Report</string>
+    <string name="report_your_report_title">Your Reports</string>
+    <string name="report_delete_report_title">Delete Report</string>
+    <string name="report_delete_report_title_cancel">Cancel Deletion</string>
+    <string name="report_delete_report_dialog_title">Confirm Report Deletion?</string>
+    <string name="report_type_0">Monthly Task Report</string>
+    <string name="report_no_text">No Reports Created</string>
+    <string name="month_selector_dialog_title">Choose Year and Month</string>
+    <string name="month_selector_month">Month</string>
+    <string name="month_selector_year">Year</string>
+
+    <!--========== SETTING PAGES ==========-->
+    <string name="setting_title">Settings</string>
+    <string name="setting_google_calendar">Connect To Google Calendar</string>
+    <string name="setting_google_calendar_btn">Connect Google Account</string>
 </resources>

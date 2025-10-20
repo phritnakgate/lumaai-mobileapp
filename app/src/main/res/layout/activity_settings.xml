@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_primary"
+    tools:context=".presentation.main.setting.SettingsActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingHorizontal="20dp">
+
+        <ImageView
+            android:id="@+id/imgview_settings_back"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:src="@drawable/ic_back"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/txtview_settings_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/setting_title"
+            android:textAppearance="@style/LumaAI.TextAppearance.Heading1.Eng"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/imgview_settings_back"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintlayout_settings_google_calendar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:background="@drawable/edit_text_bg"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imgview_settings_back"
+            >
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintlayout_settings_google_calendar_icon"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:background="@drawable/rect_primary"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/txtview_settings_google_calendar"
+                >
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/ic_google_calendar_outline"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <TextView
+                android:id="@+id/txtview_settings_google_calendar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/setting_google_calendar"
+                android:paddingHorizontal="6dp"
+                android:paddingVertical="12dp"
+                android:textAppearance="@style/LumaAI.TextAppearance.Heading4.Eng"
+                app:layout_constraintStart_toEndOf="@+id/constraintlayout_settings_google_calendar_icon"
+                app:layout_constraintTop_toTopOf="parent"
+                />
+
+            <TextView
+                android:id="@+id/txtview_settings_google_calendar_email"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/LumaAI.TextAppearance.BodyMedium.Eng"
+                android:paddingHorizontal="6dp"
+                android:paddingBottom="12dp"
+                android:textColor="@color/disabled"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/constraintlayout_settings_google_calendar_icon"
+                app:layout_constraintTop_toBottomOf="@+id/txtview_settings_google_calendar"
+                tools:text="Sign in with Google Account"
+                tools:visibility="visible"
+                />
+            <TextView
+                android:id="@+id/txtview_settings_google_calendar_connect"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="24dp"
+                android:paddingVertical="3dp"
+                android:layout_marginBottom="8dp"
+                android:text="@string/setting_google_calendar_btn"
+                android:textColor="@color/white"
+                android:background="@drawable/rect_secondary"
+                android:textAppearance="@style/LumaAI.TextAppearance.BodyMedium.Thai"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/constraintlayout_settings_google_calendar_icon"
+                app:layout_constraintTop_toBottomOf="@+id/txtview_settings_google_calendar"
+                />
+            <ImageView
+                android:id="@+id/imgview_settings_google_calendar_disconnect"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_disconnect"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:visibility="gone"
+                app:tint="@color/danger"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                tools:visibility="visible"
+                />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
