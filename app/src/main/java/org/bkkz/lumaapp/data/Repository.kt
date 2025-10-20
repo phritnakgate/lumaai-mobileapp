@@ -65,6 +65,13 @@ class Repository(
         }
     }
 
+    suspend fun isLLMThinking() : Boolean{
+        return withContext(Dispatchers.IO){
+            val thinkingChat = userChatDao.checkThinkingChat()
+            thinkingChat.isNotEmpty()
+        }
+    }
+
     suspend fun confirmAction(dbId : Int){
         withContext(Dispatchers.IO){
             userChatDao.confirmAction(dbId)

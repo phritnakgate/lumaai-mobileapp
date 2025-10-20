@@ -181,9 +181,9 @@ class ChatViewModel(private val repository: Repository) : ViewModel() {
                     val createTaskRequest = CreateTaskRequest(
                         name = requiredTask!!.name,
                         description = requiredTask!!.description,
-                        dueDate = OffsetDateTime.parse(requiredTask!!.dateTime)
+                        dueDate = OffsetDateTime.parse(requiredTask!!.dateTime.ifEmpty{ OffsetDateTime.now().toString() } )
                             .format(outputDateFormatter),
-                        dueTime = OffsetDateTime.parse(requiredTask!!.dateTime)
+                        dueTime = OffsetDateTime.parse(requiredTask!!.dateTime.ifEmpty{ OffsetDateTime.now().toString() })
                             .format(outputTimeFormatter),
                         category = 0,
                         priority = 0
@@ -218,6 +218,10 @@ class ChatViewModel(private val repository: Repository) : ViewModel() {
                         repository.deleteThinkingChat()
                         val response = response.data
                         if (response?.errors.isNullOrEmpty()) {
+                            insertNewChat(
+                                LocalChatFlag.CHAT_MODEL.flag,
+                                response?.result
+                            )
                             var curInd = 0
                             response?.results?.forEach {
                                 val isLast = curInd == (response.results.size - 1)
@@ -228,10 +232,10 @@ class ChatViewModel(private val repository: Repository) : ViewModel() {
                                         LLMIntent.DELETE.intent
                                     )
                                 ) {
-                                    insertNewChat(
-                                        LocalChatFlag.CHAT_MODEL.flag,
-                                        "นี่คืองานที่ฉันพบ"
-                                    )
+//                                    insertNewChat(
+//                                        LocalChatFlag.CHAT_MODEL.flag,
+//                                        "นี่คืองานที่ฉันพบ"
+//                                    )
                                     val task = it.output
                                     task?.forEach { taskData ->
                                         if (taskData.id == "-1") {
@@ -243,29 +247,29 @@ class ChatViewModel(private val repository: Repository) : ViewModel() {
                                         )
                                     }
                                 }
-                                if (it.intent in listOf(
-                                        LLMIntent.ADD.intent,
-                                        LLMIntent.EDIT.intent,
-                                        LLMIntent.DELETE.intent
-                                    )
-                                ) {
-                                    when (it.intent) {
-                                        LLMIntent.ADD.intent -> insertNewChat(
-                                            LocalChatFlag.CHAT_MODEL.flag,
-                                            "เพิ่มงานให้คุณแล้วครับ :D"
-                                        )
-
-                                        LLMIntent.EDIT.intent -> insertNewChat(
-                                            LocalChatFlag.CHAT_MODEL.flag,
-                                            "แก้ไขงานให้คุณแล้วครับ :D"
-                                        )
-
-                                        LLMIntent.DELETE.intent -> insertNewChat(
-                                            LocalChatFlag.CHAT_MODEL.flag,
-                                            "ลบงานให้คุณแล้วครับ :D"
-                                        )
-                                    }
-                                }
+//                                if (it.intent in listOf(
+//                                        LLMIntent.ADD.intent,
+//                                        LLMIntent.EDIT.intent,
+//                                        LLMIntent.DELETE.intent
+//                                    )
+//                                ) {
+//                                    when (it.intent) {
+//                                        LLMIntent.ADD.intent -> insertNewChat(
+//                                            LocalChatFlag.CHAT_MODEL.flag,
+//                                            "เพิ่มงานให้คุณแล้วครับ :D"
+//                                        )
+//
+//                                        LLMIntent.EDIT.intent -> insertNewChat(
+//                                            LocalChatFlag.CHAT_MODEL.flag,
+//                                            "แก้ไขงานให้คุณแล้วครับ :D"
+//                                        )
+//
+//                                        LLMIntent.DELETE.intent -> insertNewChat(
+//                                            LocalChatFlag.CHAT_MODEL.flag,
+//                                            "ลบงานให้คุณแล้วครับ :D"
+//                                        )
+//                                    }
+//                                }
 
                                 if (it.intent == LLMIntent.SEARCH.intent) {
                                     insertNewChat(LocalChatFlag.CHAT_MODEL.flag, response.result)
@@ -372,5 +376,13 @@ class ChatViewModel(private val repository: Repository) : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             repository.confirmAllAction()
         }
+    }
+
+    fun isLLMThinking() : Boolean {
+        var result = false
+        viewModelScope.launch (Dispatchers.IO){
+            result = repository.isLLMThinking()
+        }
+        return result
     }
 }

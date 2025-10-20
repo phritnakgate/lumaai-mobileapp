@@ -3,6 +3,7 @@ package org.bkkz.lumaapp.presentation.main.chat
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageButton
@@ -84,6 +85,12 @@ class ChatActivity : AppCompatActivity() {
 
     private fun setupData() {
         viewModel.chatItems.observe(this@ChatActivity){ userChats ->
+            btnVoice.alpha = 1.0f
+            btnSend.alpha = 1.0f
+            newChatBtn.alpha = 1.0f
+            btnVoice.isEnabled = true
+            btnSend.isEnabled = true
+            newChatBtn.isEnabled = true
             if (userChats.isNullOrEmpty()) {
                 recyclerChats.visibility = View.GONE
                 imgNoChat.visibility = View.VISIBLE
@@ -130,10 +137,6 @@ class ChatActivity : AppCompatActivity() {
             finish()
         }
 
-        edtChat.setOnClickListener {
-
-        }
-
         btnVoice.setOnClickListener {
             voiceChatLauncher.launch(
                 Intent(
@@ -151,10 +154,19 @@ class ChatActivity : AppCompatActivity() {
     }
 
     private fun sendChats(context: Context, message: String){
+        if(message.isEmpty() || message.isBlank()){
+            return
+        }
         lifecycleScope.launch {
             viewModel.chatWithLuma(context, message)
         }
         edtChat.text.clear()
         edtChat.clearFocus()
+        btnVoice.alpha = 0.5f
+        btnSend.alpha = 0.5f
+        newChatBtn.alpha = 0.5f
+        btnVoice.isEnabled = false
+        btnSend.isEnabled = false
+        newChatBtn.isEnabled = false
     }
 }

@@ -24,4 +24,7 @@ interface UserChatDao {
 
     @Query("DELETE FROM userchatentity WHERE flag=-1")
     suspend fun deleteThinkingChat()
+
+    @Query("SELECT * FROM userchatentity WHERE flag=-1")
+    suspend fun checkThinkingChat() : List<UserChatEntity>
 }
