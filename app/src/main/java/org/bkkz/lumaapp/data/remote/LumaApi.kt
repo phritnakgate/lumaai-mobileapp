@@ -11,6 +11,7 @@ import org.bkkz.lumaapp.data.entity.auth.TokenResponse
 import org.bkkz.lumaapp.data.entity.chat.LLMChatRequest
 import org.bkkz.lumaapp.data.entity.chat.LLMProcess
 import org.bkkz.lumaapp.data.entity.chat_history.ChatHistory
+import org.bkkz.lumaapp.data.entity.google_calendar.CalendarEventRequest
 import org.bkkz.lumaapp.data.entity.google_calendar.GoogleAuthRequest
 import org.bkkz.lumaapp.data.entity.report_history.ReportHistory
 import org.bkkz.lumaapp.data.entity.task.CreateTaskRequest
@@ -120,6 +121,22 @@ interface LumaApi {
 
     @DELETE("google-calendar/connection")
     suspend fun revokeGoogleCalendarAccess(): Response<ApiResponse<Any>>
+
+    @POST("google-calendar/event")
+    suspend fun createGoogleCalendarEvent(
+        @Body calendarEventRequest: CalendarEventRequest
+    ): Response<ApiResponse<Any>>
+
+    @PATCH("google-calendar/event/{eventId}")
+    suspend fun updateGoogleCalendarEvent(
+        @Path("eventId") eventId : String,
+        @Body calendarEventRequest: CalendarEventRequest
+    ): Response<ApiResponse<Any>>
+
+    @DELETE("google-calendar/event/{eventId}")
+    suspend fun deleteGoogleCalendarEvent(
+        @Path("eventId") eventId : String
+    ): Response<ApiResponse<Any>>
 
     /*=========== USER ===========*/
     @GET("user/")

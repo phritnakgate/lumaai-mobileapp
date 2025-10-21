@@ -10,8 +10,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.bkkz.lumaapp.data.Repository
+import org.bkkz.lumaapp.data.entity.google_calendar.CalendarEventRequest
 import org.bkkz.lumaapp.data.entity.task.EditTaskRequest
 import org.bkkz.lumaapp.data.entity.task.Task
+import org.bkkz.lumaapp.data.local.UserTaskEntity
 import org.bkkz.lumaapp.data.remote.ApiResult
 import org.bkkz.lumaapp.presentation.main.task.view_task.state.ViewTaskEvent
 import org.bkkz.lumaapp.presentation.main.task.view_task.state.ViewTaskState
@@ -27,12 +29,7 @@ class ViewTaskViewModel(private val repository: Repository) : ViewModel() {
             is ViewTaskEvent.LoadFirstTimeTasks -> {
                 viewModelScope.launch {
                     _state.update { it.copy(isLoading = true) }
-                    getAllMonthlyUserTask(
-                        "${state.value.selectedMonth.year}-${
-                            state.value.selectedMonth.monthValue.toString().padStart(2, '0')
-                        }"
-                    )
-                    getAllDailyUserTask(state.value.selectedDate)
+                    getFirstTimeTasks()
                     _state.update { it.copy(isLoading = false) }
                 }
             }
@@ -65,18 +62,60 @@ class ViewTaskViewModel(private val repository: Repository) : ViewModel() {
         }
     }
 
-    suspend fun getAllMonthlyUserTask(date: String) = coroutineScope {
-        val monthlyTaskApi = repository.getAllUserTasks(date)
-        var monthlyTasksResult: List<Task>? = null
+    fun currentMonthString() : String { return "${state.value.selectedMonth.year}-${
+        state.value.selectedMonth.monthValue.toString().padStart(2, '0')
+    }" }
 
+    suspend fun getFirstTimeTasks(){
+        val monthlyTaskApi = repository.getAllUserTasks(currentMonthString())
         when (monthlyTaskApi) {
             is ApiResult.Success -> {
-                monthlyTasksResult = monthlyTaskApi.data
-                Log.d("ViewTaskViewModel", dateContainEvents(monthlyTasksResult).toString())
+                val monthlyTasksResult = monthlyTaskApi.data
+                getAllDailyUserTask(state.value.selectedDate)
+                _state.update {
+                    it.copy(
+                        allMonthlyEventsDate = dateContainEvents(monthlyTasksResult),
+                        allMonthlyUserTasks = monthlyTasksResult,
+                    )
+                }
             }
 
             is ApiResult.Error -> {
-                Log.e("ViewTaskViewModel", "Can't get monthly task on $date")
+                Log.e("ViewTaskViewModel", "Can't get monthly task on initial load")
+            }
+        }
+
+
+    }
+
+    suspend fun getAllMonthlyUserTask(date: String){
+        var monthlyTasksResult: List<Task>? = null
+        val localMonthlyTasks = repository.getLocalUserTaskByDate(date)
+        if(localMonthlyTasks.isEmpty()){
+            val monthlyTaskApi = repository.getAllUserTasks(date)
+            when (monthlyTaskApi) {
+                is ApiResult.Success -> {
+                    monthlyTasksResult = monthlyTaskApi.data
+                    Log.d("ViewTaskViewModel", dateContainEvents(monthlyTasksResult).toString())
+                }
+
+                is ApiResult.Error -> {
+                    Log.e("ViewTaskViewModel", "Can't get monthly task on $date")
+                }
+            }
+        }else{
+            monthlyTasksResult = localMonthlyTasks.map { task ->
+                Task(
+                    id = task.id,
+                    name = task.name,
+                    description = task.description ?: "",
+                    dateTime = task.dateTime,
+                    isFinished = task.isFinished,
+                    userId = task.userId,
+                    category = task.category,
+                    priority = task.priority,
+                    isGoogleCalendarTask = task.isGoogleCalendarTask,
+                )
             }
         }
 
@@ -88,16 +127,22 @@ class ViewTaskViewModel(private val repository: Repository) : ViewModel() {
         }
     }
 
-    suspend fun getAllDailyUserTask(date: String) = coroutineScope {
-        var dailyTasksResult: List<Task>? = null
-        val dailyTaskApi = repository.getAllUserTasks(date)
-        when (dailyTaskApi) {
-            is ApiResult.Success -> {
-                dailyTasksResult = dailyTaskApi.data
-            }
-
-            is ApiResult.Error -> {
-                Log.e("ViewTaskViewModel", "Can't get daily task on $date")
+    suspend fun getAllDailyUserTask(date: String){
+        var dailyTasksResult: List<Task> = emptyList()
+        val dailyLocalTasks = repository.getLocalUserTaskByDate(date)
+        if(!dailyLocalTasks.isEmpty()){
+            dailyTasksResult = dailyLocalTasks.map { task ->
+                Task(
+                    id = task.id,
+                    name = task.name,
+                    description = task.description ?: "",
+                    dateTime = task.dateTime,
+                    isFinished = task.isFinished,
+                    userId = task.userId,
+                    category = task.category,
+                    priority = task.priority,
+                    isGoogleCalendarTask = task.isGoogleCalendarTask,
+                )
             }
         }
 
@@ -121,23 +166,53 @@ class ViewTaskViewModel(private val repository: Repository) : ViewModel() {
             .toSet()
     }
 
-    suspend fun markCompleted(taskId: String, editTaskRequest: EditTaskRequest) = coroutineScope {
+    suspend fun markCompleted(taskId: String, editTaskRequest: EditTaskRequest){
         val response = repository.editTask(taskId, editTaskRequest)
         when (response) {
             is ApiResult.Success -> {
+                repository.updateLocalUserTaskStatus(taskId, editTaskRequest.isFinished ?: false)
+                getAllMonthlyUserTask(currentMonthString())
                 getAllDailyUserTask(state.value.selectedDate)
-                getAllMonthlyUserTask(
-                    "${state.value.selectedMonth.year}-${
-                        state.value.selectedMonth.monthValue.toString().padStart(2, '0')
-                    }"
-                )
             }
 
             is ApiResult.Error -> {}
         }
     }
 
-    suspend fun deleteTask(id: String) = coroutineScope {
-        repository.deleteTask(id)
+    fun deleteTask(id: String) = {
+        viewModelScope.launch {
+            repository.deleteTask(id)
+            repository.deleteLocalUserTaskById(id)
+        }
+
     }
+
+    fun insertToGoogleCalendar(oldTask : Task, calendarEventRequest: CalendarEventRequest){
+        viewModelScope.launch {
+            repository.deleteTask(oldTask.id)
+            repository.deleteLocalUserTaskById(oldTask.id)
+            val result = repository.insertGoogleCalendarEvent(calendarEventRequest)
+            when(result){
+                is ApiResult.Success -> {
+                    repository.insertLocalUserTask(UserTaskEntity(
+                        id = result.data!!,
+                        name = oldTask.name,
+                        description = oldTask.description,
+                        dateTime = oldTask.dateTime,
+                        isFinished = oldTask.isFinished,
+                        userId = oldTask.userId,
+                        category = oldTask.category,
+                        priority = oldTask.priority,
+                        isGoogleCalendarTask = true
+                    ))
+                    onEvent(ViewTaskEvent.LoadFirstTimeTasks)
+                    Log.d("ViewTaskViewModel", "Successfully inserted to Google Calendar with event ID: ${result.data}")
+                }
+                is ApiResult.Error -> {
+                    Log.e("ViewTaskViewModel", "Error inserting to Google Calendar: ${result.exception}")
+                }
+            }
+        }
+    }
+
 }

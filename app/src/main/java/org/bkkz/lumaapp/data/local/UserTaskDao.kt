@@ -11,6 +11,9 @@ interface UserTaskDao {
     @Query("SELECT * FROM usertaskentity WHERE id = :taskId LIMIT 1")
     suspend fun getUserTaskById(taskId: String): UserTaskEntity?
 
+    @Query("SELECT * FROM usertaskentity WHERE dateTime LIKE :datePrefix || '%'")
+    suspend fun getUserTasksByDatePrefix(datePrefix: String): List<UserTaskEntity>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertUserTask(userTaskEntity: UserTaskEntity)
 
