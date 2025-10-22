@@ -271,9 +271,9 @@ class ChatViewModel(private val repository: Repository) : ViewModel() {
 //                                    }
 //                                }
 
-                                if (it.intent == LLMIntent.SEARCH.intent) {
-                                    insertNewChat(LocalChatFlag.CHAT_MODEL.flag, response.result)
-                                }
+//                                if (it.intent == LLMIntent.SEARCH.intent) {
+//                                    insertNewChat(LocalChatFlag.CHAT_MODEL.flag, response.result)
+//                                }
                                 if (it.intent == LLMIntent.GOOGLESEARCH.intent) {
                                     insertNewChat(LocalChatFlag.CHAT_WEB.flag, url = it.message)
                                 }
@@ -300,7 +300,10 @@ class ChatViewModel(private val repository: Repository) : ViewModel() {
                                     )
                                     insertNewChat(LocalChatFlag.CHAT_GENFORM.flag, url = file.path)
                                 }
-                                if( it.intent == LLMIntent.EXIT.intent){
+//                                if( it.intent == LLMIntent.EXIT.intent){
+//                                    insertNewChat(LocalChatFlag.CHAT_MODEL.flag, it.message)
+//                                }
+                                if(it.intent == LLMIntent.UNKNOWN.intent){
                                     insertNewChat(LocalChatFlag.CHAT_MODEL.flag, it.message)
                                 }
                                 curInd += 1
@@ -376,13 +379,5 @@ class ChatViewModel(private val repository: Repository) : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             repository.confirmAllAction()
         }
-    }
-
-    fun isLLMThinking() : Boolean {
-        var result = false
-        viewModelScope.launch (Dispatchers.IO){
-            result = repository.isLLMThinking()
-        }
-        return result
     }
 }

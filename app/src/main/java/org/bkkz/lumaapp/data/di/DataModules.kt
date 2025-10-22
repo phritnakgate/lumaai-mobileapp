@@ -42,7 +42,7 @@ val dataModules = module {
         .addInterceptor(AuthInterceptor())
         .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
         .connectTimeout(1, TimeUnit.MINUTES)
-        .readTimeout(1, TimeUnit.MINUTES)
+        .readTimeout(2, TimeUnit.MINUTES)
         .followRedirects(false)
         .followSslRedirects(false)
         .build()

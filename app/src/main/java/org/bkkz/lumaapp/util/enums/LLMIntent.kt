@@ -8,5 +8,6 @@ enum class LLMIntent(val intent: String) {
     SEARCH("SEARCH"),
     GOOGLESEARCH("GOOGLESEARCH"),
     GENFORM("GENFORM"),
-    EXIT("EXIT")
+    EXIT("EXIT"),
+    UNKNOWN("UNKNOWN")
 }

@@ -64,6 +64,11 @@ class HomeActivity : AppCompatActivity(), ChatHistoryListAdapter.OnChatHistoryLi
             insets
         }
     }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.loadRecentChats()
+    }
     private fun findViews(){
         settingBtn = findViewById(R.id.imgview_home_setting)
         logoutBtn = findViewById(R.id.constraintlayout_home_logout_btn)

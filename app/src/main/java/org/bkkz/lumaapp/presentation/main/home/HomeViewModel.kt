@@ -29,7 +29,7 @@ class HomeViewModel(private val repository: Repository) : ViewModel() {
         }
     }
 
-    private fun loadRecentChats() {
+    fun loadRecentChats() {
         viewModelScope.launch {
             val response = repository.getChatLogs()
             when (response) {
