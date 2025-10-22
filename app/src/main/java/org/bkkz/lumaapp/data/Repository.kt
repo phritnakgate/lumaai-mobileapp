@@ -35,6 +35,10 @@ import retrofit2.HttpException
 import java.nio.charset.StandardCharsets
 import java.security.MessageDigest
 import java.security.SecureRandom
+import java.time.LocalDate
+import java.time.LocalTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import java.util.Base64
 
 
@@ -569,6 +573,23 @@ class Repository(
         try {
             val response = lumaApi.updateGoogleCalendarEvent(eventId, calendarEventRequest)
             if(response.isSuccessful){
+                val taskToBeEdited = getLocalUserTaskById(eventId)
+                val date = LocalDate.parse(calendarEventRequest.startTime)
+                val time = LocalTime.parse(calendarEventRequest.appTaskTime)
+                val dateTime = date.atTime(time).atZone(ZoneId.of("Asia/Bangkok")).format(
+                    DateTimeFormatter.ISO_OFFSET_DATE_TIME)
+
+                if (taskToBeEdited != null) {
+                    val updatedTask = taskToBeEdited.copy(
+                        name = calendarEventRequest.name,
+                        description = calendarEventRequest.description,
+                        dateTime = dateTime,
+                        isFinished = taskToBeEdited.isFinished,
+                        category = calendarEventRequest.appCategory ?: taskToBeEdited.category,
+                        priority = calendarEventRequest.appPriority?: taskToBeEdited.priority
+                    )
+                    updateLocalUserTaskDetails(updatedTask)
+                }
                 ApiResult.Success(Unit)
             }else{
                 ApiResult.Error(Exception("Cannot update google calendar event"))
@@ -582,6 +603,7 @@ class Repository(
         try {
             val response = lumaApi.deleteGoogleCalendarEvent(eventId)
             if(response.isSuccessful){
+                deleteLocalUserTaskById(eventId)
                 ApiResult.Success(Unit)
             }else{
                 ApiResult.Error(Exception("Cannot delete google calendar event"))

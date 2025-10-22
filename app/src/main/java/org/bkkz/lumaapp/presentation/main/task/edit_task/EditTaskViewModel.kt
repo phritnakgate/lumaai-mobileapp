@@ -3,12 +3,14 @@ package org.bkkz.lumaapp.presentation.main.task.edit_task
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.bkkz.lumaapp.data.Repository
+import org.bkkz.lumaapp.data.entity.google_calendar.CalendarEventRequest
 import org.bkkz.lumaapp.data.entity.task.EditTaskRequest
 import org.bkkz.lumaapp.data.remote.ApiResult
 import org.bkkz.lumaapp.presentation.main.task.edit_task.state.EditTaskEvent
@@ -33,8 +35,14 @@ class EditTaskViewModel(private val repository: Repository) : ViewModel() {
                         name = event.task.name,
                         description = event.task.description,
                         isTimeSpecify = !event.task.dateTime.isEmpty(),
-                        taskDate = if (event.task.dateTime.isEmpty()) "" else event.task.dateTime.substring(0, 10),
-                        taskTime = if (event.task.dateTime.isEmpty()) "" else event.task.dateTime.substring(11, 16),
+                        taskDate = if (event.task.dateTime.isEmpty()) "" else event.task.dateTime.substring(
+                            0,
+                            10
+                        ),
+                        taskTime = if (event.task.dateTime.isEmpty()) "" else event.task.dateTime.substring(
+                            11,
+                            16
+                        ),
                         priority = event.task.priority,
                         category = event.task.category,
                         isGoogleCalendarTask = event.task.isGoogleCalendarTask
@@ -65,11 +73,13 @@ class EditTaskViewModel(private val repository: Repository) : ViewModel() {
             }
 
             is EditTaskEvent.OnCheckTimeSpecified -> {
-                _state.update { it.copy(
-                    isTimeSpecify = event.chk,
-                    taskDate = "",
-                    taskTime = ""
-                ) }
+                _state.update {
+                    it.copy(
+                        isTimeSpecify = event.chk,
+                        taskDate = "",
+                        taskTime = ""
+                    )
+                }
             }
 
             is EditTaskEvent.OnSelectedDate -> {
@@ -111,6 +121,7 @@ class EditTaskViewModel(private val repository: Repository) : ViewModel() {
             is EditTaskEvent.OnSelectedPriority -> {
                 _state.update { it.copy(priority = event.priority) }
             }
+
             is EditTaskEvent.OnSelectedCategory -> {
                 _state.update { it.copy(category = event.category) }
             }
@@ -119,7 +130,12 @@ class EditTaskViewModel(private val repository: Repository) : ViewModel() {
                 if (isValidForm()) {
                     viewModelScope.launch {
                         _state.update { it.copy(serviceState = ServiceState.LOADING) }
-                        editTask()
+                        if (state.value.isGoogleCalendarTask) {
+                            updateGoogleCalendarTask()
+                        } else {
+                            editTask()
+                        }
+
                     }
 
                 } else {
@@ -129,7 +145,12 @@ class EditTaskViewModel(private val repository: Repository) : ViewModel() {
 
             is EditTaskEvent.OnDeleteTask -> {
                 viewModelScope.launch {
-                    deleteTask(state.value.id!!)
+                    if(state.value.isGoogleCalendarTask){
+                        deleteGoogleCalendarTask()
+                    }else{
+                        deleteTask()
+                    }
+
                 }
             }
         }
@@ -141,8 +162,13 @@ class EditTaskViewModel(private val repository: Repository) : ViewModel() {
             description = state.value.description,
             dateTime = if (!state.value.taskDate.isNullOrEmpty() && !state.value.taskTime.isNullOrEmpty()) {
                 "${state.value.taskDate}T${state.value.taskTime}:00+07:00"
-            } else DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(LocalDate.now().atTime(LocalTime.now().truncatedTo(
-                ChronoUnit.SECONDS)).atZone(ZoneId.systemDefault())),
+            } else DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(
+                LocalDate.now().atTime(
+                    LocalTime.now().truncatedTo(
+                        ChronoUnit.SECONDS
+                    )
+                ).atZone(ZoneId.systemDefault())
+            ),
             priority = state.value.priority,
             category = state.value.category
         )
@@ -166,8 +192,8 @@ class EditTaskViewModel(private val repository: Repository) : ViewModel() {
         }
     }
 
-    suspend fun deleteTask(id: String) = coroutineScope {
-        val response = repository.deleteTask(id)
+    suspend fun deleteTask() = coroutineScope {
+        val response = repository.deleteTask(state.value.id!!)
         when (response) {
             is ApiResult.Success -> {
                 _state.update {
@@ -185,6 +211,71 @@ class EditTaskViewModel(private val repository: Repository) : ViewModel() {
                 }
             }
         }
+    }
+
+    suspend fun updateGoogleCalendarTask() {
+        var startDate: String
+        var endDate: String
+        if(!state.value.taskDate.isNullOrEmpty() && !state.value.taskTime.isNullOrEmpty()){
+            startDate = state.value.taskDate!!
+            endDate = LocalDate.parse(startDate).plusDays(1).toString()
+        }else{
+            startDate = LocalDate.now().toString()
+            endDate = LocalDate.now().plusDays(1).toString()
+        }
+
+        val request = CalendarEventRequest(
+            name = state.value.name!!,
+            description = state.value.description ?: "",
+            startTime = startDate,
+            endTime = endDate,
+            ownerEmail = "",
+            appTaskTime = if (!state.value.taskTime.isNullOrEmpty()) state.value.taskTime!! else LocalTime.now().toString(),
+            appCategory = state.value.category,
+            appPriority = state.value.priority
+        )
+        val result = repository.editGoogleCalendarEvent(state.value.id!!, request)
+        when (result) {
+            is ApiResult.Success -> {
+                delay(2000)
+                _state.update {
+                    it.copy(
+                        serviceState = ServiceState.SUCCESS
+                    )
+                }
+            }
+
+            is ApiResult.Error -> {
+                _state.update {
+                    it.copy(
+                        serviceState = ServiceState.FAILED
+                    )
+                }
+            }
+        }
+
+    }
+
+    suspend fun deleteGoogleCalendarTask() {
+        val result = repository.deleteGoogleCalendarEvent(state.value.id!!)
+        when (result) {
+            is ApiResult.Success -> {
+                _state.update {
+                    it.copy(
+                        serviceState = ServiceState.SUCCESS
+                    )
+                }
+            }
+
+            is ApiResult.Error -> {
+                _state.update {
+                    it.copy(
+                        serviceState = ServiceState.FAILED
+                    )
+                }
+            }
+        }
+
     }
 
     fun isValidForm(): Boolean {

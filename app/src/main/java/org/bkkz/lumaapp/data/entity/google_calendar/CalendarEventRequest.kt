@@ -14,5 +14,9 @@ data class CalendarEventRequest(
     @SerializedName("ownerEmail")
     val ownerEmail: String,
     @SerializedName("appTaskTime")
-    val appTaskTime: String? = null
+    val appTaskTime: String? = null,
+    @SerializedName("appCategory")
+    val appCategory: Int? = null,
+    @SerializedName("appPriority")
+    val appPriority: Int? = null
 )

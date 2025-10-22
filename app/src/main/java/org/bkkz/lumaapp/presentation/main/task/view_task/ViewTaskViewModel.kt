@@ -3,7 +3,6 @@ package org.bkkz.lumaapp.presentation.main.task.view_task
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -177,14 +176,6 @@ class ViewTaskViewModel(private val repository: Repository) : ViewModel() {
 
             is ApiResult.Error -> {}
         }
-    }
-
-    fun deleteTask(id: String) = {
-        viewModelScope.launch {
-            repository.deleteTask(id)
-            repository.deleteLocalUserTaskById(id)
-        }
-
     }
 
     fun insertToGoogleCalendar(oldTask : Task, calendarEventRequest: CalendarEventRequest){
