@@ -57,6 +57,8 @@
     <string name="login_no_account_btn"><u>Sign Up</u></string>
     <string name="login_failed_dialog_title">Login Failed</string>
     <string name="login_failed_dialog_desc">Email or password incorrect!</string>
+    <string name="login_ggc_failed_dialog_title">Google Calendar Connection Failed</string>
+    <string name="login_ggc_failed_dialog_desc">Google Calendar Not Allow :(</string>
 
     <!-- Register Page -->
     <string name="register_title">Create Your Account</string>

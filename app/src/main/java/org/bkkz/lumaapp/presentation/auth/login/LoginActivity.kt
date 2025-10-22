@@ -68,7 +68,8 @@ class LoginActivity : AppCompatActivity() {
             val authorizationResult = Identity.getAuthorizationClient(this@LoginActivity)
                 .getAuthorizationResultFromIntent(result.data)
             val authCode = authorizationResult.serverAuthCode
-            val email = authorizationResult.toGoogleSignInAccount()?.email
+            val sharedPref = this@LoginActivity.getSharedPreferences("userSession", MODE_PRIVATE)
+            val email = sharedPref.getString("googleCalendarEmail", null)
             if(authCode != null){
                 viewModel.saveCalendarRefreshToken(authCode, email!!)
                 Log.d("LoginActivity", "Google Calendar authorization success: $authCode with email $email")
@@ -83,6 +84,15 @@ class LoginActivity : AppCompatActivity() {
             }
 
         } catch (e : ApiException) {
+            OneActionDialog(this@LoginActivity).show(
+                drawable = R.drawable.ic_dialog_no,
+                title = getString(R.string.login_ggc_failed_dialog_title),
+                message = getString(R.string.login_ggc_failed_dialog_desc),
+                onConfirmClickListener = {
+                    viewModel.googleCalendarNotAllowHandler()
+                }
+            )
+
             Log.e("LoginActivity", "Google Calendar authorization failed", e)
         }
     }

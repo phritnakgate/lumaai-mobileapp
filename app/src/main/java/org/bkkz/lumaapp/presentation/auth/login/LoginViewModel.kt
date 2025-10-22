@@ -45,4 +45,11 @@ class LoginViewModel(private val repository: Repository) : ViewModel() {
             repository.authToCalendarService(authCode, email)
         }
     }
+
+    fun googleCalendarNotAllowHandler(){
+        viewModelScope.launch {
+            repository.logout()
+            _state.value = LoginEvent.Idle
+        }
+    }
 }
