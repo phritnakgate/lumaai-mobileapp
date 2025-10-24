@@ -49,13 +49,11 @@ class SettingsActivity : AppCompatActivity() {
 
             if (!authCode.isNullOrEmpty()) {
                 viewModel.saveCalendarRefreshToken(authCode, "")
-                if(viewModel.state.value.googleCalendarEmail == null){
-                    OneActionDialog(this@SettingsActivity).show(
-                        drawable = R.drawable.ic_dialog_no,
-                        title = getString(R.string.login_ggc_failed_dialog_title),
-                        message = getString(R.string.login_ggc_failed_no_email_desc),
-                    )
-                }
+                OneActionDialog(this@SettingsActivity).show(
+                    drawable = R.drawable.ic_dialog_success,
+                    title = getString(R.string.login_ggc_completed_dialog_title),
+                    message = "",
+                )
             } else {
                 Log.e("SettingsActivity", "Google Calendar authorization failed: authCode(authCode=$authCode)")
             }

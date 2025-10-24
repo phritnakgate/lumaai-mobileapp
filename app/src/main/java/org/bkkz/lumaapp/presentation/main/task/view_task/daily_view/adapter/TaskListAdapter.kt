@@ -96,27 +96,42 @@ class TaskListAdapter(
             holder.taskDesc.setTextColor(holder.itemView.context.getColor(R.color.black))
         }
         holder.taskEdit.setOnClickListener {
-            val context = holder.itemView.context
-            val intent = Intent(context, EditTaskActivity::class.java)
-            intent.putExtra("TASK_DATA", getItem(position))
-            context.startActivity(intent)
+            val currentPosition = holder.bindingAdapterPosition
+            if (currentPosition != RecyclerView.NO_POSITION) {
+                val context = holder.itemView.context
+                val intent = Intent(context, EditTaskActivity::class.java)
+                intent.putExtra("TASK_DATA", getItem(currentPosition))
+                context.startActivity(intent)
+            }
         }
         holder.taskCheck.setOnClickListener {
-            isFinished = !isFinished
-            onTaskCheckedListener?.onTaskChecked(getItem(position))
-            if (isFinished) {
-                holder.taskHead.background = ContextCompat.getDrawable(
-                    holder.itemView.context,
-                    R.drawable.rect_disabled_color
-                )
-                holder.taskCheck.setImageResource(R.drawable.ic_task_success)
-            } else {
-                holder.taskHead.background =
-                    ContextCompat.getDrawable(holder.itemView.context, R.drawable.rect_secondary)
-                holder.taskCheck.setImageResource(R.drawable.circ_white)
+            val currentPosition = holder.bindingAdapterPosition
+            if (currentPosition != RecyclerView.NO_POSITION) {
+                val item = getItem(currentPosition)
+                val newIsFinished = !item.isFinished
+
+                onTaskCheckedListener?.onTaskChecked(item)
+
+                if (newIsFinished) {
+                    holder.taskHead.background = ContextCompat.getDrawable(
+                        holder.itemView.context,
+                        R.drawable.rect_disabled_color
+                    )
+                    holder.taskCheck.setImageResource(R.drawable.ic_task_success)
+                } else {
+                    holder.taskHead.background =
+                        ContextCompat.getDrawable(holder.itemView.context, R.drawable.rect_secondary)
+                    holder.taskCheck.setImageResource(R.drawable.circ_white)
+                }
             }
         }
         holder.ggCalendar.setOnClickListener {
+            val currentPosition = holder.bindingAdapterPosition
+            if (currentPosition == RecyclerView.NO_POSITION) {
+                return@setOnClickListener
+            }
+            val item = getItem(currentPosition)
+
             if (userEmail == null) {
                 OneActionDialog(holder.itemView.context).show(
                     drawable = R.drawable.ic_dialog_no,
@@ -127,7 +142,7 @@ class TaskListAdapter(
                 return@setOnClickListener
             }
             try {
-                val dateString = getItem(position).dateTime
+                val dateString = item.dateTime
                 val utc = TimeZone.getTimeZone("UTC")
                 val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
                 dateFormat.timeZone = utc
@@ -141,8 +156,8 @@ class TaskListAdapter(
                 val endDate = DateTime(true, calendar.time.time, 0)
 
                 val calendarEventRequest = CalendarEventRequest(
-                    name = getItem(position).name,
-                    description = getItem(position).description,
+                    name = item.name,
+                    description = item.description,
                     startTime = startDate.toStringRfc3339(),
                     endTime = endDate.toStringRfc3339(),
                     ownerEmail = userEmail,
@@ -153,7 +168,7 @@ class TaskListAdapter(
                     "Event Name: ${calendarEventRequest.name}\nEvent Desc: ${calendarEventRequest.description}\nEvent Date: ${calendarEventRequest.startTime} ==> ${calendarEventRequest.endTime}"
                 )
 
-                viewModel.insertToGoogleCalendar(getItem(position),calendarEventRequest)
+                viewModel.insertToGoogleCalendar(item, calendarEventRequest)
                 OneActionDialog(holder.itemView.context).show(
                     drawable = R.drawable.ic_dialog_success,
                     title = "Add to calendar Success!",

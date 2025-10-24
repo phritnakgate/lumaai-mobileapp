@@ -58,6 +58,7 @@
     <string name="login_failed_dialog_title">Login Failed</string>
     <string name="login_failed_dialog_desc">Email or password incorrect!</string>
     <string name="login_ggc_failed_dialog_title">Google Calendar Connection Failed</string>
+    <string name="login_ggc_completed_dialog_title">Connection Success</string>
     <string name="login_ggc_failed_dialog_desc">Google Calendar Not Allow :(</string>
     <string name="login_ggc_failed_no_email_desc">This Email has binded to our service!</string>
 
