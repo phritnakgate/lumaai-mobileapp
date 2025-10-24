@@ -220,6 +220,7 @@ class Repository(
         val refreshToken = tokenManager.getRefreshToken()
         Log.d("AuthRepository", "Logout with $refreshToken")
         tokenManager.clearTokens()
+        deleleAllChat()
         deleteAllCachedUserReport()
         deleteAllLocalUserTasks()
         try {

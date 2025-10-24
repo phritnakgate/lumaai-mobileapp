@@ -22,6 +22,7 @@ import org.bkkz.lumaapp.BuildConfig
 import org.bkkz.lumaapp.R
 import org.bkkz.lumaapp.presentation.main.setting.state.SettingsEvent
 import org.bkkz.lumaapp.util.dialog.LoadingDialog
+import org.bkkz.lumaapp.util.dialog.OneActionDialog
 import org.bkkz.lumaapp.util.enums.ServiceState
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -48,11 +49,23 @@ class SettingsActivity : AppCompatActivity() {
 
             if (!authCode.isNullOrEmpty()) {
                 viewModel.saveCalendarRefreshToken(authCode, "")
+                if(viewModel.state.value.googleCalendarEmail == null){
+                    OneActionDialog(this@SettingsActivity).show(
+                        drawable = R.drawable.ic_dialog_no,
+                        title = getString(R.string.login_ggc_failed_dialog_title),
+                        message = getString(R.string.login_ggc_failed_no_email_desc),
+                    )
+                }
             } else {
                 Log.e("SettingsActivity", "Google Calendar authorization failed: authCode(authCode=$authCode)")
             }
 
         } catch (e: ApiException) {
+            OneActionDialog(this@SettingsActivity).show(
+                drawable = R.drawable.ic_dialog_no,
+                title = getString(R.string.login_ggc_failed_dialog_title),
+                message = getString(R.string.login_ggc_failed_dialog_desc),
+            )
             Log.e("SettingsActivity", "Google Calendar authorization failed", e)
         }
     }
@@ -123,12 +136,13 @@ class SettingsActivity : AppCompatActivity() {
             viewModel.revokeCalendarConnection()
         }
         connectAccountBtn.setOnClickListener {
+            viewModel.clearCredentials(this@SettingsActivity)
             requestCalendarPermission()
         }
     }
 
-    private fun requestCalendarPermission() {
-        val authorizationRequest = AuthorizationRequest.builder()
+    private fun createAuthorizationRequest(): AuthorizationRequest {
+        return AuthorizationRequest.builder()
             .requestOfflineAccess(BuildConfig.FIREBASE_WEB_CLIENT_ID)
             .setRequestedScopes(
                 mutableListOf(
@@ -139,9 +153,13 @@ class SettingsActivity : AppCompatActivity() {
                 )
             )
             .build()
+    }
+
+    private fun requestCalendarPermission() {
 
         lifecycleScope.launch {
             try {
+                val authorizationRequest = createAuthorizationRequest()
                 Identity.getAuthorizationClient(this@SettingsActivity)
                     .authorize(authorizationRequest)
                     .addOnSuccessListener { result ->

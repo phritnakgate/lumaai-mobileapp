@@ -1,6 +1,9 @@
 package org.bkkz.lumaapp.presentation.main.setting
 
+import android.content.Context
 import android.util.Log
+import androidx.credentials.ClearCredentialStateRequest
+import androidx.credentials.CredentialManager
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -84,6 +87,13 @@ class SettingsViewModel(private val repository: Repository) : ViewModel() {
                     _state.update { it.copy(isConnectedToCalendar = false, serviceState = ServiceState.FAILED) }
                 }
             }
+        }
+    }
+
+    fun clearCredentials(context: Context){
+        viewModelScope.launch {
+            val credentialManager = CredentialManager.create(context)
+            credentialManager.clearCredentialState(ClearCredentialStateRequest())
         }
     }
 }
