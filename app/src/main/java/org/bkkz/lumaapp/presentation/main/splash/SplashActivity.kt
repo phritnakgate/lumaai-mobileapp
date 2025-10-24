@@ -26,7 +26,7 @@ class SplashActivity : AppCompatActivity() {
         Handler(Looper.getMainLooper()).postDelayed({
             val token = tokenManager.getAccessToken()
 
-            if (token.isNullOrEmpty()) {
+            if (token.isNullOrEmpty() || tokenManager.isRefreshTokenExpired()) {
                 startActivity(Intent(this@SplashActivity, LandingActivity::class.java))
             } else {
                 startActivity(Intent(this@SplashActivity, HomeActivity::class.java))

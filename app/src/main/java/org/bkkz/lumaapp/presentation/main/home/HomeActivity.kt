@@ -69,7 +69,8 @@ class HomeActivity : AppCompatActivity(), ChatHistoryListAdapter.OnChatHistoryLi
         super.onResume()
         viewModel.loadRecentChats()
     }
-    private fun findViews(){
+
+    private fun findViews() {
         settingBtn = findViewById(R.id.imgview_home_setting)
         logoutBtn = findViewById(R.id.constraintlayout_home_logout_btn)
         talkBtn = findViewById(R.id.constraintlayout_home_chat_btn)
@@ -81,26 +82,34 @@ class HomeActivity : AppCompatActivity(), ChatHistoryListAdapter.OnChatHistoryLi
         noRecentChatsImg = findViewById(R.id.imgview_home_no_recent_history)
         noRecentChatsTxt = findViewById(R.id.txtview_home_no_recent_history)
     }
-    private fun setupViews(){
+
+    private fun setupViews() {
         recyclerViewRecentChats.layoutManager =
             LinearLayoutManager(this@HomeActivity, RecyclerView.VERTICAL, false)
-        recyclerViewRecentChats.addItemDecoration(ChatHistoryListDecoration(this@HomeActivity, true))
+        recyclerViewRecentChats.addItemDecoration(
+            ChatHistoryListDecoration(
+                this@HomeActivity,
+                true
+            )
+        )
 
         viewModel.onEvent(HomeEvent.OnLoadRecent)
 
         lifecycleScope.launch {
             viewModel.state.collect { state ->
-                when(state.serviceState){
+                when (state.serviceState) {
                     ServiceState.IDLE -> {}
                     ServiceState.LOADING -> {
                         noRecentChatsImg.visibility = View.GONE
                         noRecentChatsTxt.visibility = View.GONE
                         loadingAnimation.visibility = View.VISIBLE
                     }
+
                     ServiceState.SUCCESS -> {
                         loadingAnimation.visibility = View.GONE
-                        recyclerViewRecentChats.adapter = ChatHistoryListAdapter(true,state.recentChats, this@HomeActivity)
-                        if(state.recentChats.isEmpty()){
+                        recyclerViewRecentChats.adapter =
+                            ChatHistoryListAdapter(true, state.recentChats, this@HomeActivity)
+                        if (state.recentChats.isEmpty()) {
                             recyclerViewRecentChats.visibility = View.GONE
                             noRecentChatsImg.visibility = View.VISIBLE
                             noRecentChatsTxt.visibility = View.VISIBLE
@@ -117,10 +126,13 @@ class HomeActivity : AppCompatActivity(), ChatHistoryListAdapter.OnChatHistoryLi
                     }
                 }
             }
+
+
         }
 
     }
-    private fun setupEvents(){
+
+    private fun setupEvents() {
         setupLogoutBtn()
         settingBtn.setOnClickListener {
             startActivity(Intent(this@HomeActivity, SettingsActivity::class.java))
@@ -139,7 +151,7 @@ class HomeActivity : AppCompatActivity(), ChatHistoryListAdapter.OnChatHistoryLi
         }
     }
 
-    private fun setupLogoutBtn(){
+    private fun setupLogoutBtn() {
         logoutBtn.setOnClickListener {
             lifecycleScope.launch {
                 viewModel.logout()

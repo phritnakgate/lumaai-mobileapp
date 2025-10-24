@@ -206,13 +206,17 @@ class Repository(
                 refreshToken = refreshToken
             )
             val response = lumaApi.tokenRequest(request)
-            tokenManager.saveTokens(response.accessToken, response.refreshToken)
-
-            ApiResult.Success(true)
+            if(response.isSuccessful){
+                tokenManager.saveTokens(response.body()!!.accessToken, response.body()!!.refreshToken)
+                ApiResult.Success(true)
+            }else{
+                logout()
+                ApiResult.Error(Exception("Failed to refresh token"))
+            }
         } catch (e: Exception) {
             Log.e("AuthRepository", "Session refresh failed", e)
             tokenManager.clearTokens()
-            ApiResult.Success(false)
+            ApiResult.Error(e)
         }
     }
 
@@ -279,7 +283,7 @@ class Repository(
             codeVerifier = codeVerifier
         )
         val response = lumaApi.tokenRequest(requestBody)
-        tokenManager.saveTokens(response.accessToken, response.refreshToken)
+        tokenManager.saveTokens(response.body()!!.accessToken, response.body()!!.refreshToken)
     }
 
     private fun generatePkceChallenge(): Pair<String, String> {

@@ -43,7 +43,7 @@ interface LumaApi {
     @POST("auth/token")
     suspend fun tokenRequest(
         @Body tokenRequest: TokenRequest
-    ) : TokenResponse
+    ) : Response<TokenResponse>
 
     @POST("auth/register")
     suspend fun registerWithEmail(
