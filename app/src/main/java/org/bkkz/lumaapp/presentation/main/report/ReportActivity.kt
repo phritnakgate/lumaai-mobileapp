@@ -130,8 +130,8 @@ class ReportActivity : AppCompatActivity() {
                     ServiceState.FAILED -> {
                         OneActionDialog(this@ReportActivity).show(
                             drawable = R.drawable.ic_dialog_no,
-                            title = "Failed",
-                            message = "Failed to generate report. Please try again later.",
+                            title = getString(R.string.failed),
+                            message = getString(R.string.report_service_failed),
                             onConfirmClickListener = {}
                         )
                     }

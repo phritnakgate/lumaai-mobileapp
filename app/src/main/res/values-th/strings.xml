@@ -33,6 +33,8 @@
     <string name="sat">ส.</string>
     <string name="select_date">เลือกวันที่</string>
     <string name="dialog_secondary">ยกเลิก</string>
+    <string name="no_internet_desc">กรุณาตรวจสอบการเชื่อมต่อ และลองอีกครั้ง</string>
+    <string name="failed">เกิดข้อผิดพลาด</string>
     <string name="landing_heading">พบกับ LUMA !</string>
     <string name="landing_subheading">AI ผู้ช่วยจัดการงานของคุณ</string>
     <string name="landing_btn">เริ่มใช้งาน</string>
@@ -121,6 +123,7 @@
     <string name="month_selector_dialog_title">เลือกปีและเดือน</string>
     <string name="month_selector_month">เดือน</string>
     <string name="month_selector_year">ปี</string>
+    <string name="report_service_failed">บริการรายงานไม่สามารถใช้งานได้ โปรดลองอีกครั้งภายหลัง</string>
     <string name="setting_title">การตั้งค่า</string>
     <string name="setting_google_calendar">เชื่อมต่อ Google Calendar</string>
     <string name="setting_google_calendar_btn">เชื่อมต่อบัญชี Google</string>
@@ -128,4 +131,5 @@
     <string name="setting_language">เปลี่ยนภาษา</string>
     <string name="dialog_change_language_en">ภาษาอังกฤษ</string>
     <string name="dialog_change_language_th">ภาษาไทย</string>
+    <string name="no_internet_title">ไม่มีการเชื่อมต่อ Internet</string>
 </resources>

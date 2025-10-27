@@ -36,6 +36,9 @@
     <string name="select_time">Select Time</string>
     <string name="dialog_primary">Confirm</string>
     <string name="dialog_secondary">Abort</string>
+    <string name="no_internet_title">No Internet Connection</string>
+    <string name="no_internet_desc">Please check your internet connection and try again.</string>
+    <string name="failed">Failed</string>
 
     <!--========== LANDING PAGE ==========-->
     <string name="landing_heading">Meet LUMA !</string>
@@ -144,6 +147,7 @@
     <string name="month_selector_dialog_title">Choose Year and Month</string>
     <string name="month_selector_month">Month</string>
     <string name="month_selector_year">Year</string>
+    <string name="report_service_failed">Report service failed, please try again later.</string>
 
     <!--========== SETTING PAGES ==========-->
     <string name="setting_title">Settings</string>
