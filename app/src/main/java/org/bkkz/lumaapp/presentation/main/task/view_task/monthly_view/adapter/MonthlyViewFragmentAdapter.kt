@@ -82,7 +82,13 @@ class MonthlyViewFragmentAdapter(
             taskName.text = task.name
             taskTime.text = OffsetDateTime.parse(task.dateTime)
                 .format(DateTimeFormatter.ofPattern("HH:mm"))
-            taskDesc.text = task.description
+            if(task.description.isNotEmpty() && task.description.isNotBlank()){
+                taskDesc.text =  task.description
+                taskDesc.setTextColor(itemView.context.getColor(R.color.black))
+            }else{
+                taskDesc.text = itemView.context.getString(R.string.view_task_no_description)
+                taskDesc.setTextColor(itemView.context.getColor(R.color.border_color))
+            }
             taskEdit.setOnClickListener {
                 val context = itemView.context
                 val intent = Intent(context, EditTaskActivity::class.java)

@@ -42,8 +42,12 @@ class OneActionDialog(
         super.show()
         imgViewIcon.setImageResource(drawable)
         titleTextView.text = title
-        messageTextView.text = message
-
+        if(message.isEmpty()){
+            messageTextView.visibility = android.view.View.GONE
+        } else {
+            messageTextView.visibility = android.view.View.VISIBLE
+            messageTextView.text = message
+        }
         confirmButton.setOnClickListener {
             onConfirmClickListener?.invoke()
             dismiss()

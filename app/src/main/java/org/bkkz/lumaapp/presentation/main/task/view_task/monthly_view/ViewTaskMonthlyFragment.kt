@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -21,6 +22,7 @@ import org.bkkz.lumaapp.presentation.main.task.view_task.state.ViewTaskEvent
 import org.bkkz.lumaapp.util.mapper.MonthStringMapper
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import java.time.YearMonth
+import java.util.Locale
 
 class ViewTaskMonthlyFragment : Fragment() {
 
@@ -106,7 +108,9 @@ class ViewTaskMonthlyFragment : Fragment() {
     private fun setMonthTitle(ym: YearMonth) {
         val resName = "month_${ym.monthValue}_full"
         val monthText = MonthStringMapper.getString(requireContext(), resName)
-        txtViewCurrentMonth.text = "$monthText ${ym.year}"
+        val currentLang = AppCompatDelegate.getApplicationLocales().get(0)?.language ?: Locale.getDefault().language
+        val yearText = if(currentLang == "th") ym.year + 543 else ym.year
+        txtViewCurrentMonth.text = "$monthText $yearText"
     }
 
 }

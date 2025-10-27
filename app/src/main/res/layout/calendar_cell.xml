@@ -9,7 +9,7 @@
         android:id="@+id/constraintlayout_calendar_cell"
         android:layout_width="30dp"
         android:layout_height="30dp"
-        android:layout_marginBottom="4dp"
+        android:layout_marginVertical="4dp"
         tools:background="@drawable/circ_primary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

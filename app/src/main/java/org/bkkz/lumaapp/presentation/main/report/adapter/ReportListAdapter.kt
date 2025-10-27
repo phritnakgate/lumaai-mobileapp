@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.rajat.pdfviewer.PdfViewerActivity
@@ -17,6 +18,7 @@ import org.bkkz.lumaapp.data.entity.report_history.ReportHistory
 import org.bkkz.lumaapp.presentation.main.report.ReportViewModel
 import org.bkkz.lumaapp.util.dialog.TwoActionDialog
 import org.bkkz.lumaapp.util.mapper.MonthStringMapper
+import java.util.Locale
 
 class ReportListAdapter(
     private val viewModel: ReportViewModel,
@@ -49,8 +51,9 @@ class ReportListAdapter(
             val sepYM = reportYM.split("-").let {
                     if(it.size == 2) Pair(it[0], it[1]) else Pair("", "")
             }
+            val currentLang = AppCompatDelegate.getApplicationLocales().get(0)?.language ?: Locale.getDefault().language
             val monthText = MonthStringMapper.getString(holder.itemView.context, "month_${sepYM.second.toInt()}_full") ?: sepYM.second
-            "$reportName ($monthText ${sepYM.first})"
+            "$reportName ($monthText ${if(currentLang == "th") sepYM.first.toInt() + 543 else sepYM.first})"
         }
         else {items[position].fileName}
         holder.txtFileName.text = decoratedFileName

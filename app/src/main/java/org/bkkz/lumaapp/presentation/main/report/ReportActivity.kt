@@ -11,6 +11,7 @@ import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -30,6 +31,7 @@ import org.bkkz.lumaapp.util.dialog.OneActionDialog
 import org.bkkz.lumaapp.util.enums.ServiceState
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.Calendar
+import java.util.Locale
 
 
 class ReportActivity : AppCompatActivity() {
@@ -181,8 +183,8 @@ class ReportActivity : AppCompatActivity() {
                 child.setTextAppearance(R.style.LumaAI_TextAppearance_BodyMedium)
             }
         }
-
-        val thisYear = Calendar.getInstance().get(Calendar.YEAR)
+        val currentLang = AppCompatDelegate.getApplicationLocales().get(0)?.language ?: Locale.getDefault().language
+        val thisYear = if(currentLang == "th") Calendar.getInstance().get(Calendar.YEAR) + 543 else Calendar.getInstance().get(Calendar.YEAR)
         yearPicker.minValue = thisYear - 50
         yearPicker.maxValue = thisYear + 50
         yearPicker.value = thisYear
@@ -198,7 +200,7 @@ class ReportActivity : AppCompatActivity() {
             .setView(dialogView)
             .setPositiveButton(getString(R.string.dialog_primary)) { dialog, _ ->
                 val selectedMonth = monthPicker.value
-                val selectedYear = yearPicker.value
+                val selectedYear = if(currentLang == "th") yearPicker.value - 543 else yearPicker.value
                 val monthString = if(selectedMonth < 10) "0$selectedMonth" else "$selectedMonth"
                 val reportYM = "$selectedYear-$monthString"
                 viewModel.onEvent(ReportActivityEvent.OnGenerateMonthlyReport(this@ReportActivity, reportYM))
