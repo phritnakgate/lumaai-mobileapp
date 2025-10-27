@@ -27,7 +27,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="@string/sun"
-                android:textAppearance="@style/LumaAI.TextAppearance.BodyMedium.Eng"
+                android:textAppearance="@style/LumaAI.TextAppearance.BodyMedium"
                 />
 
             <TextView
@@ -36,7 +36,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="@string/mon"
-                android:textAppearance="@style/LumaAI.TextAppearance.BodyMedium.Eng"
+                android:textAppearance="@style/LumaAI.TextAppearance.BodyMedium"
                 />
 
             <TextView
@@ -45,7 +45,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="@string/tue"
-                android:textAppearance="@style/LumaAI.TextAppearance.BodyMedium.Eng"
+                android:textAppearance="@style/LumaAI.TextAppearance.BodyMedium"
                 />
 
             <TextView
@@ -54,7 +54,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="@string/wed"
-                android:textAppearance="@style/LumaAI.TextAppearance.BodyMedium.Eng"
+                android:textAppearance="@style/LumaAI.TextAppearance.BodyMedium"
                 />
 
             <TextView
@@ -63,7 +63,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="@string/thu"
-                android:textAppearance="@style/LumaAI.TextAppearance.BodyMedium.Eng"
+                android:textAppearance="@style/LumaAI.TextAppearance.BodyMedium"
                 />
 
             <TextView
@@ -72,7 +72,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="@string/fri"
-                android:textAppearance="@style/LumaAI.TextAppearance.BodyMedium.Eng"
+                android:textAppearance="@style/LumaAI.TextAppearance.BodyMedium"
                 />
 
             <TextView
@@ -81,7 +81,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="@string/sat"
-                android:textAppearance="@style/LumaAI.TextAppearance.BodyMedium.Eng"
+                android:textAppearance="@style/LumaAI.TextAppearance.BodyMedium"
                 />
         </LinearLayout>
         <androidx.recyclerview.widget.RecyclerView

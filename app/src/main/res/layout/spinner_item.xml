@@ -5,7 +5,7 @@
     style="?android:attr/spinnerItemStyle"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:textAppearance="@style/LumaAI.TextAppearance.BodyMedium.Thai"
+    android:textAppearance="@style/LumaAI.TextAppearance.BodyMedium"
     android:padding="12dp"
     android:background="@color/background_primary"
     tools:text = "Spinner สปินเนอร์" />

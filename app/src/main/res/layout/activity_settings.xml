@@ -26,7 +26,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/setting_title"
-            android:textAppearance="@style/LumaAI.TextAppearance.Heading1.Eng"
+            android:textAppearance="@style/LumaAI.TextAppearance.Heading1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/imgview_settings_back"
             app:layout_constraintTop_toTopOf="parent" />
@@ -67,7 +67,7 @@
                 android:text="@string/setting_google_calendar"
                 android:paddingHorizontal="6dp"
                 android:paddingVertical="12dp"
-                android:textAppearance="@style/LumaAI.TextAppearance.Heading4.Eng"
+                android:textAppearance="@style/LumaAI.TextAppearance.Heading4"
                 app:layout_constraintStart_toEndOf="@+id/constraintlayout_settings_google_calendar_icon"
                 app:layout_constraintTop_toTopOf="parent"
                 />
@@ -76,7 +76,7 @@
                 android:id="@+id/txtview_settings_google_calendar_email"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="@style/LumaAI.TextAppearance.BodyMedium.Eng"
+                android:textAppearance="@style/LumaAI.TextAppearance.BodyMedium"
                 android:paddingHorizontal="6dp"
                 android:paddingBottom="12dp"
                 android:textColor="@color/disabled"
@@ -97,7 +97,7 @@
                 android:text="@string/setting_google_calendar_btn"
                 android:textColor="@color/white"
                 android:background="@drawable/rect_secondary"
-                android:textAppearance="@style/LumaAI.TextAppearance.BodyMedium.Thai"
+                android:textAppearance="@style/LumaAI.TextAppearance.BodyMedium"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/constraintlayout_settings_google_calendar_icon"
                 app:layout_constraintTop_toBottomOf="@+id/txtview_settings_google_calendar"
@@ -115,6 +115,50 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 tools:visibility="visible"
                 />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintlayout_settings_language"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/edit_text_bg"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/constraintlayout_settings_google_calendar"
+            >
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintlayout_settings_language_icon"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:background="@drawable/rect_primary"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                >
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_language"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:tint="@color/white" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <TextView
+                android:id="@+id/txtview_settings_language_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/setting_language"
+                android:paddingHorizontal="6dp"
+                android:paddingVertical="12dp"
+                android:textAppearance="@style/LumaAI.TextAppearance.BodyLarge"
+                app:layout_constraintStart_toEndOf="@+id/constraintlayout_settings_language_icon"
+                app:layout_constraintTop_toTopOf="parent"
+                />
+
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 

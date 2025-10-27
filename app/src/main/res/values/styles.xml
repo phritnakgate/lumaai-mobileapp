@@ -1,83 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!--========= ENG STYLE =========-->
     <!-- Heading 1 -->
-    <style name="LumaAI.TextAppearance.Heading1.Eng" parent="TextAppearance.AppCompat">
-        <item name="fontFamily">@font/english_fonts</item>
+    <style name="LumaAI.TextAppearance.Heading1" parent="TextAppearance.AppCompat">
+        <item name="fontFamily">@font/thai_fonts</item>
         <item name="android:textSize">24sp</item>
         <item name="android:textStyle">bold</item>
     </style>
     <!-- Heading 2 -->
-    <style name="LumaAI.TextAppearance.Heading2.Eng" parent="TextAppearance.AppCompat">\
-        <item name="fontFamily">@font/english_fonts</item>
+    <style name="LumaAI.TextAppearance.Heading2" parent="TextAppearance.AppCompat">\
+        <item name="fontFamily">@font/thai_fonts</item>
         <item name="android:textSize">20sp</item>
         <item name="android:textFontWeight">600</item>
     </style>
     <!-- Heading 3 -->
-    <style name="LumaAI.TextAppearance.Heading3.Eng" parent="TextAppearance.AppCompat">\
-        <item name="fontFamily">@font/english_fonts</item>
+    <style name="LumaAI.TextAppearance.Heading3" parent="TextAppearance.AppCompat">\
+        <item name="fontFamily">@font/thai_fonts</item>
         <item name="android:textSize">18sp</item>
         <item name="android:textFontWeight">600</item>
     </style>
-    <!-- Heading 3 -->
-    <style name="LumaAI.TextAppearance.Heading4.Eng" parent="TextAppearance.AppCompat">\
-        <item name="fontFamily">@font/english_fonts</item>
+    <!-- Heading 4 -->
+    <style name="LumaAI.TextAppearance.Heading4" parent="TextAppearance.AppCompat">\
+        <item name="fontFamily">@font/thai_fonts</item>
         <item name="android:textSize">16sp</item>
         <item name="android:textFontWeight">600</item>
     </style>
     <!-- Body Large -->
-    <style name="LumaAI.TextAppearance.BodyLarge.Eng" parent="TextAppearance.AppCompat">
-        <item name="fontFamily">@font/english_fonts</item>
+    <style name="LumaAI.TextAppearance.BodyLarge" parent="TextAppearance.AppCompat">
+        <item name="fontFamily">@font/thai_fonts</item>
         <item name="android:textSize">16sp</item>
     </style>
     <!-- Body Medium -->
-    <style name="LumaAI.TextAppearance.BodyMedium.Eng" parent="TextAppearance.AppCompat">
-        <item name="fontFamily">@font/english_fonts</item>
+    <style name="LumaAI.TextAppearance.BodyMedium" parent="TextAppearance.AppCompat">
+        <item name="fontFamily">@font/thai_fonts</item>
         <item name="android:textSize">14sp</item>
     </style>
     <!-- Body Small -->
-    <style name="LumaAI.TextAppearance.BodySmall.Eng" parent="TextAppearance.AppCompat">
-        <item name="fontFamily">@font/english_fonts</item>
-        <item name="android:textSize">12sp</item>
-    </style>
-
-    <!--========= THAI STYLE =========-->
-    <!-- Heading 1 -->
-    <style name="LumaAI.TextAppearance.Heading1.Thai" parent="TextAppearance.AppCompat">
-        <item name="fontFamily">@font/thai_fonts</item>
-        <item name="android:textSize">24sp</item>
-        <item name="android:textStyle">bold</item>
-    </style>
-    <!-- Heading 2 -->
-    <style name="LumaAI.TextAppearance.Heading2.Thai" parent="TextAppearance.AppCompat">\
-        <item name="fontFamily">@font/thai_fonts</item>
-        <item name="android:textSize">20sp</item>
-        <item name="android:textFontWeight">600</item>
-    </style>
-    <!-- Heading 3 -->
-    <style name="LumaAI.TextAppearance.Heading3.Thai" parent="TextAppearance.AppCompat">\
-        <item name="fontFamily">@font/thai_fonts</item>
-        <item name="android:textSize">18sp</item>
-        <item name="android:textFontWeight">600</item>
-    </style>
-    <!-- Heading 3 -->
-    <style name="LumaAI.TextAppearance.Heading4.Thai" parent="TextAppearance.AppCompat">\
-        <item name="fontFamily">@font/thai_fonts</item>
-        <item name="android:textSize">16sp</item>
-        <item name="android:textFontWeight">600</item>
-    </style>
-    <!-- Body Large -->
-    <style name="LumaAI.TextAppearance.BodyLarge.Thai" parent="TextAppearance.AppCompat">
-        <item name="fontFamily">@font/thai_fonts</item>
-        <item name="android:textSize">16sp</item>
-    </style>
-    <!-- Body Medium -->
-    <style name="LumaAI.TextAppearance.BodyMedium.Thai" parent="TextAppearance.AppCompat">
-        <item name="fontFamily">@font/thai_fonts</item>
-        <item name="android:textSize">14sp</item>
-    </style>
-    <!-- Body Medium -->
-    <style name="LumaAI.TextAppearance.BodySmall.Thai" parent="TextAppearance.AppCompat">
+    <style name="LumaAI.TextAppearance.BodySmall" parent="TextAppearance.AppCompat">
         <item name="fontFamily">@font/thai_fonts</item>
         <item name="android:textSize">12sp</item>
     </style>

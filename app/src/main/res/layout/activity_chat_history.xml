@@ -25,7 +25,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/chat_history_title"
-            android:textAppearance="@style/LumaAI.TextAppearance.Heading1.Eng"
+            android:textAppearance="@style/LumaAI.TextAppearance.Heading1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toEndOf="@+id/imgview_chat_history_back"
@@ -48,7 +48,7 @@
                 android:gravity="center"
                 android:paddingHorizontal="12dp"
                 android:paddingVertical="5dp"
-                android:textAppearance="@style/LumaAI.TextAppearance.BodyMedium.Eng"
+                android:textAppearance="@style/LumaAI.TextAppearance.BodyMedium"
                 android:background="@drawable/rect_primary"
                 android:textColor="@color/white"
                 />
@@ -64,7 +64,7 @@
                 android:gravity="center"
                 android:paddingHorizontal="12dp"
                 android:paddingVertical="5dp"
-                android:textAppearance="@style/LumaAI.TextAppearance.BodyMedium.Eng"
+                android:textAppearance="@style/LumaAI.TextAppearance.BodyMedium"
                 android:background="@drawable/rect_bdcolor"
                 />
             <Space
@@ -79,7 +79,7 @@
                 android:gravity="center"
                 android:paddingHorizontal="12dp"
                 android:paddingVertical="5dp"
-                android:textAppearance="@style/LumaAI.TextAppearance.BodyMedium.Eng"
+                android:textAppearance="@style/LumaAI.TextAppearance.BodyMedium"
                 android:background="@drawable/rect_bdcolor"
                 />
             <Space
@@ -94,7 +94,7 @@
                 android:gravity="center"
                 android:paddingHorizontal="12dp"
                 android:paddingVertical="5dp"
-                android:textAppearance="@style/LumaAI.TextAppearance.BodyMedium.Eng"
+                android:textAppearance="@style/LumaAI.TextAppearance.BodyMedium"
                 android:background="@drawable/rect_bdcolor"
                 />
         </LinearLayout>
@@ -104,7 +104,7 @@
             android:layout_height="wrap_content"
             android:padding="8dp"
             android:layout_marginTop="12dp"
-            android:textAppearance="@style/LumaAI.TextAppearance.BodyMedium.Thai"
+            android:textAppearance="@style/LumaAI.TextAppearance.BodyMedium"
             android:hint="@string/chat_history_search_hint"
             android:drawableTint="@color/disabled"
             android:drawableStart="@drawable/ic_search"
@@ -160,7 +160,7 @@
                 android:text="@string/chat_history_empty"
                 android:textColor="@color/border_color"
                 android:visibility="gone"
-                android:textAppearance="@style/LumaAI.TextAppearance.BodyMedium.Eng"
+                android:textAppearance="@style/LumaAI.TextAppearance.BodyMedium"
                 app:layout_constraintTop_toBottomOf="@+id/imgview_chat_history_no_history"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

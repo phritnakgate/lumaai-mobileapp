@@ -178,7 +178,7 @@ class ReportActivity : AppCompatActivity() {
         for(i in 0 until monthPicker.childCount){
             val child = monthPicker.getChildAt(i)
             if(child is EditText){
-                child.setTextAppearance(R.style.LumaAI_TextAppearance_BodyMedium_Eng)
+                child.setTextAppearance(R.style.LumaAI_TextAppearance_BodyMedium)
             }
         }
 
@@ -190,7 +190,7 @@ class ReportActivity : AppCompatActivity() {
         for(i in 0 until yearPicker.childCount){
             val child = monthPicker.getChildAt(i)
             if(child is EditText){
-                child.setTextAppearance(R.style.LumaAI_TextAppearance_BodyMedium_Eng)
+                child.setTextAppearance(R.style.LumaAI_TextAppearance_BodyMedium)
             }
         }
 
@@ -208,7 +208,7 @@ class ReportActivity : AppCompatActivity() {
 
         dialog.setOnShowListener {
             val positiveBtn = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
-            positiveBtn.setTextAppearance(R.style.LumaAI_TextAppearance_BodyMedium_Eng)
+            positiveBtn.setTextAppearance(R.style.LumaAI_TextAppearance_BodyMedium)
             positiveBtn.setTextColor(getColor(R.color.primary))
         }
 

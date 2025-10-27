@@ -27,6 +27,7 @@ class SplashActivity : AppCompatActivity() {
             val token = tokenManager.getAccessToken()
 
             if (token.isNullOrEmpty() || tokenManager.isRefreshTokenExpired()) {
+                tokenManager.clearTokens()
                 startActivity(Intent(this@SplashActivity, LandingActivity::class.java))
             } else {
                 startActivity(Intent(this@SplashActivity, HomeActivity::class.java))

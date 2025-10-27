@@ -12,7 +12,7 @@
         android:id="@+id/txtview_recycler_report_list_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="@style/LumaAI.TextAppearance.BodyMedium.Eng"
+        android:textAppearance="@style/LumaAI.TextAppearance.BodyMedium"
         tools:text="Monthly Task Report | Sep 2025"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

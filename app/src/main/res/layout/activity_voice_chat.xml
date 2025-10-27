@@ -28,7 +28,7 @@
         android:layout_height="wrap_content"
         android:text="@string/chat_empty"
         android:textColor="@color/white"
-        android:textAppearance="@style/LumaAI.TextAppearance.BodyLarge.Eng"
+        android:textAppearance="@style/LumaAI.TextAppearance.BodyLarge"
         android:paddingVertical="16dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

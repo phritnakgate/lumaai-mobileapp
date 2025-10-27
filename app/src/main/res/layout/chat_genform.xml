@@ -35,7 +35,7 @@
             android:textColor="@color/white"
             tools:text="monthly_task_report_2025-10"
             android:paddingHorizontal="6dp"
-            android:textAppearance="@style/LumaAI.TextAppearance.BodyMedium.Eng"
+            android:textAppearance="@style/LumaAI.TextAppearance.BodyMedium"
             app:layout_constraintStart_toEndOf="@+id/imgview_chat_genform"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"

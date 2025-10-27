@@ -10,7 +10,7 @@
         android:id="@+id/txtview_label_text_area"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="@style/LumaAI.TextAppearance.BodyLarge.Eng"
+        android:textAppearance="@style/LumaAI.TextAppearance.BodyLarge"
         tools:text="Label*" />
 
     <EditText
@@ -26,7 +26,7 @@
         android:paddingTop="16dp"
         android:paddingEnd="50dp"
         android:paddingBottom="16dp"
-        android:textAppearance="@style/LumaAI.TextAppearance.BodyMedium.Eng"
+        android:textAppearance="@style/LumaAI.TextAppearance.BodyMedium"
         app:layout_constraintTop_toBottomOf="@id/txtview_label_text_area"
         tools:hint="Hint" />
 

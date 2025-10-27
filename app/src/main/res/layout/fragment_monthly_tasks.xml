@@ -39,7 +39,7 @@
             android:layout_height="wrap_content"
             android:text="@string/view_task_no_task_today"
             android:textColor="@color/border_color"
-            android:textAppearance="@style/LumaAI.TextAppearance.BodyMedium.Eng"
+            android:textAppearance="@style/LumaAI.TextAppearance.BodyMedium"
             android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@id/imgview_monthly_task_no_task"
             app:layout_constraintBottom_toBottomOf="parent"

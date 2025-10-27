@@ -9,6 +9,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.os.LocaleListCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
@@ -25,6 +28,7 @@ import org.bkkz.lumaapp.util.dialog.LoadingDialog
 import org.bkkz.lumaapp.util.dialog.OneActionDialog
 import org.bkkz.lumaapp.util.enums.ServiceState
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.util.Locale
 
 class SettingsActivity : AppCompatActivity() {
 
@@ -36,6 +40,7 @@ class SettingsActivity : AppCompatActivity() {
     private lateinit var connectAccountBtn: TextView
     private lateinit var disconnectAccountBtn: ImageView
     private lateinit var txtEmail: TextView
+    private lateinit var constraintLanguage: ConstraintLayout
     private lateinit var loadingDialog: LoadingDialog
 
     private val requestCalendarPermissionForResult = registerForActivityResult(
@@ -89,6 +94,7 @@ class SettingsActivity : AppCompatActivity() {
         connectAccountBtn = findViewById(R.id.txtview_settings_google_calendar_connect)
         disconnectAccountBtn = findViewById(R.id.imgview_settings_google_calendar_disconnect)
         txtEmail = findViewById(R.id.txtview_settings_google_calendar_email)
+        constraintLanguage = findViewById(R.id.constraintlayout_settings_language)
         loadingDialog = LoadingDialog(this@SettingsActivity)
     }
 
@@ -136,6 +142,13 @@ class SettingsActivity : AppCompatActivity() {
         connectAccountBtn.setOnClickListener {
             viewModel.clearCredentials(this@SettingsActivity)
             requestCalendarPermission()
+        }
+        constraintLanguage.setOnClickListener {
+            val currentLang = AppCompatDelegate.getApplicationLocales().get(0)?.language
+                ?: Locale.getDefault().language
+            val newLang = if (currentLang == "th") "en" else "th"
+            val newLocaleList = LocaleListCompat.forLanguageTags(newLang)
+            AppCompatDelegate.setApplicationLocales(newLocaleList)
         }
     }
 

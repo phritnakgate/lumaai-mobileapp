@@ -10,7 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/read_all_bottomsheet_title"
-        android:textAppearance="@style/LumaAI.TextAppearance.Heading4.Eng"
+        android:textAppearance="@style/LumaAI.TextAppearance.Heading4"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         />
@@ -34,7 +34,7 @@
             android:id="@+id/txtview_bottomsheet_readall_body"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAppearance="@style/LumaAI.TextAppearance.BodyMedium.Thai"
+            android:textAppearance="@style/LumaAI.TextAppearance.BodyMedium"
             tools:text="@tools:sample/lorem/random"
             />
 
