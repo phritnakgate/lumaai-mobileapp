@@ -34,6 +34,7 @@ import com.google.firebase.auth.auth
 import kotlinx.coroutines.launch
 import org.bkkz.lumaapp.BuildConfig
 import org.bkkz.lumaapp.R
+import org.bkkz.lumaapp.presentation.auth.forget.ForgetPasswordActivity
 import org.bkkz.lumaapp.presentation.auth.login.state.LoginEvent
 import org.bkkz.lumaapp.presentation.auth.register.RegisterActivity
 import org.bkkz.lumaapp.presentation.main.home.HomeActivity
@@ -53,6 +54,7 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var emailSignInBtn: AppCompatButton
     private lateinit var googleSignInBtn : ConstraintLayout
     private lateinit var txtSignUp : TextView
+    private lateinit var txtForgetPassword : TextView
     private lateinit var loadingDialog: LoadingDialog
 
     //Google Auth
@@ -113,6 +115,7 @@ class LoginActivity : AppCompatActivity() {
         emailSignInBtn = findViewById(R.id.compatbtn_login_login)
         googleSignInBtn = findViewById(R.id.constraintlayout_login_google_button)
         txtSignUp = findViewById(R.id.txtview_login_register)
+        txtForgetPassword = findViewById(R.id.txtview_login_forget)
         loadingDialog = LoadingDialog(this@LoginActivity)
     }
     private fun setupViews(){
@@ -176,6 +179,9 @@ class LoginActivity : AppCompatActivity() {
         setupSignUpBtn()
         setupEdtEmail()
         setupEdtPassword()
+        txtForgetPassword.setOnClickListener {
+            startActivity(Intent(this@LoginActivity, ForgetPasswordActivity::class.java))
+        }
     }
 
     private fun setupEmailSignInBtn(){

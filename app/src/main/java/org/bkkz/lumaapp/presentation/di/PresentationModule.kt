@@ -1,5 +1,6 @@
 package org.bkkz.lumaapp.presentation.di
 
+import org.bkkz.lumaapp.presentation.auth.forget.ForgetPasswordViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
@@ -25,4 +26,5 @@ val presentationModules = module {
     viewModel { ChatViewModel(get()) }
     viewModel { ReportViewModel(get()) }
     viewModel { SettingsViewModel(get()) }
+    viewModel { ForgetPasswordViewModel(get()) }
 }

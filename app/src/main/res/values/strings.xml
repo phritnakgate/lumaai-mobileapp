@@ -159,4 +159,13 @@
     <!--========== CHANGE LANG DIALOG ==========-->
     <string name="dialog_change_language_en">English</string>
     <string name="dialog_change_language_th">Thai</string>
+
+    <!--========== FORGET PASSWORD ==========-->
+    <string name="forget_password_title">Forget Your Password?</string>
+    <string name="forget_password_login_pg"><u>Forget Your Password?</u></string>
+    <string name="forget_password_btn">Reset Password</string>
+    <string name="forget_password_back"><u>Back To Login Page</u></string>
+    <string name="forget_password_dialog_success_title">Reset Password Email Sent!</string>
+    <string name="forget_password_dialog_failed_title">Reset Password Request Failed!</string>
+    <string name="forget_password_dialog_failed_desc">This email is not registered.</string>
 </resources>

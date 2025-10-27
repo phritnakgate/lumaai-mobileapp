@@ -6,6 +6,7 @@ import org.bkkz.lumaapp.data.entity.auth.EmailSignInRequest
 import org.bkkz.lumaapp.data.entity.auth.EmailSignInResponse
 import org.bkkz.lumaapp.data.entity.auth.GoogleSignInRequest
 import org.bkkz.lumaapp.data.entity.auth.LogoutRequest
+import org.bkkz.lumaapp.data.entity.auth.ResetPasswordRequest
 import org.bkkz.lumaapp.data.entity.auth.TokenRequest
 import org.bkkz.lumaapp.data.entity.auth.TokenResponse
 import org.bkkz.lumaapp.data.entity.chat.LLMChatRequest
@@ -53,6 +54,11 @@ interface LumaApi {
     @POST("auth/logout")
     suspend fun logout(
         @Body logoutRequest: LogoutRequest
+    ) : Response<Unit>
+
+    @POST("auth/reset-password")
+    suspend fun resetPassword(
+        @Body resetPasswordRequest: ResetPasswordRequest
     ) : Response<Unit>
 
     /*=========== TASK API ===========*/

@@ -132,4 +132,11 @@
     <string name="dialog_change_language_en">ภาษาอังกฤษ</string>
     <string name="dialog_change_language_th">ภาษาไทย</string>
     <string name="no_internet_title">ไม่มีการเชื่อมต่อ Internet</string>
+    <string name="forget_password_title">ลืมรหัสผ่าน?</string>
+    <string name="forget_password_login_pg"><u>ลืมรหัสผ่าน?</u></string>
+    <string name="forget_password_btn">รีเซ็ตรหัสผ่าน</string>
+    <string name="forget_password_back"><u>กลับไปหน้าเข้าสู่ระบบ</u></string>
+    <string name="forget_password_dialog_success_title">คำขอรีเซ็ตรหัสผ่านถูกส่งแล้ว</string>
+    <string name="forget_password_dialog_failed_title">ไม่สามารถส่งคำขอรีเซ็ตรหัสผ่าน</string>
+    <string name="forget_password_dialog_failed_desc">อีเมลนี้ยังไม่เคยลงทะเบียนในระบบ</string>
 </resources>

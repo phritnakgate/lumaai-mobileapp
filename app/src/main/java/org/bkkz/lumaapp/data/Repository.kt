@@ -10,6 +10,7 @@ import org.bkkz.lumaapp.data.entity.auth.EmailSignInRequest
 import org.bkkz.lumaapp.data.entity.auth.EmailSignInResponse
 import org.bkkz.lumaapp.data.entity.auth.GoogleSignInRequest
 import org.bkkz.lumaapp.data.entity.auth.LogoutRequest
+import org.bkkz.lumaapp.data.entity.auth.ResetPasswordRequest
 import org.bkkz.lumaapp.data.entity.auth.TokenRequest
 import org.bkkz.lumaapp.data.entity.chat.LLMChatRequest
 import org.bkkz.lumaapp.data.entity.chat.LLMProcess
@@ -294,6 +295,20 @@ class Repository(
         val hashedBytes = digest.digest(codeVerifier.toByteArray(StandardCharsets.US_ASCII))
         val codeChallenge = Base64.getUrlEncoder().withoutPadding().encodeToString(hashedBytes)
         return Pair(codeVerifier, codeChallenge)
+    }
+
+    suspend fun resetPassword(email: String) = withContext(Dispatchers.IO)  {
+        try {
+            val response = lumaApi.resetPassword(ResetPasswordRequest(email))
+            if (response.isSuccessful){
+                ApiResult.Success(null)
+            }else{
+                ApiResult.Error(Exception("Failed to reset password"))
+            }
+        } catch (e: Exception) {
+            ApiResult.Error(e)
+            Log.e("AuthRepository", "Reset Password Request failed", e)
+        }
     }
 
     /*=========== TASK API ===========*/
