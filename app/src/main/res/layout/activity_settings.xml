@@ -131,9 +131,10 @@
                 android:id="@+id/constraintlayout_settings_language_icon"
                 android:layout_width="45dp"
                 android:layout_height="45dp"
-                android:background="@drawable/rect_primary"
+                android:background="@drawable/rect_secondary"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
                 >
                 <ImageView
                     android:layout_width="wrap_content"

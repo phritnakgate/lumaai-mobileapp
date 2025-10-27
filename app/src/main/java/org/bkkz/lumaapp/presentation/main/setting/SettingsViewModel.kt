@@ -2,6 +2,7 @@ package org.bkkz.lumaapp.presentation.main.setting
 
 import android.content.Context
 import android.util.Log
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.credentials.ClearCredentialStateRequest
 import androidx.credentials.CredentialManager
 import androidx.lifecycle.ViewModel
@@ -16,6 +17,7 @@ import org.bkkz.lumaapp.data.remote.ApiResult
 import org.bkkz.lumaapp.presentation.main.setting.state.SettingsEvent
 import org.bkkz.lumaapp.presentation.main.setting.state.SettingsState
 import org.bkkz.lumaapp.util.enums.ServiceState
+import java.util.Locale
 
 class SettingsViewModel(private val repository: Repository) : ViewModel() {
 
@@ -26,12 +28,14 @@ class SettingsViewModel(private val repository: Repository) : ViewModel() {
         when(event) {
             is SettingsEvent.OnLoadServiceStatus -> {
                 _state.update { it.copy(serviceState = ServiceState.LOADING) }
-                checkGoogleCalendarConnection()
+                loadServiceStatus()
             }
         }
     }
 
-    fun checkGoogleCalendarConnection() {
+    fun loadServiceStatus() {
+        val currentLang = AppCompatDelegate.getApplicationLocales().get(0)?.language ?: Locale.getDefault().language
+
         viewModelScope.launch {
             val response = repository.getUserData()
             when(response){
@@ -40,6 +44,7 @@ class SettingsViewModel(private val repository: Repository) : ViewModel() {
                     if(userInfo != null){
                         Log.d("SettingsViewModel", "UserInfo: $userInfo")
                         _state.update { it.copy(
+                            currentLanguage = currentLang,
                             isConnectedToCalendar = !userInfo.googleRefreshToken.isNullOrEmpty(),
                             isLoginViaGoogle = userInfo.provider == 1,
                             googleCalendarEmail = userInfo.googleCalendarEmail,
@@ -94,6 +99,12 @@ class SettingsViewModel(private val repository: Repository) : ViewModel() {
         viewModelScope.launch {
             val credentialManager = CredentialManager.create(context)
             credentialManager.clearCredentialState(ClearCredentialStateRequest())
+        }
+    }
+
+    fun changeAppLanguage(languageCode: String){
+        viewModelScope.launch {
+            _state.update { it.copy(currentLanguage = languageCode) }
         }
     }
 }

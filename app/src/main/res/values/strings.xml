@@ -149,5 +149,10 @@
     <string name="setting_title">Settings</string>
     <string name="setting_google_calendar">Connect To Google Calendar</string>
     <string name="setting_google_calendar_btn">Connect Google Account</string>
-    <string name="setting_language">Change to Thai Language</string>
+    <string name="setting_google_calendar_email">Signed in as %1$s</string>
+    <string name="setting_language">Change Language</string>
+
+    <!--========== CHANGE LANG DIALOG ==========-->
+    <string name="dialog_change_language_en">English</string>
+    <string name="dialog_change_language_th">Thai</string>
 </resources>

@@ -1,15 +1,20 @@
 package org.bkkz.lumaapp.presentation.main.setting
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
+import android.widget.RadioButton
+import android.widget.RadioGroup
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.os.LocaleListCompat
 import androidx.core.view.ViewCompat
@@ -28,7 +33,6 @@ import org.bkkz.lumaapp.util.dialog.LoadingDialog
 import org.bkkz.lumaapp.util.dialog.OneActionDialog
 import org.bkkz.lumaapp.util.enums.ServiceState
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.util.Locale
 
 class SettingsActivity : AppCompatActivity() {
 
@@ -107,7 +111,7 @@ class SettingsActivity : AppCompatActivity() {
                 when (state.serviceState) {
                     ServiceState.IDLE -> {}
                     ServiceState.LOADING -> {
-                        loadingDialog.show()
+                        //loadingDialog.show()
                     }
                     ServiceState.SUCCESS -> {
                         loadingDialog.dismiss()
@@ -118,7 +122,7 @@ class SettingsActivity : AppCompatActivity() {
                         } else {
                             connectAccountBtn.visibility = View.GONE
                             txtEmail.visibility = View.VISIBLE
-                            txtEmail.text = "Signed in as ${state.googleCalendarEmail}"
+                            txtEmail.text = getString(R.string.setting_google_calendar_email, state.googleCalendarEmail)
                             if (state.isLoginViaGoogle) {
                                 disconnectAccountBtn.visibility = View.GONE
                             } else {
@@ -144,11 +148,7 @@ class SettingsActivity : AppCompatActivity() {
             requestCalendarPermission()
         }
         constraintLanguage.setOnClickListener {
-            val currentLang = AppCompatDelegate.getApplicationLocales().get(0)?.language
-                ?: Locale.getDefault().language
-            val newLang = if (currentLang == "th") "en" else "th"
-            val newLocaleList = LocaleListCompat.forLanguageTags(newLang)
-            AppCompatDelegate.setApplicationLocales(newLocaleList)
+            selectLanguageDialog()
         }
     }
 
@@ -189,6 +189,59 @@ class SettingsActivity : AppCompatActivity() {
             }
 
         }
-
     }
+
+    private fun selectLanguageDialog(){
+        val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_change_language, null)
+        val langSelector = dialogView.findViewById<RadioGroup>(R.id.radiogroup_dialog_change_language_options)
+        val radioEn = dialogView.findViewById<RadioButton>(R.id.radiobtn_dialog_change_language_en)
+        val radioTh = dialogView.findViewById<RadioButton>(R.id.radiobtn_dialog_change_language_th)
+        when(viewModel.state.value.currentLanguage){
+            "en-US" -> {
+                radioEn.background = AppCompatResources.getDrawable(this, R.drawable.lang_radio_selected)
+                langSelector.check(R.id.radiobtn_dialog_change_language_en)
+            }
+            "th" -> {
+                radioTh.background = AppCompatResources.getDrawable(this, R.drawable.lang_radio_selected)
+                langSelector.check(R.id.radiobtn_dialog_change_language_th)
+            }
+            else -> {
+                radioEn.background = AppCompatResources.getDrawable(this, R.drawable.lang_radio_selected)
+                langSelector.check(R.id.radiobtn_dialog_change_language_en)
+            }
+        }
+        radioEn.setOnCheckedChangeListener { _, isChecked ->
+            if(isChecked){
+                viewModel.changeAppLanguage("en-US")
+                radioTh.background = AppCompatResources.getDrawable(this, R.drawable.edit_text_bg)
+                radioEn.background = AppCompatResources.getDrawable(this, R.drawable.lang_radio_selected)
+            }
+        }
+
+        radioTh.setOnCheckedChangeListener { _, isChecked ->
+            if(isChecked){
+                viewModel.changeAppLanguage("th")
+                radioTh.background = AppCompatResources.getDrawable(this, R.drawable.lang_radio_selected)
+                radioEn.background = AppCompatResources.getDrawable(this, R.drawable.edit_text_bg)
+            }
+        }
+
+        val dialog = AlertDialog.Builder(this)
+            .setView(dialogView)
+            .setPositiveButton(getString(R.string.dialog_primary)) { dialog, _ ->
+                val newLocaleList = LocaleListCompat.forLanguageTags(viewModel.state.value.currentLanguage)
+                AppCompatDelegate.setApplicationLocales(newLocaleList)
+                dialog.dismiss()
+            }
+            .create()
+
+        dialog.setOnShowListener {
+            val positiveBtn = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+            positiveBtn.setTextAppearance(R.style.LumaAI_TextAppearance_BodyMedium)
+            positiveBtn.setTextColor(getColor(R.color.primary))
+        }
+
+        dialog.show()
+    }
+
 }

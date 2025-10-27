@@ -196,7 +196,7 @@ class ReportActivity : AppCompatActivity() {
 
         val dialog = AlertDialog.Builder(this)
             .setView(dialogView)
-            .setPositiveButton("OK") { dialog, _ ->
+            .setPositiveButton(getString(R.string.dialog_primary)) { dialog, _ ->
                 val selectedMonth = monthPicker.value
                 val selectedYear = yearPicker.value
                 val monthString = if(selectedMonth < 10) "0$selectedMonth" else "$selectedMonth"

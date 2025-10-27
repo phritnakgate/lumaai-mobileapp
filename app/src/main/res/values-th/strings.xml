@@ -124,5 +124,8 @@
     <string name="setting_title">การตั้งค่า</string>
     <string name="setting_google_calendar">เชื่อมต่อ Google Calendar</string>
     <string name="setting_google_calendar_btn">เชื่อมต่อบัญชี Google</string>
-    <string name="setting_language">เปลี่ยนเป็นภาษาอังกฤษ</string>
+    <string name="setting_google_calendar_email">เชื่อมต่อกับอีเมล %1$s</string>
+    <string name="setting_language">เปลี่ยนภาษา</string>
+    <string name="dialog_change_language_en">ภาษาอังกฤษ</string>
+    <string name="dialog_change_language_th">ภาษาไทย</string>
 </resources>
