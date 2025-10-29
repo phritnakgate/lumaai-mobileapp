@@ -135,8 +135,8 @@ class TaskListAdapter(
             if (userEmail == null) {
                 OneActionDialog(holder.itemView.context).show(
                     drawable = R.drawable.ic_dialog_no,
-                    title = "Error",
-                    message = "Please connect to Google Calendar first!",
+                    title = holder.itemView.context.getString(R.string.failed),
+                    message = holder.itemView.context.getString(R.string.view_task_add_ggcalendar_failed),
                     onConfirmClickListener = {}
                 )
                 return@setOnClickListener
@@ -161,6 +161,8 @@ class TaskListAdapter(
                     startTime = startDate.toStringRfc3339(),
                     endTime = endDate.toStringRfc3339(),
                     ownerEmail = userEmail,
+                    appCategory = item.category,
+                    appPriority = item.priority
                 )
 
                 Log.i(
@@ -168,25 +170,13 @@ class TaskListAdapter(
                     "Event Name: ${calendarEventRequest.name}\nEvent Desc: ${calendarEventRequest.description}\nEvent Date: ${calendarEventRequest.startTime} ==> ${calendarEventRequest.endTime}"
                 )
 
-                viewModel.insertToGoogleCalendar(item, calendarEventRequest)
-                OneActionDialog(holder.itemView.context).show(
-                    drawable = R.drawable.ic_dialog_success,
-                    title = "Add to calendar Success!",
-                    message = "",
-                    onConfirmClickListener = {
-                    }
-                )
+                viewModel.insertToGoogleCalendar(holder.itemView.context, item, calendarEventRequest)
 
             } catch (e: UserRecoverableAuthIOException) {
                 onPermissionNeeded(e.intent)
             } catch (e: Exception) {
                 Log.d("TaskListAdapter", e.message.toString())
-                OneActionDialog(holder.itemView.context).show(
-                    drawable = R.drawable.ic_dialog_no,
-                    title = "Error",
-                    message = e.message.toString(),
-                    onConfirmClickListener = {}
-                )
+
             }
         }
         val category = getItem(position).category
@@ -217,6 +207,7 @@ class TaskListAdapter(
         )
         if (getItem(position).isGoogleCalendarTask) {
             holder.ggCalendarText.visibility = View.GONE
+            holder.ggCalendar.setOnClickListener { null }
         } else {
             holder.ggCalendarText.visibility = View.VISIBLE
         }

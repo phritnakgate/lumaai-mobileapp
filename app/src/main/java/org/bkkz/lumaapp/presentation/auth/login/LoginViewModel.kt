@@ -19,8 +19,15 @@ class LoginViewModel(private val repository: Repository) : ViewModel() {
             _state.value = LoginEvent.Loading
             when(val result = repository.loginWithEmail(email, password)){
                 is ApiResult.Success -> {
-                    _state.value = LoginEvent.Success(email)
-
+                    val userDataResult = repository.getUserData()
+                    when(userDataResult){
+                        is ApiResult.Success -> {
+                            _state.value = LoginEvent.Success(email, userDataResult.data?.googleCalendarEmail)
+                        }
+                        is ApiResult.Error -> {
+                            _state.value = LoginEvent.Error(userDataResult.exception.message ?: "Login failed with unknown error :(")
+                        }
+                    }
                 }
 
                 is ApiResult.Error -> _state.value = LoginEvent.Error(result.exception.message ?: "Login failed with unknown error :(")
@@ -51,5 +58,9 @@ class LoginViewModel(private val repository: Repository) : ViewModel() {
             repository.logout()
             _state.value = LoginEvent.Idle
         }
+    }
+
+    fun setIdleState(){
+        _state.value = LoginEvent.Idle
     }
 }

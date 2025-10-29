@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.rajat.pdfviewer.PdfRendererView
 import com.rajat.pdfviewer.PdfViewerActivity
 import com.rajat.pdfviewer.PdfViewerActivity.Companion.ENABLE_FILE_DOWNLOAD
+import com.rajat.pdfviewer.util.CacheStrategy
 import com.rajat.pdfviewer.util.saveTo
 import org.bkkz.lumaapp.R
 import org.bkkz.lumaapp.data.entity.task.Task
@@ -200,7 +201,8 @@ class ChatAdapter(
                     path = genForm.url,
                     pdfTitle = File(genForm.url).name,
                     saveTo = saveTo.ASK_EVERYTIME,
-                    fromAssets = false
+                    fromAssets = false,
+                    cacheStrategy = CacheStrategy.DISABLE_CACHE
                 )
                 pdfViewerActivity.putExtra(ENABLE_FILE_DOWNLOAD, true)
                 itemView.context.startActivity(pdfViewerActivity)

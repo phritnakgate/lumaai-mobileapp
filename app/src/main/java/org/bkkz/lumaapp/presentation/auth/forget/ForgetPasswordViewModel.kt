@@ -22,12 +22,13 @@ class ForgetPasswordViewModel(private val repository: Repository) : ViewModel() 
     fun onEvent(event: ForgetPasswordEvent){
         when(event){
             is ForgetPasswordEvent.OnEmailChange -> {
+                val isValid = event.email.isEmpty() || Patterns.EMAIL_ADDRESS.matcher(
+                    event.email
+                ).matches()
                 _state.update {
                     it.copy(
                         email = event.email,
-                        isEmailValid = event.email.isEmpty() || !Patterns.EMAIL_ADDRESS.matcher(
-                            event.email
-                        ).matches()
+                        isEmailValid = isValid
                     )
                 }
             }
@@ -37,7 +38,7 @@ class ForgetPasswordViewModel(private val repository: Repository) : ViewModel() 
                         serviceState = ServiceState.LOADING
                     )
                 }
-                if(state.value.isEmailValid){
+                if(state.value.isEmailValid == false || state.value.email.isNullOrEmpty()){
                     _state.update {
                         it.copy(
                             serviceState = ServiceState.FAILED

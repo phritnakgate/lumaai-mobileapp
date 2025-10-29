@@ -11,7 +11,6 @@ import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import org.bkkz.lumaapp.R
 import org.bkkz.lumaapp.presentation.auth.forget.state.ForgetPasswordEvent
-import org.bkkz.lumaapp.presentation.main.task.add_task.state.AddTaskEvent
 import org.bkkz.lumaapp.util.LabelEditText
 import org.bkkz.lumaapp.util.dialog.LoadingDialog
 import org.bkkz.lumaapp.util.dialog.OneActionDialog
@@ -53,7 +52,7 @@ class ForgetPasswordActivity : AppCompatActivity() {
     private fun setupView() {
         lifecycleScope.launch {
             viewModel.state.collect { state ->
-                if(!state.isEmailValid){
+                if(state.isEmailValid == true || state.isEmailValid == null){
                     edtEmail.setError(false)
                 }else{
                     edtEmail.setError(true)

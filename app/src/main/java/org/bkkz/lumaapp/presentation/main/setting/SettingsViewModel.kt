@@ -1,6 +1,7 @@
 package org.bkkz.lumaapp.presentation.main.setting
 
 import android.content.Context
+import android.content.Context.MODE_PRIVATE
 import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.credentials.ClearCredentialStateRequest
@@ -18,6 +19,9 @@ import org.bkkz.lumaapp.presentation.main.setting.state.SettingsEvent
 import org.bkkz.lumaapp.presentation.main.setting.state.SettingsState
 import org.bkkz.lumaapp.util.enums.ServiceState
 import java.util.Locale
+import androidx.core.content.edit
+import org.bkkz.lumaapp.R
+import org.bkkz.lumaapp.util.dialog.OneActionDialog
 
 class SettingsViewModel(private val repository: Repository) : ViewModel() {
 
@@ -60,11 +64,16 @@ class SettingsViewModel(private val repository: Repository) : ViewModel() {
         }
     }
 
-    fun revokeCalendarConnection(){
+    fun revokeCalendarConnection(context: Context){
         viewModelScope.launch {
             val response = repository.revokeGoogleCalendarAuth()
+            val sharedPref = context.getSharedPreferences("userSession", MODE_PRIVATE)
             when(response){
                 is ApiResult.Success -> {
+                    sharedPref.edit {
+                        remove("googleCalendarEmail")
+                        apply()
+                    }
                     _state.update { it.copy(
                         googleCalendarEmail = null,
                         isConnectedToCalendar = false,
@@ -78,7 +87,7 @@ class SettingsViewModel(private val repository: Repository) : ViewModel() {
         }
     }
 
-    fun saveCalendarRefreshToken(authCode : String, email: String){
+    fun saveCalendarRefreshToken(context: Context, authCode : String, email: String){
         viewModelScope.launch {
             val response = repository.authToCalendarService(authCode, email)
             when(response){
@@ -87,9 +96,19 @@ class SettingsViewModel(private val repository: Repository) : ViewModel() {
                         it.copy(isConnectedToCalendar = true, serviceState = ServiceState.SUCCESS)
                     }
                     onEvent(SettingsEvent.OnLoadServiceStatus)
+                    OneActionDialog(context).show(
+                        drawable = R.drawable.ic_dialog_success,
+                        title = context.getString(R.string.login_ggc_completed_dialog_title),
+                        message = "",
+                    )
                 }
                 is ApiResult.Error -> {
                     _state.update { it.copy(isConnectedToCalendar = false, serviceState = ServiceState.FAILED) }
+                    OneActionDialog(context).show(
+                        drawable = R.drawable.ic_dialog_no,
+                        title = context.getString(R.string.login_ggc_failed_dialog_title),
+                        message = context.getString(R.string.login_ggc_failed_dialog_desc),
+                    )
                 }
             }
         }

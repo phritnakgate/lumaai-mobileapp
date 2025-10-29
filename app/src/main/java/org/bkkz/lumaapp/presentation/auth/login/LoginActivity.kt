@@ -151,7 +151,7 @@ class LoginActivity : AppCompatActivity() {
                             if(flag == "email") {
                                 sharedPref.edit().apply{
                                     putString("email", state.email)
-                                    putString("googleCalendarEmail", null)
+                                    putString("googleCalendarEmail", state.googleCalendarEmail)
                                     apply()
                                 }
                                 val intent = Intent(this@LoginActivity, HomeActivity::class.java)
@@ -290,6 +290,7 @@ class LoginActivity : AppCompatActivity() {
 
     private fun setupSignUpBtn(){
         txtSignUp.setOnClickListener {
+            viewModel.setIdleState()
             val intent = Intent(this@LoginActivity, RegisterActivity::class.java)
             startActivity(intent)
         }

@@ -1,5 +1,6 @@
 package org.bkkz.lumaapp.presentation.main.task.view_task
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,6 +9,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.bkkz.lumaapp.R
 import org.bkkz.lumaapp.data.Repository
 import org.bkkz.lumaapp.data.entity.google_calendar.CalendarEventRequest
 import org.bkkz.lumaapp.data.entity.task.EditTaskRequest
@@ -16,6 +18,7 @@ import org.bkkz.lumaapp.data.local.UserTaskEntity
 import org.bkkz.lumaapp.data.remote.ApiResult
 import org.bkkz.lumaapp.presentation.main.task.view_task.state.ViewTaskEvent
 import org.bkkz.lumaapp.presentation.main.task.view_task.state.ViewTaskState
+import org.bkkz.lumaapp.util.dialog.OneActionDialog
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
@@ -178,13 +181,13 @@ class ViewTaskViewModel(private val repository: Repository) : ViewModel() {
         }
     }
 
-    fun insertToGoogleCalendar(oldTask : Task, calendarEventRequest: CalendarEventRequest){
+    fun insertToGoogleCalendar(context: Context, oldTask : Task, calendarEventRequest: CalendarEventRequest){
         viewModelScope.launch {
-            repository.deleteTask(oldTask.id)
-            repository.deleteLocalUserTaskById(oldTask.id)
             val result = repository.insertGoogleCalendarEvent(calendarEventRequest)
             when(result){
                 is ApiResult.Success -> {
+                    repository.deleteTask(oldTask.id)
+                    repository.deleteLocalUserTaskById(oldTask.id)
                     repository.insertLocalUserTask(UserTaskEntity(
                         id = result.data!!,
                         name = oldTask.name,
@@ -198,9 +201,22 @@ class ViewTaskViewModel(private val repository: Repository) : ViewModel() {
                     ))
                     onEvent(ViewTaskEvent.LoadFirstTimeTasks)
                     Log.d("ViewTaskViewModel", "Successfully inserted to Google Calendar with event ID: ${result.data}")
+                    OneActionDialog(context).show(
+                        drawable = R.drawable.ic_dialog_success,
+                        title = context.getString(R.string.view_task_add_ggcalendar_success),
+                        message = "",
+                        onConfirmClickListener = {
+                        }
+                    )
                 }
                 is ApiResult.Error -> {
                     Log.e("ViewTaskViewModel", "Error inserting to Google Calendar: ${result.exception}")
+                    OneActionDialog(context).show(
+                        drawable = R.drawable.ic_dialog_no,
+                        title = context.getString(R.string.failed),
+                        message = context.getString(R.string.login_ggc_failed_dialog_desc),
+                        onConfirmClickListener = {}
+                    )
                 }
             }
         }

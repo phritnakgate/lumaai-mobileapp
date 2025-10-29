@@ -4,6 +4,6 @@ import org.bkkz.lumaapp.util.enums.ServiceState
 
 data class ForgetPasswordState (
     val email: String? = null,
-    val isEmailValid: Boolean = true,
+    val isEmailValid: Boolean? = null,
     val serviceState: ServiceState = ServiceState.IDLE,
 )

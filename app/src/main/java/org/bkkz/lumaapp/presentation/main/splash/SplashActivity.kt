@@ -6,6 +6,7 @@ import android.net.NetworkCapabilities
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import org.bkkz.lumaapp.R
@@ -24,6 +25,7 @@ class SplashActivity : AppCompatActivity() {
         val splashScreen = installSplashScreen()
 
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         setContentView(R.layout.activity_splash)
         if(!isNetworkAvailable()){
             OneActionDialog(this).show(

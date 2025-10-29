@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.edit
 import androidx.core.os.LocaleListCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -57,12 +58,7 @@ class SettingsActivity : AppCompatActivity() {
             val authCode = authorizationResult.serverAuthCode
 
             if (!authCode.isNullOrEmpty()) {
-                viewModel.saveCalendarRefreshToken(authCode, "")
-                OneActionDialog(this@SettingsActivity).show(
-                    drawable = R.drawable.ic_dialog_success,
-                    title = getString(R.string.login_ggc_completed_dialog_title),
-                    message = "",
-                )
+                viewModel.saveCalendarRefreshToken(this@SettingsActivity, authCode, "")
             } else {
                 Log.e("SettingsActivity", "Google Calendar authorization failed: authCode(authCode=$authCode)")
             }
@@ -123,6 +119,11 @@ class SettingsActivity : AppCompatActivity() {
                             connectAccountBtn.visibility = View.GONE
                             txtEmail.visibility = View.VISIBLE
                             txtEmail.text = getString(R.string.setting_google_calendar_email, state.googleCalendarEmail)
+                            val sharedPref = getSharedPreferences("userSession", MODE_PRIVATE)
+                            sharedPref.edit {
+                                putString("googleCalendarEmail", state.googleCalendarEmail)
+                                apply()
+                            }
                             if (state.isLoginViaGoogle) {
                                 disconnectAccountBtn.visibility = View.GONE
                             } else {
@@ -141,7 +142,7 @@ class SettingsActivity : AppCompatActivity() {
     private fun setupEvents() {
         backBtn.setOnClickListener { finish() }
         disconnectAccountBtn.setOnClickListener {
-            viewModel.revokeCalendarConnection()
+            viewModel.revokeCalendarConnection(this@SettingsActivity)
         }
         connectAccountBtn.setOnClickListener {
             viewModel.clearCredentials(this@SettingsActivity)

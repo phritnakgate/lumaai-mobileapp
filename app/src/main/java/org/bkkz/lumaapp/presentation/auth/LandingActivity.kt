@@ -2,6 +2,7 @@ package org.bkkz.lumaapp.presentation.auth
 
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import org.bkkz.lumaapp.R
@@ -11,6 +12,7 @@ class LandingActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         setContentView(R.layout.activity_landing)
 
         val getStartedBtn : ConstraintLayout = findViewById(R.id.constraintlayout_landing_btn)

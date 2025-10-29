@@ -138,8 +138,8 @@ class MonthlyViewFragmentAdapter(
                 if (userEmail == null) {
                     OneActionDialog(itemView.context).show(
                         drawable = R.drawable.ic_dialog_no,
-                        title = "Error",
-                        message = "Please connect to Google Calendar first!",
+                        title = itemView.context.getString(R.string.failed),
+                        message = itemView.context.getString(R.string.view_task_add_ggcalendar_failed),
                         onConfirmClickListener = {}
                     )
                     return@setOnClickListener
@@ -148,6 +148,7 @@ class MonthlyViewFragmentAdapter(
             }
             if (task.isGoogleCalendarTask) {
                 ggCalendarText.visibility = View.GONE
+                ggCalendar.setOnClickListener { null }
             } else {
                 ggCalendarText.visibility = View.VISIBLE
             }
@@ -238,8 +239,8 @@ class MonthlyViewFragmentAdapter(
         if (userEmail == null) {
             OneActionDialog(context).show(
                 drawable = R.drawable.ic_dialog_no,
-                title = "Error",
-                message = "Please connect to Google Calendar first!",
+                title = context.getString(R.string.failed),
+                message = context.getString(R.string.view_task_add_ggcalendar_failed),
                 onConfirmClickListener = {}
             )
             return
@@ -264,6 +265,8 @@ class MonthlyViewFragmentAdapter(
                 startTime = startDate.toStringRfc3339(),
                 endTime = endDate.toStringRfc3339(),
                 ownerEmail = userEmail,
+                appCategory = task.category,
+                appPriority = task.priority
             )
 
             Log.i(
@@ -271,25 +274,12 @@ class MonthlyViewFragmentAdapter(
                 "Event Name: ${calendarEventRequest.name}\nEvent Desc: ${calendarEventRequest.description}\nEvent Date: ${calendarEventRequest.startTime} ==> ${calendarEventRequest.endTime}"
             )
 
-            viewModel.insertToGoogleCalendar(task, calendarEventRequest)
-            OneActionDialog(context).show(
-                drawable = R.drawable.ic_dialog_success,
-                title = "Add to calendar Success!",
-                message = "",
-                onConfirmClickListener = {
-                }
-            )
+            viewModel.insertToGoogleCalendar(context,task, calendarEventRequest)
 
         } catch (e: UserRecoverableAuthIOException) {
             onPermissionNeeded(e.intent)
         } catch (e: Exception) {
             Log.d("TaskListAdapter", e.message.toString())
-            OneActionDialog(context).show(
-                drawable = R.drawable.ic_dialog_no,
-                title = "Error",
-                message = e.message.toString(),
-                onConfirmClickListener = {}
-            )
         }
     }
 
