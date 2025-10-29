@@ -39,6 +39,12 @@
     <string name="no_internet_title">No Internet Connection</string>
     <string name="no_internet_desc">Please check your internet connection and try again.</string>
     <string name="failed">Failed</string>
+    <string name="task_management">Task Management</string>
+    <string name="view_task">View Task</string>
+    <string name="search_and_plan">Search &amp; Plan</string>
+    <string name="search">Search</string>
+    <string name="plan">Plan</string>
+    <string name="generate_report">Generate Report</string>
 
     <!--========== LANDING PAGE ==========-->
     <string name="landing_heading">Meet LUMA !</string>
@@ -62,7 +68,7 @@
     <string name="login_failed_dialog_desc">Email or password incorrect!</string>
     <string name="login_ggc_failed_dialog_title">Google Calendar Connection Failed</string>
     <string name="login_ggc_completed_dialog_title">Connection Success</string>
-    <string name="login_ggc_failed_dialog_desc">Google Calendar Not Allow :(</string>
+    <string name="login_ggc_failed_dialog_desc">Google Calendar not allowed, please reauthenticate.</string>
     <string name="login_ggc_failed_no_email_desc">This Email has binded to our service!</string>
 
     <!-- Register Page -->
@@ -92,7 +98,10 @@
     <string name="view_task_add">Add Task</string>
     <string name="view_task_add_to_calendar">Add To Google Calendar</string>
     <string name="view_task_no_task_today">No Task Today</string>
+    <string name="view_task_no_task_month">No Task This Month</string>
     <string name="view_task_no_description">No Description</string>
+    <string name="view_task_add_ggcalendar_success">Add to calendar Success!</string>
+    <string name="view_task_add_ggcalendar_failed">Please connect to Google Calendar first!</string>
     <!-- Form Task Page -->
     <string name="add_task_title">Create Your Task</string>
     <string name="form_task_name">Task Name</string>
@@ -135,6 +144,7 @@
     <string name="chat_confirm_delete">Confirm Deletion</string>
     <string name="chat_web_readall"><u>Read All…</u></string>
     <string name="chat_form_readall"><u>View Form…</u></string>
+    <string name="chat_voice_failed">Failed to Recognize Speech</string>
 
     <!--========== REPORT PAGES ==========-->
     <string name="report_create_report_title">Create Report</string>
@@ -167,5 +177,5 @@
     <string name="forget_password_back"><u>Back To Login Page</u></string>
     <string name="forget_password_dialog_success_title">Reset Password Email Sent!</string>
     <string name="forget_password_dialog_failed_title">Reset Password Request Failed!</string>
-    <string name="forget_password_dialog_failed_desc">This email is not registered.</string>
+    <string name="forget_password_dialog_failed_desc">This email is invalid or not registered.</string>
 </resources>

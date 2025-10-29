@@ -27,12 +27,23 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/chat_title"
-            android:gravity="center"
+            android:paddingHorizontal="12dp"
             android:textAppearance="@style/LumaAI.TextAppearance.Heading1"
             app:layout_constraintHorizontal_weight="2"
-            app:layout_constraintEnd_toStartOf="@+id/imgview_chat_new_btn"
+            app:layout_constraintEnd_toStartOf="@+id/imgview_chat_qprompt_btn"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toEndOf="@+id/imgview_chat_back"
+            />
+        <ImageView
+            android:id="@+id/imgview_chat_qprompt_btn"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/ic_quick_prompt"
+            android:layout_marginEnd="20dp"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toEndOf="@+id/txtview_chat_title"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/imgview_chat_new_btn"
             />
         <ImageView
             android:id="@+id/imgview_chat_new_btn"
@@ -40,7 +51,7 @@
             android:layout_height="35dp"
             android:src="@drawable/ic_new_chat"
             app:layout_constraintHorizontal_weight="1"
-            app:layout_constraintStart_toEndOf="@+id/txtview_chat_title"
+            app:layout_constraintStart_toEndOf="@+id/imgview_chat_qprompt_btn"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             />

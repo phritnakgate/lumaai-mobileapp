@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.bkkz.lumaapp.R
 import org.bkkz.lumaapp.data.Repository
 import org.bkkz.lumaapp.data.entity.task.CreateTaskRequest
 import org.bkkz.lumaapp.data.entity.task.EditTaskRequest
@@ -16,6 +17,7 @@ import org.bkkz.lumaapp.data.local.UserChatEntity
 import org.bkkz.lumaapp.data.local.UserReportEntity
 import org.bkkz.lumaapp.data.remote.ApiResult
 import org.bkkz.lumaapp.util.component.chat.ChatItem
+import org.bkkz.lumaapp.util.component.chat.QuickPromptLov
 import org.bkkz.lumaapp.util.enums.LLMIntent
 import org.bkkz.lumaapp.util.enums.LocalChatFlag
 import java.io.File
@@ -379,5 +381,41 @@ class ChatViewModel(private val repository: Repository) : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             repository.confirmAllAction()
         }
+    }
+
+    fun getQuickPromptAdapter(context: Context) : List<QuickPromptLov> {
+        return listOf(
+            QuickPromptLov.Headline(context.getString(R.string.task_management)),
+            QuickPromptLov.Items(
+                context.getString(R.string.view_task),
+                "เช็คงาน"
+            ),
+            QuickPromptLov.Items(
+                context.getString(R.string.add_task_button),
+                "เพิ่มงาน"
+            ),
+            QuickPromptLov.Items(
+                context.getString(R.string.edit_task_button),
+                "แก้ไขงาน"
+            ),
+            QuickPromptLov.Items(
+                context.getString(R.string.delete_task_button),
+                "ลบงาน"
+            ),
+            QuickPromptLov.Headline(context.getString(R.string.search_and_plan)),
+            QuickPromptLov.Items(
+                context.getString(R.string.search),
+                "หาข้อมูล"
+            ),
+            QuickPromptLov.Items(
+                context.getString(R.string.plan),
+                "วางแผน"
+            ),
+            QuickPromptLov.Headline(context.getString(R.string.generate_report)),
+            QuickPromptLov.Items(
+                context.getString(R.string.report_type_0),
+                "สร้างฟอร์มสรุปงานประจำเดือน"
+            ),
+        )
     }
 }

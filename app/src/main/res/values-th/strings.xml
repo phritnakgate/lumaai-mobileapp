@@ -35,6 +35,8 @@
     <string name="dialog_secondary">ยกเลิก</string>
     <string name="no_internet_desc">กรุณาตรวจสอบการเชื่อมต่อ และลองอีกครั้ง</string>
     <string name="failed">เกิดข้อผิดพลาด</string>
+    <string name="plan">วางแผน</string>
+    <string name="generate_report">สร้างรายงาน</string>
     <string name="landing_heading">พบกับ LUMA !</string>
     <string name="landing_subheading">AI ผู้ช่วยจัดการงานของคุณ</string>
     <string name="landing_btn">เริ่มใช้งาน</string>
@@ -73,9 +75,12 @@
     <string name="login_failed_dialog_desc">อีเมลหรือรหัสผ่านไม่ถูกต้อง</string>
     <string name="login_ggc_failed_dialog_title">ไมสามารถเชื่อม Google Calendar ได้</string>
     <string name="login_ggc_completed_dialog_title">เชื่อมต่อสำเร็จ</string>
-    <string name="login_ggc_failed_dialog_desc">ถูกปฏิเสธสิทธิ์ Google Calendar</string>
+    <string name="login_ggc_failed_dialog_desc">ถูกปฏิเสธสิทธิ์ Google Calendar กรุณาเชื่อมต่อใหม่อีกครั้ง</string>
     <string name="register_failed_dialog_title">ลงทะเบียนไม่สำเร็จ</string>
+    <string name="view_task_no_task_month">ไม่มีงานในเดือนนี้</string>
     <string name="view_task_no_description">ไม่มีรายละเอียด</string>
+    <string name="view_task_add_ggcalendar_success">เพิ่มงานเข้า Google Calendar แล้ว</string>
+    <string name="view_task_add_ggcalendar_failed">กรุณาเชื่อมต่อ Google Calendar ก่อน</string>
     <string name="add_task_title">สร้างงาน</string>
     <string name="form_task_name">ชื่องาน</string>
     <string name="form_task_desc">รายละเอียดงาน</string>
@@ -113,6 +118,7 @@
     <string name="chat_confirm_delete">ยืนยันการลบ</string>
     <string name="chat_web_readall"><u>อ่านเพิ่มเติม...</u></string>
     <string name="chat_form_readall"><u>ดูรายงาน…</u></string>
+    <string name="chat_voice_failed">ไม่สามารถวิเคราะห์คำพูดได้</string>
     <string name="report_create_report_title">สร้างรายงาน</string>
     <string name="report_your_report_title">รายงานของคุณ</string>
     <string name="report_delete_report_title">ลบรายงาน</string>
@@ -138,5 +144,9 @@
     <string name="forget_password_back"><u>กลับไปหน้าเข้าสู่ระบบ</u></string>
     <string name="forget_password_dialog_success_title">คำขอรีเซ็ตรหัสผ่านถูกส่งแล้ว</string>
     <string name="forget_password_dialog_failed_title">ไม่สามารถส่งคำขอรีเซ็ตรหัสผ่าน</string>
-    <string name="forget_password_dialog_failed_desc">อีเมลนี้ยังไม่เคยลงทะเบียนในระบบ</string>
+    <string name="forget_password_dialog_failed_desc">อีเมลไม่ถูกต้องหรือยังไม่เคยลงทะเบียนในระบบ</string>
+    <string name="task_management">การจัดการงาน</string>
+    <string name="view_task">ดูงาน</string>
+    <string name="search_and_plan">ค้นหาและวางแผน</string>
+    <string name="search">ค้นหาข้อมูล</string>
 </resources>

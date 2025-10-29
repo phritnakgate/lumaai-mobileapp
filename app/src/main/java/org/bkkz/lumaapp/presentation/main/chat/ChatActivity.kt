@@ -4,12 +4,15 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.PopupWindow
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -20,8 +23,8 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.launch
 import org.bkkz.lumaapp.R
 import org.bkkz.lumaapp.presentation.main.chat.adapter.ChatAdapter
+import org.bkkz.lumaapp.presentation.main.chat.adapter.QuickPromptAdapter
 import org.bkkz.lumaapp.presentation.main.chat.voice_chat.VoiceChatActivity
-import org.bkkz.lumaapp.util.enums.LocalChatFlag
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class ChatActivity : AppCompatActivity() {
@@ -31,6 +34,7 @@ class ChatActivity : AppCompatActivity() {
     //UI
     private lateinit var backBtn : ImageView
     private lateinit var newChatBtn: ImageView
+    private lateinit var quickPromptBtn : ImageView
     private lateinit var recyclerChats: RecyclerView
     private lateinit var edtChat : EditText
     private lateinit var btnVoice: ImageButton
@@ -49,7 +53,7 @@ class ChatActivity : AppCompatActivity() {
                 sendChats(this@ChatActivity, spokenText)
             }
         } else {
-            Toast.makeText(this@ChatActivity, "Failed to Recognize Speech", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@ChatActivity, this.getString(R.string.chat_voice_failed), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -57,6 +61,7 @@ class ChatActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         setContentView(R.layout.activity_chat)
 
         setupData()
@@ -114,6 +119,7 @@ class ChatActivity : AppCompatActivity() {
         edtChat = findViewById(R.id.edttxt_chat)
         btnVoice = findViewById(R.id.imgbtn_chat_mic)
         btnSend = findViewById(R.id.imgbtn_chat_send)
+        quickPromptBtn = findViewById(R.id.imgview_chat_qprompt_btn)
         imgNoChat = findViewById(R.id.imgview_chat_new_mascot)
         txtNoChat = findViewById(R.id.txtview_chat_new_desc)
     }
@@ -147,6 +153,28 @@ class ChatActivity : AppCompatActivity() {
         }
         btnSend.setOnClickListener {
             sendChats(this@ChatActivity, edtChat.text.toString())
+        }
+        quickPromptBtn.setOnClickListener { anchorView ->
+            val inflater = getSystemService(LAYOUT_INFLATER_SERVICE) as LayoutInflater
+            val popupView = inflater.inflate(R.layout.popup_quick_prompt_lov, null)
+            val popupWindow = PopupWindow(
+                popupView,
+                RecyclerView.LayoutParams.WRAP_CONTENT,
+                RecyclerView.LayoutParams.WRAP_CONTENT,
+            )
+            val recyclerQuickPrompt = popupView.findViewById<RecyclerView>(R.id.recyclerview_chat_lov_quick_prompt)
+            val quickPromptAdapter = QuickPromptAdapter(viewModel.getQuickPromptAdapter(this@ChatActivity))
+            quickPromptAdapter.onItemClick = { prompt ->
+                edtChat.text = edtChat.text.insert(0, prompt)
+                edtChat.setSelection(edtChat.text.length)
+                Log.i("QuickPromptAdapter", "Selected Prompt: $prompt")
+                popupWindow.dismiss()
+            }
+            recyclerQuickPrompt.layoutManager = LinearLayoutManager(this@ChatActivity, RecyclerView.VERTICAL, false)
+            recyclerQuickPrompt.adapter = quickPromptAdapter
+            popupWindow.isFocusable = true
+            popupWindow.isOutsideTouchable = true
+            popupWindow.showAsDropDown(anchorView, 0, (12f * resources.displayMetrics.density).toInt())
         }
         newChatBtn.setOnClickListener {
             viewModel.clearAllChats()
