@@ -4,5 +4,6 @@ import org.bkkz.lumaapp.util.enums.ServiceState
 
 data class HomeState(
     val recentChats : List<String> = emptyList(),
-    val serviceState: ServiceState = ServiceState.IDLE
+    val serviceState: ServiceState = ServiceState.IDLE,
+    val serviceMessage: String? = null,
 )

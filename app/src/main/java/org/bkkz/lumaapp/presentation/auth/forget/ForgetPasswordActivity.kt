@@ -79,7 +79,7 @@ class ForgetPasswordActivity : AppCompatActivity() {
                         OneActionDialog(this@ForgetPasswordActivity).show(
                             drawable = R.drawable.ic_dialog_no,
                             title = getString(R.string.forget_password_dialog_failed_title),
-                            message = getString(R.string.forget_password_dialog_failed_desc),
+                            message = state.serviceMessage ?: "",
                             onConfirmClickListener = {
                                 viewModel.setIdleState()
                             }

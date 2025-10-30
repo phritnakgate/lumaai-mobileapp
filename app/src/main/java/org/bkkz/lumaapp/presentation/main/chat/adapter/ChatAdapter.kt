@@ -1,5 +1,6 @@
 package org.bkkz.lumaapp.presentation.main.chat.adapter
 
+import android.speech.tts.TextToSpeech
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -7,7 +8,6 @@ import android.webkit.WebView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
-import com.rajat.pdfviewer.PdfRendererView
 import com.rajat.pdfviewer.PdfViewerActivity
 import com.rajat.pdfviewer.PdfViewerActivity.Companion.ENABLE_FILE_DOWNLOAD
 import com.rajat.pdfviewer.util.CacheStrategy
@@ -22,7 +22,8 @@ import java.time.format.DateTimeFormatter
 
 class ChatAdapter(
     private val items: List<ChatItem>,
-    private val onConfirmClick: (dbId: Int, flag: Int, task: Task) -> Unit
+    private val onConfirmClick: (dbId: Int, flag: Int, task: Task) -> Unit,
+    private val tts: TextToSpeech
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
@@ -45,9 +46,12 @@ class ChatAdapter(
     }
     inner class ModelViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val message: TextView = itemView.findViewById(R.id.txtview_chat_model)
-
         fun bind(chat: ChatItem.ChatResponse) {
             message.text = chat.message
+            message.setOnLongClickListener {
+                tts.speak(chat.message, TextToSpeech.QUEUE_FLUSH, null, "modelResponse")
+                true
+            }
         }
     }
     inner class ViewTaskViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

@@ -1,9 +1,11 @@
 package org.bkkz.lumaapp.data
 
+import android.content.Context
 import android.util.Log
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.bkkz.lumaapp.R
 import org.bkkz.lumaapp.data.entity.auth.EmailRegistrationRequest
 import org.bkkz.lumaapp.data.entity.auth.EmailRegistrationResponse
 import org.bkkz.lumaapp.data.entity.auth.EmailSignInRequest
@@ -32,6 +34,7 @@ import org.bkkz.lumaapp.data.local.UserTaskEntity
 import org.bkkz.lumaapp.data.remote.ApiResponse
 import org.bkkz.lumaapp.data.remote.ApiResult
 import org.bkkz.lumaapp.data.remote.LumaApi
+import org.bkkz.lumaapp.util.isConnectedToInternet
 import retrofit2.HttpException
 import java.nio.charset.StandardCharsets
 import java.security.MessageDigest
@@ -44,6 +47,7 @@ import java.util.Base64
 
 
 class Repository(
+    private val context: Context,
     private val lumaApi: LumaApi,
     private val tokenManager: TokenManager,
     private val userChatDao: UserChatDao,
@@ -74,12 +78,12 @@ class Repository(
         }
     }
 
-    suspend fun isLLMThinking(): Boolean {
-        return withContext(Dispatchers.IO) {
-            val thinkingChat = userChatDao.checkThinkingChat()
-            thinkingChat.isNotEmpty()
-        }
-    }
+//    suspend fun isLLMThinking(): Boolean {
+//        return withContext(Dispatchers.IO) {
+//            val thinkingChat = userChatDao.checkThinkingChat()
+//            thinkingChat.isNotEmpty()
+//        }
+//    }
 
     suspend fun confirmAction(dbId: Int) {
         withContext(Dispatchers.IO) {
@@ -168,6 +172,9 @@ class Repository(
     suspend fun loginWithEmail(email: String, password: String): ApiResult<Unit> = withContext(
         Dispatchers.IO
     ) {
+        if(!context.isConnectedToInternet()) {
+            return@withContext ApiResult.Error(Exception(context.getString(R.string.no_internet_desc)))
+        }
         try {
             val (codeVerifier, codeChallenge) = generatePkceChallenge()
             val authCode = requestAuthorizationCode(email, password, codeChallenge)
@@ -196,6 +203,9 @@ class Repository(
 
 
     suspend fun refreshToken(): ApiResult<Boolean> = withContext(Dispatchers.IO) {
+        if(!context.isConnectedToInternet()) {
+            return@withContext ApiResult.Error(Exception(context.getString(R.string.no_internet_desc)))
+        }
         val refreshToken = tokenManager.getRefreshToken()
         if (refreshToken == null) {
             return@withContext ApiResult.Success(false)
@@ -222,6 +232,9 @@ class Repository(
     }
 
     suspend fun logout() = withContext(Dispatchers.IO) {
+        if(!context.isConnectedToInternet()) {
+            return@withContext ApiResult.Error(Exception(context.getString(R.string.no_internet_desc)))
+        }
         val refreshToken = tokenManager.getRefreshToken()
         Log.d("AuthRepository", "Logout with $refreshToken")
         tokenManager.clearTokens()
@@ -238,6 +251,9 @@ class Repository(
 
     suspend fun registerWithEmail(email: String, password: String, name: String) =
         withContext(Dispatchers.IO) {
+            if(!context.isConnectedToInternet()) {
+                return@withContext ApiResult.Error(Exception(context.getString(R.string.no_internet_desc)))
+            }
             try {
                 val (codeVerifier, codeChallenge) = generatePkceChallenge()
                 val response = lumaApi.registerWithEmail(
@@ -270,7 +286,9 @@ class Repository(
         password: String,
         codeChallenge: String
     ): EmailSignInResponse {
-
+        if(!context.isConnectedToInternet()) {
+            return EmailSignInResponse(error = context.getString(R.string.no_internet_desc))
+        }
         val request = EmailSignInRequest(email, password, codeChallenge)
 
         val response = lumaApi.loginWithEmail(request)
@@ -298,12 +316,15 @@ class Repository(
     }
 
     suspend fun resetPassword(email: String) = withContext(Dispatchers.IO)  {
+        if(!context.isConnectedToInternet()) {
+            return@withContext ApiResult.Error(Exception(context.getString(R.string.no_internet_desc)))
+        }
         try {
             val response = lumaApi.resetPassword(ResetPasswordRequest(email))
             if (response.isSuccessful){
                 ApiResult.Success(null)
             }else{
-                ApiResult.Error(Exception("Failed to reset password"))
+                ApiResult.Error(Exception(context.getString(R.string.forget_password_dialog_failed_desc)))
             }
         } catch (e: Exception) {
             ApiResult.Error(e)
@@ -314,6 +335,9 @@ class Repository(
     /*=========== TASK API ===========*/
     suspend fun getAllUserTasks(date: String): ApiResult<List<Task>?> =
         withContext(Dispatchers.IO) {
+            if(!context.isConnectedToInternet()) {
+                return@withContext ApiResult.Error(Exception(context.getString(R.string.no_internet_desc)))
+            }
             try {
                 val response = lumaApi.getUserTasks(date).body()
                 if (response == null) {
@@ -357,6 +381,9 @@ class Repository(
     suspend fun createTask(createTaskRequest: CreateTaskRequest): ApiResult<Any> = withContext(
         Dispatchers.IO
     ) {
+        if(!context.isConnectedToInternet()) {
+            return@withContext ApiResult.Error(Exception(context.getString(R.string.no_internet_desc)))
+        }
         try {
             val response = lumaApi.createTask(createTaskRequest)
             if (response.isSuccessful) {
@@ -375,6 +402,9 @@ class Repository(
         withContext(
             Dispatchers.IO
         ) {
+            if(!context.isConnectedToInternet()) {
+                return@withContext ApiResult.Error(Exception(context.getString(R.string.no_internet_desc)))
+            }
             try {
                 val response = lumaApi.editTask(taskId, editTaskRequest)
                 if (response.isSuccessful) {
@@ -402,6 +432,9 @@ class Repository(
         }
 
     suspend fun deleteTask(taskId: String): ApiResult<Any> = withContext(Dispatchers.IO) {
+        if(!context.isConnectedToInternet()) {
+            return@withContext ApiResult.Error(Exception(context.getString(R.string.no_internet_desc)))
+        }
         try {
             val response = lumaApi.deleteTask(taskId)
             if (response.isSuccessful) {
@@ -424,6 +457,9 @@ class Repository(
     ): ApiResult<List<ChatHistory>?> = withContext(
         Dispatchers.IO
     ) {
+        if(!context.isConnectedToInternet()) {
+            return@withContext ApiResult.Error(Exception(context.getString(R.string.no_internet_desc)))
+        }
         try {
             val response = lumaApi.getChatLogs(intent, date, keyword)
             if (response.isSuccessful) {
@@ -446,6 +482,9 @@ class Repository(
     suspend fun chatWithLuma(message: String): ApiResult<ApiResponse<LLMProcess>?> = withContext(
         Dispatchers.IO
     ) {
+        if(!context.isConnectedToInternet()) {
+            return@withContext ApiResult.Error(Exception(context.getString(R.string.no_internet_desc)))
+        }
         try {
             val response = lumaApi.chatWithLuma(LLMChatRequest(message))
             if (response.isSuccessful) {
@@ -461,6 +500,9 @@ class Repository(
     /*=========== FORM API ===========*/
     suspend fun generateMisTaskReport(reportYrM: String): ApiResult<String> =
         withContext(Dispatchers.IO) {
+            if(!context.isConnectedToInternet()) {
+                return@withContext ApiResult.Error(Exception(context.getString(R.string.no_internet_desc)))
+            }
             try {
                 val response = lumaApi.generateMISReport(reportYrM)
                 if (response.code() == 302) {
@@ -483,6 +525,9 @@ class Repository(
         withContext(
             Dispatchers.IO
         ) {
+            if(!context.isConnectedToInternet()) {
+                return@withContext ApiResult.Error(Exception(context.getString(R.string.no_internet_desc)))
+            }
             try {
                 val response = lumaApi.getReports(formType)
                 if (response.isSuccessful) {
@@ -499,6 +544,9 @@ class Repository(
     suspend fun deleteReport(formType: String, fileName: String): ApiResult<Any> = withContext(
         Dispatchers.IO
     ) {
+        if(!context.isConnectedToInternet()) {
+            return@withContext ApiResult.Error(Exception(context.getString(R.string.no_internet_desc)))
+        }
         try {
             val response = lumaApi.deleteReport(formType, fileName)
             if (response.isSuccessful) {
@@ -515,6 +563,9 @@ class Repository(
     /*=========== GOOGLE CALENDAR API ===========*/
     suspend fun authToCalendarService(authCode: String, email: String): ApiResult<Unit> =
         withContext(Dispatchers.IO) {
+            if(!context.isConnectedToInternet()) {
+                return@withContext ApiResult.Error(Exception(context.getString(R.string.no_internet_desc)))
+            }
             try {
                 val response =
                     lumaApi.authenticateGoogleCalendar(GoogleAuthRequest(authCode, email))
@@ -531,6 +582,9 @@ class Repository(
         }
 
     suspend fun syncGoogleCalendarTasks(): ApiResult<Unit> = withContext(Dispatchers.IO) {
+        if(!context.isConnectedToInternet()) {
+            return@withContext ApiResult.Error(Exception(context.getString(R.string.no_internet_desc)))
+        }
         try {
             lumaApi.syncGoogleCalendar()
             ApiResult.Success(Unit)
@@ -540,28 +594,31 @@ class Repository(
         }
     }
 
-    suspend fun checkGoogleCalendarAuth(): ApiResult<Boolean> = withContext(Dispatchers.IO) {
-        try {
-            val response = lumaApi.getCalendarConnectionStatus()
-            if (response.isSuccessful) {
-                val response = response.body()?.result
-                if (response == "true") {
-                    ApiResult.Success(true)
-                } else {
-                    ApiResult.Success(false)
-                }
-
-            } else {
-                ApiResult.Error(Exception("Cannot check google calendar authentication"))
-            }
-
-        } catch (e: Exception) {
-            Log.e("Repository", "Failed to check google calendar authentication bc ${e.message}")
-            ApiResult.Error(Exception(e.message))
-        }
-    }
+//    suspend fun checkGoogleCalendarAuth(): ApiResult<Boolean> = withContext(Dispatchers.IO) {
+//        try {
+//            val response = lumaApi.getCalendarConnectionStatus()
+//            if (response.isSuccessful) {
+//                val response = response.body()?.result
+//                if (response == "true") {
+//                    ApiResult.Success(true)
+//                } else {
+//                    ApiResult.Success(false)
+//                }
+//
+//            } else {
+//                ApiResult.Error(Exception("Cannot check google calendar authentication"))
+//            }
+//
+//        } catch (e: Exception) {
+//            Log.e("Repository", "Failed to check google calendar authentication bc ${e.message}")
+//            ApiResult.Error(Exception(e.message))
+//        }
+//    }
 
     suspend fun revokeGoogleCalendarAuth(): ApiResult<Unit> = withContext(Dispatchers.IO) {
+        if(!context.isConnectedToInternet()) {
+            return@withContext ApiResult.Error(Exception(context.getString(R.string.no_internet_desc)))
+        }
         try {
             val response = lumaApi.revokeGoogleCalendarAccess()
             if (response.isSuccessful) {
@@ -577,6 +634,9 @@ class Repository(
     }
 
     suspend fun insertGoogleCalendarEvent(calendarEventRequest: CalendarEventRequest): ApiResult<String?> = withContext(Dispatchers.IO) {
+        if(!context.isConnectedToInternet()) {
+            return@withContext ApiResult.Error(Exception(context.getString(R.string.no_internet_desc)))
+        }
         try {
             val response = lumaApi.createGoogleCalendarEvent(calendarEventRequest)
             if(response.isSuccessful){
@@ -590,6 +650,9 @@ class Repository(
     }
 
     suspend fun editGoogleCalendarEvent(eventId: String, calendarEventRequest: CalendarEventRequest): ApiResult<Unit> = withContext(Dispatchers.IO) {
+        if(!context.isConnectedToInternet()) {
+            return@withContext ApiResult.Error(Exception(context.getString(R.string.no_internet_desc)))
+        }
         try {
             val response = lumaApi.updateGoogleCalendarEvent(eventId, calendarEventRequest)
             if(response.isSuccessful){
@@ -620,6 +683,9 @@ class Repository(
     }
 
     suspend fun deleteGoogleCalendarEvent(eventId: String): ApiResult<Unit> = withContext(Dispatchers.IO) {
+        if(!context.isConnectedToInternet()) {
+            return@withContext ApiResult.Error(Exception(context.getString(R.string.no_internet_desc)))
+        }
         try {
             val response = lumaApi.deleteGoogleCalendarEvent(eventId)
             if(response.isSuccessful){
@@ -635,6 +701,9 @@ class Repository(
 
     /*=========== USER API===========*/
     suspend fun getUserData(): ApiResult<UserInfo?> = withContext(Dispatchers.IO) {
+        if(!context.isConnectedToInternet()) {
+            return@withContext ApiResult.Error(Exception(context.getString(R.string.no_internet_desc)))
+        }
         try {
             val response = lumaApi.getUserInfo()
             if (response.isSuccessful) {

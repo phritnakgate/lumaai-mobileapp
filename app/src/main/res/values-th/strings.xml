@@ -33,7 +33,7 @@
     <string name="sat">ส.</string>
     <string name="select_date">เลือกวันที่</string>
     <string name="dialog_secondary">ยกเลิก</string>
-    <string name="no_internet_desc">กรุณาตรวจสอบการเชื่อมต่อ และลองอีกครั้ง</string>
+    <string name="no_internet_desc">กรุณาตรวจสอบการเชื่อมต่ออินเทอร์เน็ตและลองอีกครั้ง</string>
     <string name="failed">เกิดข้อผิดพลาด</string>
     <string name="plan">วางแผน</string>
     <string name="generate_report">สร้างรายงาน</string>
@@ -119,6 +119,7 @@
     <string name="chat_web_readall"><u>อ่านเพิ่มเติม...</u></string>
     <string name="chat_form_readall"><u>ดูรายงาน…</u></string>
     <string name="chat_voice_failed">ไม่สามารถวิเคราะห์คำพูดได้</string>
+    <string name="chat_tts_title">กดค้างที่แชทเพื่ออ่านออกเสียง</string>
     <string name="report_create_report_title">สร้างรายงาน</string>
     <string name="report_your_report_title">รายงานของคุณ</string>
     <string name="report_delete_report_title">ลบรายงาน</string>

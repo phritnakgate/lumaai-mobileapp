@@ -29,6 +29,7 @@ import org.bkkz.lumaapp.presentation.main.task.view_task.ViewTaskActivity
 import org.bkkz.lumaapp.util.component.chat_history.ChatHistoryListAdapter
 import org.bkkz.lumaapp.util.component.chat_history.ChatHistoryListDecoration
 import org.bkkz.lumaapp.util.component.chat_history.ReadAllHistoryBottomSheet
+import org.bkkz.lumaapp.util.dialog.OneActionDialog
 import org.bkkz.lumaapp.util.enums.ServiceState
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -98,8 +99,19 @@ class HomeActivity : AppCompatActivity(), ChatHistoryListAdapter.OnChatHistoryLi
         lifecycleScope.launch {
             viewModel.state.collect { state ->
                 when (state.serviceState) {
-                    ServiceState.IDLE -> {}
+                    ServiceState.IDLE -> {
+                        if (state.recentChats.isEmpty()) {
+                            recyclerViewRecentChats.visibility = View.GONE
+                            noRecentChatsImg.visibility = View.VISIBLE
+                            noRecentChatsTxt.visibility = View.VISIBLE
+                        }else{
+                            recyclerViewRecentChats.visibility = View.VISIBLE
+                            noRecentChatsImg.visibility = View.GONE
+                            noRecentChatsTxt.visibility = View.GONE
+                        }
+                    }
                     ServiceState.LOADING -> {
+                        recyclerViewRecentChats.visibility = View.GONE
                         noRecentChatsImg.visibility = View.GONE
                         noRecentChatsTxt.visibility = View.GONE
                         loadingAnimation.visibility = View.VISIBLE
@@ -121,8 +133,17 @@ class HomeActivity : AppCompatActivity(), ChatHistoryListAdapter.OnChatHistoryLi
                     }
                     ServiceState.FAILED -> {
                         loadingAnimation.visibility = View.GONE
+                        recyclerViewRecentChats.visibility = View.GONE
                         noRecentChatsImg.visibility = View.VISIBLE
                         noRecentChatsTxt.visibility = View.VISIBLE
+                        OneActionDialog(this@HomeActivity).show(
+                            drawable = R.drawable.ic_dialog_no,
+                            title = getString(R.string.failed),
+                            message = viewModel.state.value.serviceMessage ?: "",
+                            onConfirmClickListener = {
+                                this@HomeActivity.finishAffinity()
+                            }
+                        )
                     }
                 }
             }

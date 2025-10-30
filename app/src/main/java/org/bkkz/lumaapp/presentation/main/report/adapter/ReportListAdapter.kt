@@ -16,7 +16,9 @@ import com.rajat.pdfviewer.util.saveTo
 import org.bkkz.lumaapp.R
 import org.bkkz.lumaapp.data.entity.report_history.ReportHistory
 import org.bkkz.lumaapp.presentation.main.report.ReportViewModel
+import org.bkkz.lumaapp.util.dialog.OneActionDialog
 import org.bkkz.lumaapp.util.dialog.TwoActionDialog
+import org.bkkz.lumaapp.util.isConnectedToInternet
 import org.bkkz.lumaapp.util.mapper.MonthStringMapper
 import java.util.Locale
 
@@ -65,6 +67,14 @@ class ReportListAdapter(
         }
 
         holder.reportLayout.setOnClickListener {
+            if(!holder.itemView.context.isConnectedToInternet()){
+                OneActionDialog(holder.itemView.context).show(
+                    drawable = R.drawable.ic_dialog_no,
+                    title = holder.itemView.context.getString(R.string.no_internet_title),
+                    message = holder.itemView.context.getString(R.string.no_internet_desc),
+                )
+                return@setOnClickListener
+            }
             if(viewModel.state.value.isDeleteMode){
                 TwoActionDialog(holder.itemView.context).show(
                     drawable = R.drawable.ic_dialog_warning,

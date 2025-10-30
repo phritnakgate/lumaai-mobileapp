@@ -32,25 +32,26 @@ class ViewTaskViewModel(private val repository: Repository) : ViewModel() {
                 viewModelScope.launch {
                     _state.update { it.copy(isLoading = true) }
                     getFirstTimeTasks()
-                    _state.update { it.copy(isLoading = false) }
                 }
             }
 
             is ViewTaskEvent.OnUserSelectedMonth -> {
                 viewModelScope.launch {
-                    _state.update { it.copy(isLoading = true) }
+                    _state.update { it.copy(
+                        isLoading = true,
+                        selectedMonthPosition = event.position,
+                        selectedMonth = event.selectedMonth) }
+//                    _state.update {
+//                        it.copy(
+//                            selectedMonthPosition = event.position,
+//                            selectedMonth = event.selectedMonth
+//                        )
+//                    }
                     getAllMonthlyUserTask(
                         "${event.selectedMonth.year}-${
                             event.selectedMonth.monthValue.toString().padStart(2, '0')
                         }"
                     )
-                    _state.update {
-                        it.copy(
-                            selectedMonthPosition = event.position,
-                            selectedMonth = event.selectedMonth,
-                            isLoading = false
-                        )
-                    }
                 }
             }
 
@@ -58,7 +59,6 @@ class ViewTaskViewModel(private val repository: Repository) : ViewModel() {
                 viewModelScope.launch {
                     _state.update { it.copy(isLoading = true) }
                     getAllDailyUserTask(event.date)
-                    _state.update { it.copy(isLoading = false) }
                 }
             }
         }
@@ -78,12 +78,14 @@ class ViewTaskViewModel(private val repository: Repository) : ViewModel() {
                     it.copy(
                         allMonthlyEventsDate = dateContainEvents(monthlyTasksResult),
                         allMonthlyUserTasks = monthlyTasksResult,
+                        isLoading = false
                     )
                 }
             }
 
             is ApiResult.Error -> {
                 Log.e("ViewTaskViewModel", "Can't get monthly task on initial load")
+                _state.update { it.copy(isLoading = false) }
             }
         }
 
@@ -103,6 +105,7 @@ class ViewTaskViewModel(private val repository: Repository) : ViewModel() {
 
                 is ApiResult.Error -> {
                     Log.e("ViewTaskViewModel", "Can't get monthly task on $date")
+                    _state.update { it.copy(isLoading = false) }
                 }
             }
         }else{
@@ -123,6 +126,7 @@ class ViewTaskViewModel(private val repository: Repository) : ViewModel() {
 
         _state.update {
             it.copy(
+                isLoading = false,
                 allMonthlyEventsDate = dateContainEvents(monthlyTasksResult),
                 allMonthlyUserTasks = monthlyTasksResult,
             )
@@ -150,6 +154,7 @@ class ViewTaskViewModel(private val repository: Repository) : ViewModel() {
 
         _state.update {
             it.copy(
+                isLoading = false,
                 selectedDate = date,
                 allDailyUserTasks = dailyTasksResult
             )

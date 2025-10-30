@@ -58,7 +58,12 @@ class SettingsViewModel(private val repository: Repository) : ViewModel() {
 
                 }
                 is ApiResult.Error -> {
-                    _state.update { it.copy(isConnectedToCalendar = false, serviceState = ServiceState.FAILED) }
+                    _state.update { it.copy(
+                        isConnectedToCalendar = false,
+                        serviceState = ServiceState.FAILED,
+                        serviceMessage = response.exception.message
+                        )
+                    }
                 }
             }
         }

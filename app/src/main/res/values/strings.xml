@@ -81,6 +81,15 @@
     <string name="register_failed_dialog_title">Registration Failed</string>
     <string name="register_failed_dialog_desc">This email has already registered.</string>
 
+    <!-- Forget Password -->
+    <string name="forget_password_title">Forget Your Password?</string>
+    <string name="forget_password_login_pg"><u>Forget Your Password?</u></string>
+    <string name="forget_password_btn">Reset Password</string>
+    <string name="forget_password_back"><u>Back To Login Page</u></string>
+    <string name="forget_password_dialog_success_title">Reset Password Email Sent!</string>
+    <string name="forget_password_dialog_failed_title">Reset Password Request Failed!</string>
+    <string name="forget_password_dialog_failed_desc">This email is invalid or not registered.</string>
+
     <!--========== HOME PAGE ==========-->
     <string name="home_talk_with_luma">Talk\nwith LUMA</string>
     <string name="home_task">Your Task</string>
@@ -145,6 +154,7 @@
     <string name="chat_web_readall"><u>Read All…</u></string>
     <string name="chat_form_readall"><u>View Form…</u></string>
     <string name="chat_voice_failed">Failed to Recognize Speech</string>
+    <string name="chat_tts_title">Long Press To Read Aloud</string>
 
     <!--========== REPORT PAGES ==========-->
     <string name="report_create_report_title">Create Report</string>
@@ -169,13 +179,4 @@
     <!--========== CHANGE LANG DIALOG ==========-->
     <string name="dialog_change_language_en">English</string>
     <string name="dialog_change_language_th">Thai</string>
-
-    <!--========== FORGET PASSWORD ==========-->
-    <string name="forget_password_title">Forget Your Password?</string>
-    <string name="forget_password_login_pg"><u>Forget Your Password?</u></string>
-    <string name="forget_password_btn">Reset Password</string>
-    <string name="forget_password_back"><u>Back To Login Page</u></string>
-    <string name="forget_password_dialog_success_title">Reset Password Email Sent!</string>
-    <string name="forget_password_dialog_failed_title">Reset Password Request Failed!</string>
-    <string name="forget_password_dialog_failed_desc">This email is invalid or not registered.</string>
 </resources>

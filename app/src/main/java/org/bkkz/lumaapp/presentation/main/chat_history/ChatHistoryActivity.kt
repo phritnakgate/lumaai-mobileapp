@@ -24,7 +24,9 @@ import org.bkkz.lumaapp.presentation.main.chat_history.state.ChatHistoryEvent
 import org.bkkz.lumaapp.util.component.chat_history.ChatHistoryItem
 import org.bkkz.lumaapp.util.component.chat_history.ReadAllHistoryBottomSheet
 import org.bkkz.lumaapp.util.dialog.LoadingDialog
+import org.bkkz.lumaapp.util.dialog.OneActionDialog
 import org.bkkz.lumaapp.util.enums.ServiceState
+import org.bkkz.lumaapp.util.isConnectedToInternet
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -91,6 +93,16 @@ class ChatHistoryActivity : AppCompatActivity(), ChatHistoryAdapter.OnHistoryInt
     }
 
     private fun setupViews() {
+        if(!this@ChatHistoryActivity.isConnectedToInternet()){
+            OneActionDialog(this@ChatHistoryActivity).show(
+                drawable = R.drawable.ic_dialog_no,
+                title = getString(R.string.no_internet_title),
+                message = getString(R.string.no_internet_desc),
+                onConfirmClickListener = {
+                    finishAffinity()
+                }
+            )
+        }
         recyclerChat.layoutManager = LinearLayoutManager(this@ChatHistoryActivity, RecyclerView.VERTICAL, false)
         viewModel.onEvent(ChatHistoryEvent.OnLoadFirstTimeChatHistory)
         lifecycleScope.launch {
@@ -99,10 +111,22 @@ class ChatHistoryActivity : AppCompatActivity(), ChatHistoryAdapter.OnHistoryInt
                 when(state.serviceState){
                     ServiceState.IDLE -> {}
                     ServiceState.LOADING -> {loadingDialog.show()}
-                    ServiceState.SUCCESS -> {loadingDialog.dismiss()}
-                    ServiceState.FAILED -> {}
+                    ServiceState.SUCCESS -> {
+                        loadingDialog.dismiss()
+                        updateFilter()
+                    }
+                    ServiceState.FAILED -> {
+                        loadingDialog.dismiss()
+                        OneActionDialog(this@ChatHistoryActivity).show(
+                            drawable = R.drawable.ic_dialog_no,
+                            title = getString(R.string.failed),
+                            message = state.serviceMessage ?: "",
+                            onConfirmClickListener = {
+                                finishAffinity()
+                            }
+                        )
+                    }
                 }
-                updateFilter()
             }
         }
 

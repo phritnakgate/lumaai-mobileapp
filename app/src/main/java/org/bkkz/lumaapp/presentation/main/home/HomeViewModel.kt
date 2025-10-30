@@ -58,7 +58,10 @@ class HomeViewModel(private val repository: Repository) : ViewModel() {
                 }
 
                 is ApiResult.Error -> {
-                    _state.update { it.copy(serviceState = ServiceState.FAILED) }
+                    _state.update { it.copy(
+                        serviceState = ServiceState.FAILED,
+                        serviceMessage = response.exception.message
+                        ) }
                 }
             }
         }

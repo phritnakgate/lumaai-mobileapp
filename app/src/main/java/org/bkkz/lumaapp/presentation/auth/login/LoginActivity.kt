@@ -41,6 +41,7 @@ import org.bkkz.lumaapp.presentation.main.home.HomeActivity
 import org.bkkz.lumaapp.util.LabelEditText
 import org.bkkz.lumaapp.util.dialog.LoadingDialog
 import org.bkkz.lumaapp.util.dialog.OneActionDialog
+import org.bkkz.lumaapp.util.isConnectedToInternet
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class LoginActivity : AppCompatActivity() {
@@ -143,7 +144,8 @@ class LoginActivity : AppCompatActivity() {
                             OneActionDialog(this@LoginActivity).show(
                                 drawable = R.drawable.ic_dialog_no,
                                 title = getString(R.string.login_failed_dialog_title),
-                                message = getString(R.string.login_failed_dialog_desc),
+                                message = state.message,
+                                onConfirmClickListener = { viewModel.setIdleState() }
                             )
 
                         }
@@ -209,6 +211,14 @@ class LoginActivity : AppCompatActivity() {
     private fun setupGoogleSignInBtn(){
         googleSignInBtn.setOnClickListener {
             flag = "google"
+            if(!this.isConnectedToInternet()) {
+                OneActionDialog(this@LoginActivity).show(
+                    drawable = R.drawable.ic_dialog_no,
+                    title = getString(R.string.no_internet_title),
+                    message = getString(R.string.no_internet_desc),
+                )
+                return@setOnClickListener
+            }
             val googleIdOption: GetGoogleIdOption = GetGoogleIdOption.Builder()
                 .setFilterByAuthorizedAccounts(false)
                 .setServerClientId(BuildConfig.FIREBASE_WEB_CLIENT_ID) // local.properties

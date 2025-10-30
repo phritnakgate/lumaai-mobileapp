@@ -1,6 +1,5 @@
 package org.bkkz.lumaapp.presentation.main.task.edit_task
 
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -77,12 +76,8 @@ class EditTaskActivity : AppCompatActivity() {
     }
 
     private fun setupData() {
-        oldTask = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        oldTask =
             intent.getParcelableExtra("TASK_DATA", Task::class.java)
-        } else {
-            @Suppress("DEPRECATION")
-            intent.getParcelableExtra("TASK_DATA")
-        }
         viewModel.onEvent(EditTaskEvent.InitData(oldTask!!))
         lbledtTaskName.text = oldTask!!.name
         lblTaskDesc.setText(oldTask!!.description)
@@ -161,10 +156,9 @@ class EditTaskActivity : AppCompatActivity() {
                         OneActionDialog(this@EditTaskActivity).show(
                             drawable = R.drawable.ic_dialog_no,
                             title = getString(R.string.edit_task_failed_dialog_title),
-                            message = getString(R.string.edit_task_failed_dialog_desc),
+                            message = viewModel.state.value.serviceMessage ?: "",
                             onConfirmClickListener = {
                                 viewModel.setIdle()
-
                             },
                         )
                     }

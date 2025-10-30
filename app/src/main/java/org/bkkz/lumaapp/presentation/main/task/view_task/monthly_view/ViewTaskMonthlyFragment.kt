@@ -19,6 +19,8 @@ import org.bkkz.lumaapp.presentation.main.task.view_task.ViewTaskViewModel
 import org.bkkz.lumaapp.presentation.main.task.view_task.daily_view.calendar.CalendarViewPagerAdapter
 import org.bkkz.lumaapp.presentation.main.task.view_task.monthly_view.adapter.MonthlyViewPagerAdapter
 import org.bkkz.lumaapp.presentation.main.task.view_task.state.ViewTaskEvent
+import org.bkkz.lumaapp.util.dialog.OneActionDialog
+import org.bkkz.lumaapp.util.isConnectedToInternet
 import org.bkkz.lumaapp.util.mapper.MonthStringMapper
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import java.time.YearMonth
@@ -89,10 +91,28 @@ class ViewTaskMonthlyFragment : Fragment() {
 
     private fun setupEvents() {
         backMonth.setOnClickListener {
-            viewPagerTaskLists.currentItem = viewPagerTaskLists.currentItem - 1
+            if(viewModel.state.value.isLoading) return@setOnClickListener
+            if(!requireActivity().isConnectedToInternet()){
+                OneActionDialog(requireContext()).show(
+                    drawable = R.drawable.ic_dialog_no,
+                    title = requireContext().getString(R.string.no_internet_title),
+                    message = requireContext().getString(R.string.no_internet_desc),
+                )
+                return@setOnClickListener
+            }
+            viewPagerTaskLists.currentItem = viewModel.state.value.selectedMonthPosition - 1
         }
         forwardMonth.setOnClickListener {
-            viewPagerTaskLists.currentItem = viewPagerTaskLists.currentItem + 1
+            if(viewModel.state.value.isLoading) return@setOnClickListener
+            if(!requireActivity().isConnectedToInternet()){
+                OneActionDialog(requireContext()).show(
+                    drawable = R.drawable.ic_dialog_no,
+                    title = requireContext().getString(R.string.no_internet_title),
+                    message = requireContext().getString(R.string.no_internet_desc),
+                )
+                return@setOnClickListener
+            }
+            viewPagerTaskLists.currentItem = viewModel.state.value.selectedMonthPosition + 1
         }
         addTaskBtn.setOnClickListener {
             val intent = Intent(requireActivity(), AddTaskActivity::class.java)

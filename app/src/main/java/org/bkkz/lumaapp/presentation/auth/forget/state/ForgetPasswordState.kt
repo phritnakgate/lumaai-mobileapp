@@ -6,4 +6,5 @@ data class ForgetPasswordState (
     val email: String? = null,
     val isEmailValid: Boolean? = null,
     val serviceState: ServiceState = ServiceState.IDLE,
+    val serviceMessage: String? = null
 )

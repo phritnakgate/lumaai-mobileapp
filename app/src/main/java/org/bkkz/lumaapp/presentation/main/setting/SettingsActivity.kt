@@ -81,6 +81,7 @@ class SettingsActivity : AppCompatActivity() {
         findViews()
         setupViews()
         setupEvents()
+        viewModel.onEvent(SettingsEvent.OnLoadServiceStatus)
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -99,7 +100,6 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun setupViews() {
-        viewModel.onEvent(SettingsEvent.OnLoadServiceStatus)
         lifecycleScope.launch {
             viewModel.state.collect { state ->
                 Log.d("SettingsActivity", "State: ${state.serviceState}, isConnected: ${state.isConnectedToCalendar}, isLoginViaGoogle: ${state.isLoginViaGoogle}, email: ${state.googleCalendarEmail}")
@@ -107,7 +107,6 @@ class SettingsActivity : AppCompatActivity() {
                 when (state.serviceState) {
                     ServiceState.IDLE -> {}
                     ServiceState.LOADING -> {
-                        //loadingDialog.show()
                     }
                     ServiceState.SUCCESS -> {
                         loadingDialog.dismiss()
@@ -133,6 +132,14 @@ class SettingsActivity : AppCompatActivity() {
                     }
                     ServiceState.FAILED -> {
                         loadingDialog.dismiss()
+                        OneActionDialog(this@SettingsActivity).show(
+                            drawable = R.drawable.ic_dialog_no,
+                            title = getString(R.string.failed),
+                            message = viewModel.state.value.serviceMessage ?: "",
+                            onConfirmClickListener = {
+                                this@SettingsActivity.finishAffinity()
+                            }
+                        )
                     }
                 }
             }

@@ -23,6 +23,7 @@ import org.bkkz.lumaapp.presentation.main.task.view_task.ViewTaskViewModel
 import org.bkkz.lumaapp.util.dialog.OneActionDialog
 import org.bkkz.lumaapp.util.enums.TaskCategory
 import org.bkkz.lumaapp.util.enums.TaskPriority
+import org.bkkz.lumaapp.util.isConnectedToInternet
 import java.text.SimpleDateFormat
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
@@ -132,6 +133,16 @@ class TaskListAdapter(
             }
             val item = getItem(currentPosition)
 
+            if(!holder.itemView.context.isConnectedToInternet()){
+                OneActionDialog(holder.itemView.context).show(
+                    drawable = R.drawable.ic_dialog_no,
+                    title = holder.itemView.context.getString(R.string.failed),
+                    message = holder.itemView.context.getString(R.string.no_internet_desc),
+                    onConfirmClickListener = {}
+                )
+                return@setOnClickListener
+            }
+
             if (userEmail == null) {
                 OneActionDialog(holder.itemView.context).show(
                     drawable = R.drawable.ic_dialog_no,
@@ -169,7 +180,7 @@ class TaskListAdapter(
                     "TaskListAdapter",
                     "Event Name: ${calendarEventRequest.name}\nEvent Desc: ${calendarEventRequest.description}\nEvent Date: ${calendarEventRequest.startTime} ==> ${calendarEventRequest.endTime}"
                 )
-
+                holder.ggCalendar.setOnClickListener { null }
                 viewModel.insertToGoogleCalendar(holder.itemView.context, item, calendarEventRequest)
 
             } catch (e: UserRecoverableAuthIOException) {

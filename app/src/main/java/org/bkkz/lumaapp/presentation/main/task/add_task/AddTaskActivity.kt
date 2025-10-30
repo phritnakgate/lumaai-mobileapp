@@ -103,7 +103,6 @@ class AddTaskActivity : AppCompatActivity() {
                             title = getString(R.string.create_task_success_dialog),
                             message = "",
                             onConfirmClickListener = {
-
                                 finish()
                             },
                         )
@@ -112,7 +111,7 @@ class AddTaskActivity : AppCompatActivity() {
                         OneActionDialog(this@AddTaskActivity).show(
                             drawable = R.drawable.ic_dialog_no,
                             title = getString(R.string.create_task_failed_dialog_title),
-                            message = getString(R.string.create_task_failed_dialog_desc),
+                            message = state.serviceMessage ?: getString(R.string.create_task_failed_dialog_desc),
                             onConfirmClickListener = {
                                 viewModel.setIdle()
                             },

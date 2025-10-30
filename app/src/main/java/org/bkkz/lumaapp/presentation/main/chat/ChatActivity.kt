@@ -3,6 +3,7 @@ package org.bkkz.lumaapp.presentation.main.chat
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.speech.tts.TextToSpeech
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -25,7 +26,10 @@ import org.bkkz.lumaapp.R
 import org.bkkz.lumaapp.presentation.main.chat.adapter.ChatAdapter
 import org.bkkz.lumaapp.presentation.main.chat.adapter.QuickPromptAdapter
 import org.bkkz.lumaapp.presentation.main.chat.voice_chat.VoiceChatActivity
+import org.bkkz.lumaapp.util.dialog.OneActionDialog
+import org.bkkz.lumaapp.util.isConnectedToInternet
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.util.Locale
 
 class ChatActivity : AppCompatActivity() {
 
@@ -42,6 +46,8 @@ class ChatActivity : AppCompatActivity() {
     private lateinit var imgNoChat: ImageView
     private lateinit var txtNoChat: TextView
 
+    private lateinit var tts : TextToSpeech
+
     private val voiceChatLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
@@ -57,8 +63,6 @@ class ChatActivity : AppCompatActivity() {
         }
     }
 
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -68,7 +72,6 @@ class ChatActivity : AppCompatActivity() {
         findView()
         setupView()
         setupEvents()
-
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -85,10 +88,31 @@ class ChatActivity : AppCompatActivity() {
 
     override fun onStop() {
         super.onStop()
+        tts.stop()
         viewModel.onViewDestroy()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        tts.shutdown()
+    }
+
     private fun setupData() {
+        if(!this@ChatActivity.isConnectedToInternet()){
+            OneActionDialog(this).show(
+                drawable = R.drawable.ic_dialog_no,
+                title = this.getString(R.string.no_internet_title),
+                message = this.getString(R.string.no_internet_desc),
+                onConfirmClickListener = {
+                    finishAffinity()
+                }
+            )
+        }
+        tts = TextToSpeech(this, { status ->
+            if (status == TextToSpeech.SUCCESS) {
+                tts.language = Locale.forLanguageTag("th-TH")
+            }
+        }, "com.google.android.tts")
         viewModel.chatItems.observe(this@ChatActivity){ userChats ->
             btnVoice.alpha = 1.0f
             btnSend.alpha = 1.0f
@@ -105,7 +129,7 @@ class ChatActivity : AppCompatActivity() {
                 imgNoChat.visibility = View.GONE
                 txtNoChat.visibility = View.GONE
             }
-            val adapter = ChatAdapter(userChats, onConfirmClick = {dbId,flag, task -> viewModel.confirmTaskAction(dbId,flag, task) })
+            val adapter = ChatAdapter(userChats, onConfirmClick = {dbId,flag, task -> viewModel.confirmTaskAction(dbId,flag, task) }, tts)
             recyclerChats.layoutManager = LinearLayoutManager(this@ChatActivity, RecyclerView.VERTICAL, false)
             recyclerChats.adapter = adapter
             recyclerChats.scrollToPosition(adapter.itemCount - 1)

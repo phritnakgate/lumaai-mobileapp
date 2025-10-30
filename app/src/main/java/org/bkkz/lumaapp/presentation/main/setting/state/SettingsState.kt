@@ -8,5 +8,6 @@ data class SettingsState(
     val isLoginViaGoogle : Boolean = false,
     val googleCalendarEmail : String? = null,
     val currentLanguage : String? = Locale.getDefault().language,
-    val serviceState: ServiceState = ServiceState.IDLE
+    val serviceState: ServiceState = ServiceState.IDLE,
+    val serviceMessage: String? = null,
 )

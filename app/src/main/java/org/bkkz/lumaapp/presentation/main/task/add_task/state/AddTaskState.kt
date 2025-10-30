@@ -11,7 +11,8 @@ data class AddTaskState(
     val category: Int = 0,
     val priority: Int = 0,
     val errorField : Map<RequiredFormField, Boolean?> = emptyMap(),
-    val serviceState: ServiceState = ServiceState.IDLE
+    val serviceState: ServiceState = ServiceState.IDLE,
+    val serviceMessage: String? = null
 ) {
     enum class RequiredFormField{
         TASK_NAME,

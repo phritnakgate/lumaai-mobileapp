@@ -67,7 +67,8 @@ class ForgetPasswordViewModel(private val repository: Repository) : ViewModel() 
                 is ApiResult.Error -> {
                     _state.update {
                         it.copy(
-                            serviceState = ServiceState.FAILED
+                            serviceState = ServiceState.FAILED,
+                            serviceMessage = result.exception.message
                         )
                     }
                 }

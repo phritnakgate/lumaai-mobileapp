@@ -25,6 +25,7 @@ import org.bkkz.lumaapp.util.component.monthly_task_recycler.TimelineItem
 import org.bkkz.lumaapp.util.dialog.OneActionDialog
 import org.bkkz.lumaapp.util.enums.TaskCategory
 import org.bkkz.lumaapp.util.enums.TaskPriority
+import org.bkkz.lumaapp.util.isConnectedToInternet
 import java.text.SimpleDateFormat
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
@@ -135,6 +136,15 @@ class MonthlyViewFragmentAdapter(
                 priorityColorRes
             )
             ggCalendar.setOnClickListener {
+                if(!itemView.context.isConnectedToInternet()){
+                    OneActionDialog(itemView.context).show(
+                        drawable = R.drawable.ic_dialog_no,
+                        title = itemView.context.getString(R.string.failed),
+                        message = itemView.context.getString(R.string.no_internet_desc),
+                        onConfirmClickListener = {}
+                    )
+                    return@setOnClickListener
+                }
                 if (userEmail == null) {
                     OneActionDialog(itemView.context).show(
                         drawable = R.drawable.ic_dialog_no,

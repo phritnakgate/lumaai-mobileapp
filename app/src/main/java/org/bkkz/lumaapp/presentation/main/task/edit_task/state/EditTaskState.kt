@@ -13,7 +13,8 @@ data class EditTaskState(
     val category: Int? = null,
     val isGoogleCalendarTask: Boolean = false,
     val errorField : Map<RequiredFormField, Boolean?> = emptyMap(),
-    val serviceState: ServiceState = ServiceState.IDLE
+    val serviceState: ServiceState = ServiceState.IDLE,
+    val serviceMessage: String? = null
 ) {
     enum class RequiredFormField{
         TASK_NAME,

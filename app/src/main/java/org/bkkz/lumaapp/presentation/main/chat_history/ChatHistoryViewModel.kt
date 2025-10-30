@@ -61,7 +61,8 @@ class ChatHistoryViewModel(private val repository: Repository) : ViewModel(){
                 }
                 is ApiResult.Error -> {
                     _state.update { it.copy(
-                        serviceState = ServiceState.FAILED
+                        serviceState = ServiceState.FAILED,
+                        serviceMessage = taskChatHistory.exception.message
                     ) }
                     return@launch
                 }

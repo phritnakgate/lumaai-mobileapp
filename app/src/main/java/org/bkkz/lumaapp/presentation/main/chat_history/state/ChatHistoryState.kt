@@ -5,6 +5,7 @@ import org.bkkz.lumaapp.util.enums.ServiceState
 
 data class ChatHistoryState(
     val serviceState: ServiceState = ServiceState.IDLE,
+    val serviceMessage : String? = null,
     val chatHistoryTask : List<ChatHistory> = emptyList(),
     val chatHistorySearch : List<ChatHistory> = emptyList(),
     val chatHistoryPlan : List<ChatHistory> = emptyList(),

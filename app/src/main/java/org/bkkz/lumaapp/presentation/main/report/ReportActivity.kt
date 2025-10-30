@@ -132,7 +132,9 @@ class ReportActivity : AppCompatActivity() {
                             drawable = R.drawable.ic_dialog_no,
                             title = getString(R.string.failed),
                             message = getString(R.string.report_service_failed),
-                            onConfirmClickListener = {}
+                            onConfirmClickListener = {
+                                finishAffinity()
+                            }
                         )
                     }
                 }
