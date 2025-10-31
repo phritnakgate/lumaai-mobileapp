@@ -147,7 +147,7 @@ class EditTaskActivity : AppCompatActivity() {
                             title = getString(R.string.edit_task_success_dialog),
                             message = "",
                             onConfirmClickListener = {
-                                finish()
+                                    finish()
                             },
                         )
                     }

@@ -206,6 +206,7 @@ class ViewTaskViewModel(private val repository: Repository) : ViewModel() {
                     ))
                     onEvent(ViewTaskEvent.LoadFirstTimeTasks)
                     Log.d("ViewTaskViewModel", "Successfully inserted to Google Calendar with event ID: ${result.data}")
+                    markCompleted(result.data, EditTaskRequest(isFinished = oldTask.isFinished))
                     OneActionDialog(context).show(
                         drawable = R.drawable.ic_dialog_success,
                         title = context.getString(R.string.view_task_add_ggcalendar_success),
